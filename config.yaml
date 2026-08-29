@@ -1,0 +1,153 @@
+# DRUM-ML Pipeline Master Configuration
+
+project:
+  name: "drum-ml-metrology-corpus"
+  version: "0.1.0"
+  output_dir: "./dataset"
+  cache_db: "./data/cache/llm_cache.sqlite"
+
+sources:
+  # 1. BIPM SI Digital Framework (Official SI Reference Point)
+  bipm:
+    enabled: true
+    repo_url: "https://github.com/TheBIPM/SI_Digital_Framework"
+    api_url: "https://si-digital-framework.org/SI"
+    local_dir: "./data/raw/bipm"
+    files:
+      - "si-core.ttl"
+      - "si-prefixes.ttl"
+      - "si-constants.ttl"
+
+  # 2. CODATA Fundamental Constants Project (DRUM Constants with QUDT crosswalks)
+  codata_drum:
+    enabled: true
+    repo_url: "https://github.com/codata/drum-constants"
+    api_url: "https://api.codata.org/drum/constants"
+    local_dir: "./data/raw/codata"
+    version_evaluations: ["2018", "2022"]
+    files:
+      - "codata-constants.ttl"
+      - "codata-history.json"
+
+  # 3. QUDT 2.1 Community Reference
+  qudt:
+    enabled: true
+    repo_url: "https://github.com/qudt/qudt-public-repo"
+    release_tag: "v2.1.37"
+    local_dir: "./data/raw/qudt"
+    files:
+      - "VOCAB_QUDT-UNITS-ALL.ttl"
+      - "VOCAB_QUDT-QUANTITY-KINDS-ALL.ttl"
+      - "VOCAB_QUDT-DIMENSION-VECTORS-ALL.ttl"
+      - "VOCAB_QUDT-PREFIXES-ALL.ttl"
+
+archetypes:
+  enabled:
+    - "direct_identification"
+    - "dimensional_decomposition"
+    - "conversion_scaling"
+    - "error_detection"
+    - "semantic_tool_use"
+    - "metrological_uncertainty"
+  max_entities_per_archetype: null
+
+augmenter:
+  # When enabled is false, DRUM-ML generates fast, 100% deterministic basic canonical questions directly from ontologies without calling external LLMs
+  enabled: true
+  # =========================================================================
+  # LLM PROVIDER & ENDPOINT CONFIGURATION
+  # =========================================================================
+
+  # --- PRESET 1: Local Ollama (Apple Silicon / Desktop) ---
+  #provider: "ollama"
+  #model: "nemotron-3-nano:4b"
+  #api_base: "http://localhost:11434"
+  #api_key: null
+  #concurrency_limit: 5
+
+  # --- PRESET 2: Remote Cloud GPU with vLLM (Vast.ai / RunPod / Lambda) ---
+  provider: "openai"
+  model: "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16"
+  api_base: "http://localhost:8000/v1"
+  api_key: "d2855fd4ce293b5e91aae58ae425cd09f7229cb8c97810f597a75a20848e6d69"
+  concurrency_limit: 60
+
+  # --- PRESET 3: Cloud Hosted API (Google Gemini / OpenAI / Anthropic) ---
+  # provider: "google"
+  # model: "gemini-1.5-flash"
+  # api_base: null
+  # api_key: null                           # Reads GEMINI_API_KEY / OPENAI_API_KEY from env
+  # concurrency_limit: 30
+
+  # =========================================================================
+  # GENERATION HYPERPARAMETERS
+  # =========================================================================
+  temperature: 0.7
+  variations_per_archetype: 2
+  timeout_seconds: 60
+  max_retries: 3
+  # Available personas (CODATA DRUM Scientific Unions & Standards Bodies):
+  # - "general_user"                  (Direct everyday lookups: "What is a pascal?")
+  # - "physics_student"               (Conceptual physics homework & unit nuances)
+  # - "academic_metrologist"          (BIPM 9th Ed., VIM3 formal metrology)
+  # - "nist_metrologist"              (National Institute of Standards and Technology - NIST)
+  # - "nrc_metrologist"               (National Research Council Canada - NRC)
+  # - "isc_science_policy"            (International Science Council - ISC)
+  # - "iupap_physicist"               (International Union of Pure and Applied Physics - IUPAP)
+  # - "iupac_chemist"                 (International Union of Pure and Applied Chemistry - IUPAC)
+  # - "iau_astronomer"                (International Astronomical Union - IAU)
+  # - "iucr_crystallographer"         (International Union of Crystallography - IUCr)
+  # - "imu_mathematician"             (International Mathematical Union - IMU)
+  # - "ursi_radio_scientist"          (Union Radio Scientifique Internationale - URSI)
+  # - "iutam_mechanics_engineer"      (International Union of Theoretical and Applied Mechanics - IUTAM)
+  # - "iugg_geodesist_geophysicist"   (International Union of Geodesy and Geophysics - IUGG)
+  # - "igu_geographer"                (International Geographical Union - IGU)
+  # - "isprs_photogrammetrist"        (International Society for Photogrammetry and Remote Sensing - ISPRS)
+  # - "isde_digital_earth"            (International Society for Digital Earth - ISDE)
+  # - "iuss_soil_scientist"           (International Union of Soil Science - IUSS)
+  # - "iubs_biologist"                (International Union of Biological Sciences - IUBS)
+  # - "iuis_immunologist"             (International Union of Immunological Societies - IUIS)
+  # - "iuphar_pharmacologist"         (International Union of Basic and Clinical Pharmacology - IUPHAR)
+  # - "iups_physiologist"             (International Union of Physiological Sciences - IUPS)
+  # - "iutox_toxicologist"            (International Union of Toxicology - IUTOX)
+  # - "iuns_nutritionist"             (International Union of Nutritional Sciences - IUNS)
+  # - "iufost_food_scientist"         (International Union of Food Science and Technology - IUFoST)
+  # - "iomp_medical_physicist"        (IUPESM / IOMP - Medical Physics)
+  # - "ifmbe_biomedical_engineer"     (IUPESM / IFMBE - Biomedical Engineering)
+  # - "iupsys_psychologist"           (International Union of Psychological Science - IUPsyS)
+  # - "isa_sociologist"               (International Sociological Association - ISA)
+  # - "iussp_demographer"             (International Union for the Scientific Study of Population - IUSSP)
+  # - "wau_anthropologist"            (World Anthropological Union - WAU)
+  # - "four_s_science_studies"        (Society for Social Studies of Science - 4S)
+  # - "iuhpst_historian_philosopher"  (International Union for History and Philosophy of Science and Technology - IUHPST)
+  #
+  # Tip: To include all 35 union & domain personas automatically, set:
+  # personas: "all"   (or personas: ["all"])
+  personas:
+    - "all"
+
+validator:
+  strict_mode: true
+  verify_latex: true
+  verify_dimensions_sympy: true
+  verify_quantity_kinds: true
+  verify_numerical_precision: true
+  verify_sparql_syntax: true
+  generate_dpo_pairs: true
+  dpo_min_quality_score: 0.8 # Discard malformed/incoherent prompts
+
+exporter:
+  train_ratio: 0.85
+  val_ratio: 0.10
+  test_ratio: 0.05
+  dedup_jaccard_threshold: 0.85
+  target_volume_stage: "mvp" # "mvp" (~5k-10k) | "production" (~50k+)
+  formats:
+    - "openai"
+    - "sharegpt"
+    - "dpo"
+
+huggingface:
+  repo_id: "codata/drum-metrology-instruct"
+  token: null # Optional: set here or via HF_TOKEN environment variable
+  private: false

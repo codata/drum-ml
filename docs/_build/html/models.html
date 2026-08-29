@@ -1,0 +1,726 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Scientific Assumptions &amp; Invariants" href="assumptions.html"><link rel="prev" title="Scientific Unions &amp; Domain Personas" href="personas.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>LLM Model Selection, Recommendations &amp; Performance Guide - DRUM-ML Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">DRUM-ML Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">DRUM-ML Documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="objectives.html">Project Objectives &amp; Scientific Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Multi-Agent Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training_and_eval.html">Training &amp; Evaluation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/models.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="llm-model-selection-recommendations-performance-guide">
+<span id="models"></span><h1>LLM Model Selection, Recommendations &amp; Performance Guide<a class="headerlink" href="#llm-model-selection-recommendations-performance-guide" title="Link to this heading">¶</a></h1>
+<p>This guide details the evaluation criteria, architectural considerations, recommended model tiers, and compute performance benchmarks for <strong>Agent 3 (Linguistic Diversity &amp; Persona Augmentation)</strong> in the DRUM-ML pipeline.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#role-of-llms-in-the-drum-ml-architecture" id="id1">1. Role of LLMs in the DRUM-ML Architecture</a></p></li>
+<li><p><a class="reference internal" href="#key-model-selection-criteria" id="id2">2. Key Model Selection Criteria</a></p>
+<ul>
+<li><p><a class="reference internal" href="#persona-adherence-role-playing-fidelity" id="id3">1. Persona Adherence &amp; Role-Playing Fidelity</a></p></li>
+<li><p><a class="reference internal" href="#zero-conversational-preamble-prompt-purity" id="id4">2. Zero Conversational Preamble (Prompt Purity)</a></p></li>
+<li><p><a class="reference internal" href="#stem-scientific-domain-pre-training" id="id5">3. STEM &amp; Scientific Domain Pre-training</a></p></li>
+<li><p><a class="reference internal" href="#case-sensitivity-latex-preservation" id="id6">4. Case Sensitivity &amp; LaTeX Preservation</a></p></li>
+<li><p><a class="reference internal" href="#serving-engine-batch-throughput-optimization" id="id7">5. Serving Engine &amp; Batch Throughput Optimization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#recommended-3-tier-model-spectrum" id="id8">3. Recommended 3-Tier Model Spectrum</a></p></li>
+<li><p><a class="reference internal" href="#performance-hardware-benchmarks" id="id9">4. Performance &amp; Hardware Benchmarks</a></p>
+<ul>
+<li><p><a class="reference internal" href="#hardware-throughput-comparison" id="id10">Hardware Throughput Comparison</a></p></li>
+<li><p><a class="reference internal" href="#cost-value-comparison-h100-nvl-2-70-hr-vs-rtx-5090-0-42-hr" id="id11">Cost &amp; Value Comparison: H100 NVL ($2.70/hr) vs. RTX 5090 ($0.42/hr)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#remote-cloud-deployment-workflow-zero-file-transfer" id="id12">5. Remote Cloud Deployment Workflow (Zero File Transfer)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#architecture-diagram" id="id13">Architecture Diagram</a></p></li>
+<li><p><a class="reference internal" href="#setup-steps-template-configuration" id="id14">Setup Steps &amp; Template Configuration</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="role-of-llms-in-the-drum-ml-architecture">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">1. Role of LLMs in the DRUM-ML Architecture</a><a class="headerlink" href="#role-of-llms-in-the-drum-ml-architecture" title="Link to this heading">¶</a></h2>
+<p>In the DRUM-ML multi-agent pipeline:</p>
+<ul class="simple">
+<li><p><strong>Ground-Truth Physical Derivations &amp; Formulas:</strong> Deterministically generated by <strong>Agent 2 (Scaffolder)</strong> and verified by <strong>Agent 4 (Validator)</strong> using SymPy, Pint, and arbitrary-precision decimal arithmetic.</p></li>
+<li><p><strong>LLM Responsibility (Agent 3):</strong> Generates diverse, natural user queries conditioned on specific <strong>Pedagogical Archetypes</strong> (e.g., direct lookup, dimensional derivation, conversion chains) and <strong>35 Scientific Personas</strong> (e.g., IUPAP physicist, IUCr crystallographer, ISO 17025 compliance auditor).</p></li>
+</ul>
+<p>Because the LLM is responsible for the <em>prompt/question phrasing</em> rather than the mathematical ground truth, model selection emphasizes <strong>roleplay fidelity</strong>, <strong>domain lexicon depth</strong>, and <strong>high-throughput generation</strong>.</p>
+<p>—</p>
+</section>
+<section id="key-model-selection-criteria">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">2. Key Model Selection Criteria</a><a class="headerlink" href="#key-model-selection-criteria" title="Link to this heading">¶</a></h2>
+<p>When selecting foundation models for Agent 3 persona augmentation, evaluate candidates against the following five core criteria:</p>
+<section id="persona-adherence-role-playing-fidelity">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">1. Persona Adherence &amp; Role-Playing Fidelity</a><a class="headerlink" href="#persona-adherence-role-playing-fidelity" title="Link to this heading">¶</a></h3>
+<p>The model must adopt distinct scientific mindsets without defaulting to generic high-school phrasing.
+* <strong>Good:</strong> When prompted as an <em>IUCr Crystallographer</em>, frames questions around lattice constants, Miller indices, and Ångströms ($1,text{Å} = 10^{-10},text{m}$).
+* <strong>Poor:</strong> Uses generic phrases like <em>“What is this unit?”</em> regardless of persona.</p>
+</section>
+<section id="zero-conversational-preamble-prompt-purity">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">2. Zero Conversational Preamble (Prompt Purity)</a><a class="headerlink" href="#zero-conversational-preamble-prompt-purity" title="Link to this heading">¶</a></h3>
+<p>Synthetic instruction generation requires raw, ready-to-use user prompts.
+* <strong>Good:</strong> Outputs directly: <code class="docutils literal notranslate"><span class="pre">&quot;In</span> <span class="pre">our</span> <span class="pre">cryogenic</span> <span class="pre">sensor</span> <span class="pre">calibration,</span> <span class="pre">how</span> <span class="pre">does</span> <span class="pre">A·h/°C</span> <span class="pre">convert</span> <span class="pre">to</span> <span class="pre">base</span> <span class="pre">SI</span> <span class="pre">units?&quot;</span></code>
+* <strong>Poor:</strong> Emits chatty preambles: <code class="docutils literal notranslate"><span class="pre">&quot;Sure!</span> <span class="pre">Here</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">realistic</span> <span class="pre">question</span> <span class="pre">you</span> <span class="pre">might</span> <span class="pre">ask</span> <span class="pre">as</span> <span class="pre">an</span> <span class="pre">engineer:</span> <span class="pre">...&quot;</span></code></p>
+</section>
+<section id="stem-scientific-domain-pre-training">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">3. STEM &amp; Scientific Domain Pre-training</a><a class="headerlink" href="#stem-scientific-domain-pre-training" title="Link to this heading">¶</a></h3>
+<p>The model must possess pre-training exposure to scientific literature (arXiv, PubMed, standards documents):
+* Familiarity with non-SI and domain-specific units (Jansky, Becquerel, Svedberg, Curie, Debye, Darcy, Torr).
+* Understanding of specialized union contexts (geodesy, demography, soil science, toxicology, pharmacology).</p>
+</section>
+<section id="case-sensitivity-latex-preservation">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">4. Case Sensitivity &amp; LaTeX Preservation</a><a class="headerlink" href="#case-sensitivity-latex-preservation" title="Link to this heading">¶</a></h3>
+<p>Preserves SI unit case rules and math symbols:
+* Distinguishes micro ($mu$), milli ($text{m}$), and mega ($text{M}$) ($text{mN}$ vs $text{MN}$, $text{mHz}$ vs $text{MHz}$).
+* Generates clean $LaTeX$ without breaking mathematical delimiters (e.g. producing valid <code class="docutils literal notranslate"><span class="pre">\Theta</span></code> rather than broken syntax).</p>
+</section>
+<section id="serving-engine-batch-throughput-optimization">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">5. Serving Engine &amp; Batch Throughput Optimization</a><a class="headerlink" href="#serving-engine-batch-throughput-optimization" title="Link to this heading">¶</a></h3>
+<p>Must support modern high-throughput inference engines (<strong>vLLM</strong>, <strong>SGLang</strong>, <strong>Ollama</strong>, <strong>MLX</strong>) utilizing continuous batching, PagedAttention, and FlashAttention-2.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Does Multimodality Matter?</strong>
+No. When using vision-language models (e.g. Qwen-VL, Gemma-Vision), passing pure text prompts simply bypasses the vision encoder. However, pure text-instruct models often offer slightly higher KV-cache memory efficiency in high-concurrency vLLM deployments.</p>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="recommended-3-tier-model-spectrum">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">3. Recommended 3-Tier Model Spectrum</a><a class="headerlink" href="#recommended-3-tier-model-spectrum" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 35.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Tier</p></th>
+<th class="head"><p>Models</p></th>
+<th class="head"><p>Key Strengths</p></th>
+<th class="head"><p>Best Use Case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Tier 1: Fast Testing &amp; CI</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nemotron-3-nano:4b</span></code>, <code class="docutils literal notranslate"><span class="pre">phi-3.5-mini:3.8b</span></code></p></td>
+<td><ul class="simple">
+<li><p>Extremely low memory footprint (&lt; 8 GB VRAM)</p></li>
+<li><p>Blazing fast (~4,200 tok/s on H100)</p></li>
+<li><p>Direct instruction-following with minimal preamble</p></li>
+</ul>
+</td>
+<td><p>Local prototyping, test runs with <code class="docutils literal notranslate"><span class="pre">--limit</span></code>, CI/CD verification pipelines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Tier 2: Balanced Performance</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gemma4:12b</span></code>, <code class="docutils literal notranslate"><span class="pre">gemma-2-9b-it</span></code>, <code class="docutils literal notranslate"><span class="pre">qwen2.5:14b-instruct</span></code></p></td>
+<td><ul class="simple">
+<li><p>High knowledge density per parameter</p></li>
+<li><p>Structured technical English</p></li>
+<li><p>Solid handling of all 35 scientific union domains</p></li>
+</ul>
+</td>
+<td><p>Overnight local GPU runs, medium cloud instances (RTX 4090, A6000).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tier 3: Production Publication-Grade</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">qwen3.8:27b</span></code>, <code class="docutils literal notranslate"><span class="pre">qwen2.5:32b-instruct</span></code>, <code class="docutils literal notranslate"><span class="pre">llama-3.1-70b-instruct</span></code></p></td>
+<td><ul class="simple">
+<li><p>World-class scientific and technical vocabulary</p></li>
+<li><p>Nuanced epistemological and regulatory tone</p></li>
+<li><p>Maximum lexical diversity (high TTR / Distinct-2)</p></li>
+</ul>
+</td>
+<td><p>Full production runs (300,000+ samples) deployed on cloud H100/A100 GPUs via vLLM.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+<section id="performance-hardware-benchmarks">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">4. Performance &amp; Hardware Benchmarks</a><a class="headerlink" href="#performance-hardware-benchmarks" title="Link to this heading">¶</a></h2>
+<p>Below are throughput benchmarks and estimated runtimes for generating the <strong>full dataset (301,314 samples)</strong> across different hardware setups:</p>
+<section id="hardware-throughput-comparison">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Hardware Throughput Comparison</a><a class="headerlink" href="#hardware-throughput-comparison" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 22.0%" />
+<col style="width: 22.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hardware</p></th>
+<th class="head"><p>Engine</p></th>
+<th class="head"><p>Model</p></th>
+<th class="head"><p>Generation Speed</p></th>
+<th class="head"><p>Full 301k Runtime</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Apple Silicon (M-series, 16-36 GB)</strong></p></td>
+<td><p>Ollama (Concurrency: 5)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nemotron-3-nano:4b</span></code></p></td>
+<td><p>~60–80 tok/s (0.25 req/s)</p></td>
+<td><p><strong>~12 to 14 days</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1x NVIDIA RTX 4090 (24 GB)</strong></p></td>
+<td><p>vLLM (Concurrency: 32)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nemotron-3-nano:4b</span></code></p></td>
+<td><p>~1,800 tok/s (60 req/s)</p></td>
+<td><p><strong>~1.4 hours</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>1x NVIDIA RTX 4090 (24 GB)</strong></p></td>
+<td><p>vLLM (Concurrency: 20)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gemma-2-9b-it</span></code></p></td>
+<td><p>~950 tok/s (30 req/s)</p></td>
+<td><p><strong>~2.8 hours</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1x NVIDIA RTX 5090 (32 GB GDDR7)</strong></p></td>
+<td><p>vLLM (Concurrency: 60)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nemotron-3-nano:4b</span></code></p></td>
+<td><p>~2,400 tok/s (80 req/s)</p></td>
+<td><p><strong>~1.05 hours</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>1x NVIDIA RTX 5090 (32 GB GDDR7)</strong></p></td>
+<td><p>vLLM (Concurrency: 45)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gemma4:12b</span></code> / <code class="docutils literal notranslate"><span class="pre">qwen-14b</span></code></p></td>
+<td><p>~1,350 tok/s (42 req/s)</p></td>
+<td><p><strong>~2.0 hours</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1x NVIDIA RTX 5090 (32 GB GDDR7)</strong></p></td>
+<td><p>vLLM (Concurrency: 35)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">qwen3.8:27b</span></code> (FP8 / AWQ)</p></td>
+<td><p>~750 tok/s (25 req/s)</p></td>
+<td><p><strong>~3.3 hours</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>1x NVIDIA H100 NVL / SXM5 (80-94 GB)</strong></p></td>
+<td><p>vLLM (Concurrency: 100)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nemotron-3-nano:4b</span></code></p></td>
+<td><p>~4,200 tok/s (140 req/s)</p></td>
+<td><p><strong>~35 to 40 minutes</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1x NVIDIA H100 NVL / SXM5 (80-94 GB)</strong></p></td>
+<td><p>vLLM (Concurrency: 80)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gemma4:12b</span></code> / <code class="docutils literal notranslate"><span class="pre">qwen-14b</span></code></p></td>
+<td><p>~2,400 tok/s (75 req/s)</p></td>
+<td><p><strong>~1.1 hours</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>1x NVIDIA H100 NVL / SXM5 (80-94 GB)</strong></p></td>
+<td><p>vLLM (Concurrency: 60)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">qwen3.8:27b</span></code> / <code class="docutils literal notranslate"><span class="pre">qwen2.5:32b</span></code> (BF16)</p></td>
+<td><p>~1,050 tok/s (35 req/s)</p></td>
+<td><p><strong>~2.4 to 2.8 hours</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cost-value-comparison-h100-nvl-2-70-hr-vs-rtx-5090-0-42-hr">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Cost &amp; Value Comparison: H100 NVL ($2.70/hr) vs. RTX 5090 ($0.42/hr)</a><a class="headerlink" href="#cost-value-comparison-h100-nvl-2-70-hr-vs-rtx-5090-0-42-hr" title="Link to this heading">¶</a></h3>
+<p>At typical Vast.ai on-demand rates (<strong>$0.42/hr for RTX 5090</strong> vs. <strong>$2.70/hr for H100 NVL</strong>):</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 20.0%" />
+<col style="width: 18.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model Tier</p></th>
+<th class="head"><p>GPU Setup</p></th>
+<th class="head"><p>Precision</p></th>
+<th class="head"><p>Full 301k Runtime</p></th>
+<th class="head"><p>Total Cloud Spend</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Tier 1 (4B: Nemotron)</strong></p></td>
+<td><p><strong>RTX 5090 ($0.42/hr)</strong></p></td>
+<td><p>Native BF16</p></td>
+<td><p><strong>~1.05 hours</strong></p></td>
+<td><p><strong>$0.44</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Tier 1 (4B: Nemotron)</p></td>
+<td><p>H100 NVL ($2.70/hr)</p></td>
+<td><p>Native BF16</p></td>
+<td><p>~36 minutes</p></td>
+<td><p>$1.62</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tier 2 (12B: Gemma4)</strong></p></td>
+<td><p><strong>RTX 5090 ($0.42/hr)</strong></p></td>
+<td><p>Native BF16</p></td>
+<td><p><strong>~2.0 hours</strong></p></td>
+<td><p><strong>$0.84</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Tier 2 (12B: Gemma4)</p></td>
+<td><p>H100 NVL ($2.70/hr)</p></td>
+<td><p>Native BF16</p></td>
+<td><p>~1.1 hours</p></td>
+<td><p>$2.97</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tier 3 (27B: Qwen3.8)</strong></p></td>
+<td><p><strong>RTX 5090 ($0.42/hr)</strong></p></td>
+<td><p>FP8 / AWQ 4-bit</p></td>
+<td><p><strong>~3.3 hours</strong></p></td>
+<td><p><strong>$1.38</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Tier 3 (27B: Qwen3.8)</p></td>
+<td><p>H100 NVL ($2.70/hr)</p></td>
+<td><p>Native BF16</p></td>
+<td><p>~2.4 hours</p></td>
+<td><p>$6.48</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Value Verdict:</strong> The <strong>RTX 5090 ($0.42/hr)</strong> is the price-to-performance winner. It completes the entire 301,314 publication-grade dataset across all 35 scientific unions for <strong>under $1.50 in ~3 hours</strong> (saving 75–80% compared to H100). Choose the <strong>H100 NVL ($2.70/hr)</strong> only if you require unquantized native FP16 on a 32B+ model with 100+ parallel batch streams.</p>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="remote-cloud-deployment-workflow-zero-file-transfer">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">5. Remote Cloud Deployment Workflow (Zero File Transfer)</a><a class="headerlink" href="#remote-cloud-deployment-workflow-zero-file-transfer" title="Link to this heading">¶</a></h2>
+<p>When running inference on a cloud GPU (e.g. Vast.ai or RunPod), the DRUM-ML pipeline, ontologies, SQLite cache, validation engine, and final exported dataset files <strong>remain 100% on your local machine</strong>. The remote GPU serves solely as a high-speed OpenAI-compatible HTTP inference endpoint.</p>
+<section id="architecture-diagram">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Architecture Diagram</a><a class="headerlink" href="#architecture-diagram" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌──────────────────────────────────────────────────────────┐
+│                    YOUR LOCAL MACHINE                    │
+│                                                          │
+│  [Agent 1: SPARQL Ingestion]                             │
+│         │                                                │
+│  [Agent 2: Archetype Scaffolding]                        │
+│         │                                                │
+│         ▼                                                │
+│  [Agent 3: Augmenter] ──(HTTP async requests)──┐         │
+│         ▲                                      │         │
+│         │ ◄───(Generated Questions)────────────┼──────┐  │
+│         │                                      │      │  │
+│  [Agent 4: 4-Tier Validation Gate]             │      │  │
+│         │                                      │      │  │
+│  [Agent 5: MinHash Dedup &amp; Export]             │      │  │
+│         │                                      │      │  │
+│  [dataset/train.jsonl &amp; reports]               │      │  │
+└────────────────────────────────────────────────┼──────┼──┘
+                                                 │      │
+                                                 ▼      │
+┌───────────────────────────────────────────────────────┼──┐
+│            REMOTE CLOUD GPU (Vast.ai / RunPod)        │  │
+│                                                       │  │
+│  vLLM Inference Server (Port 8000) ───────────────────┘  │
+│  Model: qwen3.8:27b / nemotron-3-nano:4b                 │
+│  Throughput: 1,000 – 4,500 tok/s                         │
+└──────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="setup-steps-template-configuration">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Setup Steps &amp; Template Configuration</a><a class="headerlink" href="#setup-steps-template-configuration" title="Link to this heading">¶</a></h3>
+<section id="vast-ai-1-click-template-environment-variables">
+<h4>Vast.ai 1-Click Template Environment Variables<a class="headerlink" href="#vast-ai-1-click-template-environment-variables" title="Link to this heading">¶</a></h4>
+<p>When creating or editing a template on Vast.ai using the <code class="docutils literal notranslate"><span class="pre">vastai/vllm</span></code> Docker image:</p>
+<ol class="arabic">
+<li><p><strong>Exact Model Slug (Case-Sensitive):</strong>
+Set <code class="docutils literal notranslate"><span class="pre">VLLM_MODEL</span></code> to the exact Hugging Face repository identifier:</p>
+<ul class="simple">
+<li><p>Tier 1 (4B): <code class="docutils literal notranslate"><span class="pre">nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16</span></code></p></li>
+<li><p>Tier 2 (12B–14B): <code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-14B-Instruct</span></code></p></li>
+<li><p>Tier 3 (27B–32B): <code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-32B-Instruct</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>vLLM Arguments (``VLLM_ARGS``):</strong>
+Use optimized parameters for high-concurrency synthetic generation without broken tool parsers:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>--max-num-seqs 64 --max-model-len 4096 --download-dir /workspace/models --host 127.0.0.1 --port 18000
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Avoid Tool Parser Mismatches:</strong> Do not pass <code class="docutils literal notranslate"><span class="pre">--enable-auto-tool-choice</span></code>, <code class="docutils literal notranslate"><span class="pre">--tool-call-parser</span></code>, or <code class="docutils literal notranslate"><span class="pre">--reasoning-parser</span></code> unless you are explicitly serving a fine-tuned tool-calling model. Including these flags causes vLLM argument validation to fail on startup.</p>
+</div>
+</li>
+<li><p><strong>Disk Allocation:</strong>
+* <strong>4B Models:</strong> Minimum <strong>30–35 GB</strong> SSD.
+* <strong>14B–32B Models:</strong> Minimum <strong>50–60 GB</strong> SSD.</p></li>
+<li><p><strong>Port &amp; Authentication Architecture:</strong>
+* In standard Vast.ai vLLM templates, <strong>Caddy reverse-proxy</strong> runs on port <code class="docutils literal notranslate"><span class="pre">8000</span></code> and proxies requests to vLLM on port <code class="docutils literal notranslate"><span class="pre">18000</span></code>.
+* Caddy secures incoming requests with a Bearer token (displayed in the startup log).
+* <strong>Connection Option A (SSH Tunnel):</strong> Connect via <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-p</span> <span class="pre">&lt;PORT&gt;</span> <span class="pre">root&#64;&lt;IP&gt;</span> <span class="pre">-L</span> <span class="pre">8000:localhost:8000</span> <span class="pre">-L</span> <span class="pre">18000:localhost:18000</span></code> and point <code class="docutils literal notranslate"><span class="pre">api_base</span></code> to <code class="docutils literal notranslate"><span class="pre">http://localhost:8000/v1</span></code> (with token) or <code class="docutils literal notranslate"><span class="pre">http://localhost:18000/v1</span></code> (direct).
+* <strong>Connection Option B (Direct Port / Cloudflare Tunnel):</strong> Use the public port mapped to 8000 or the generated Cloudflare tunnel URL.</p></li>
+</ol>
+</section>
+<section id="complete-vast-ai-cli-launch-command">
+<h4>Complete Vast.ai CLI Launch Command<a class="headerlink" href="#complete-vast-ai-cli-launch-command" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vastai<span class="w"> </span>create<span class="w"> </span>instance<span class="w"> </span>&lt;OFFER_ID&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--image<span class="w"> </span>vastai/vllm:v0.27.1-cuda-13.0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--disk<span class="w"> </span><span class="m">40</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ssh<span class="w"> </span>--direct<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--env<span class="w"> </span><span class="s1">'-p 1111:1111 -p 7860:7860 -p 8080:8080 -p 8000:8000 -p 8265:8265 -e OPEN_BUTTON_PORT="1111" -e OPEN_BUTTON_TOKEN="1" -e DATA_DIRECTORY="/workspace/" -e PORTAL_CONFIG="localhost:1111:11111:/:Instance Portal|localhost:7860:17860:/:Model UI|localhost:8000:18000:/docs:vLLM API|localhost:8265:28265:/:Ray Dashboard|localhost:8080:18080:/:Jupyter" -e VLLM_MODEL="nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16" -e VLLM_ARGS="--max-num-seqs 64 --max-model-len 4096 --download-dir /workspace/models --host 127.0.0.1 --port 18000"'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--onstart-cmd<span class="w"> </span><span class="s1">'# Example json config;echo "--compilation-config '</span><span class="se">\'</span><span class="s1">'{\"cudagraph_capture_sizes\": [1,2,3,4,5,6,7,8]}'</span><span class="se">\'</span><span class="s1">'" &gt; /etc/vllm-args.conf;;;entrypoint.sh;'</span>
+</pre></div>
+</div>
+</section>
+<section id="local-config-yaml-configuration">
+<h4>Local <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> Configuration<a class="headerlink" href="#local-config-yaml-configuration" title="Link to this heading">¶</a></h4>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">augmenter</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="s">"openai"</span>
+<span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">"nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16"</span>
+<span class="w">  </span><span class="nt">api_base</span><span class="p">:</span><span class="w"> </span><span class="s">"http://localhost:8000/v1"</span>
+<span class="w">  </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;VAST_BEARER_TOKEN&gt;"</span><span class="w">                    </span><span class="c1"># Found in startup log or "token-vllm" if direct</span>
+<span class="w">  </span><span class="nt">concurrency_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w">                             </span><span class="c1"># 60 parallel streams for 4,000+ tok/s</span>
+</pre></div>
+</div>
+</section>
+<section id="running-the-pipeline">
+<h4>Running the Pipeline<a class="headerlink" href="#running-the-pipeline" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>drum-ml<span class="w"> </span>run
+</pre></div>
+</div>
+<p>All 301,314 validated samples across all 35 scientific unions, along with the persona distribution report, archetype report, and Hugging Face dataset card, will be saved directly into <code class="docutils literal notranslate"><span class="pre">./dataset/</span></code> on your local machine.</p>
+</section>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="assumptions.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Scientific Assumptions &amp; Invariants</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="personas.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Scientific Unions &amp; Domain Personas</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, CODATA DRUM Working Group (Lead: Pascal Heus)
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">LLM Model Selection, Recommendations &amp; Performance Guide</a><ul>
+<li><a class="reference internal" href="#role-of-llms-in-the-drum-ml-architecture">1. Role of LLMs in the DRUM-ML Architecture</a></li>
+<li><a class="reference internal" href="#key-model-selection-criteria">2. Key Model Selection Criteria</a><ul>
+<li><a class="reference internal" href="#persona-adherence-role-playing-fidelity">1. Persona Adherence &amp; Role-Playing Fidelity</a></li>
+<li><a class="reference internal" href="#zero-conversational-preamble-prompt-purity">2. Zero Conversational Preamble (Prompt Purity)</a></li>
+<li><a class="reference internal" href="#stem-scientific-domain-pre-training">3. STEM &amp; Scientific Domain Pre-training</a></li>
+<li><a class="reference internal" href="#case-sensitivity-latex-preservation">4. Case Sensitivity &amp; LaTeX Preservation</a></li>
+<li><a class="reference internal" href="#serving-engine-batch-throughput-optimization">5. Serving Engine &amp; Batch Throughput Optimization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#recommended-3-tier-model-spectrum">3. Recommended 3-Tier Model Spectrum</a></li>
+<li><a class="reference internal" href="#performance-hardware-benchmarks">4. Performance &amp; Hardware Benchmarks</a><ul>
+<li><a class="reference internal" href="#hardware-throughput-comparison">Hardware Throughput Comparison</a></li>
+<li><a class="reference internal" href="#cost-value-comparison-h100-nvl-2-70-hr-vs-rtx-5090-0-42-hr">Cost &amp; Value Comparison: H100 NVL ($2.70/hr) vs. RTX 5090 ($0.42/hr)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#remote-cloud-deployment-workflow-zero-file-transfer">5. Remote Cloud Deployment Workflow (Zero File Transfer)</a><ul>
+<li><a class="reference internal" href="#architecture-diagram">Architecture Diagram</a></li>
+<li><a class="reference internal" href="#setup-steps-template-configuration">Setup Steps &amp; Template Configuration</a><ul>
+<li><a class="reference internal" href="#vast-ai-1-click-template-environment-variables">Vast.ai 1-Click Template Environment Variables</a></li>
+<li><a class="reference internal" href="#complete-vast-ai-cli-launch-command">Complete Vast.ai CLI Launch Command</a></li>
+<li><a class="reference internal" href="#local-config-yaml-configuration">Local <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> Configuration</a></li>
+<li><a class="reference internal" href="#running-the-pipeline">Running the Pipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=38b66d78"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

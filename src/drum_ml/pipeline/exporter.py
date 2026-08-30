@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import random
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -28,12 +29,12 @@ class MetrologyExporter:
         jaccard_threshold: float = 0.85,
         dedup_threshold: Optional[float] = None,
     ):
-        self.output_dir = Path(output_dir)
+        self.output_dir = Path(output_dir).resolve()
         self.train_ratio = train_ratio
         self.val_ratio = val_ratio
         self.test_ratio = test_ratio
         self.jaccard_threshold = dedup_threshold if dedup_threshold is not None else jaccard_threshold
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        os.makedirs(str(self.output_dir), exist_ok=True)
 
     def deduplicate(self, records: List[AugmentedRecord]) -> List[AugmentedRecord]:
         """Performs MinHash LSH near-duplicate and exact-hash deduplication."""
@@ -101,6 +102,7 @@ class MetrologyExporter:
         dpo_pairs: List[DPOPreferenceRecord],
     ) -> Dict[str, Path]:
         """Deduplicates, splits, and writes dataset splits to disk."""
+        os.makedirs(str(self.output_dir), exist_ok=True)
         deduped = self.deduplicate(records)
         train, val, test = self.stratified_split(deduped)
 
@@ -109,6 +111,7 @@ class MetrologyExporter:
         # 1. Export OpenAI JSONL splits
         for split_name, split_data in [("train", train), ("val", val), ("test", test)]:
             path = self.output_dir / f"{split_name}.jsonl"
+            path.parent.mkdir(parents=True, exist_ok=True)
             with open(path, "w", encoding="utf-8") as f:
                 for r in split_data:
                     chat_rec = self.to_openai_format(r)
@@ -117,6 +120,7 @@ class MetrologyExporter:
 
         # 2. Export DPO Preference Pairs
         dpo_path = self.output_dir / "dpo_preferences.jsonl"
+        dpo_path.parent.mkdir(parents=True, exist_ok=True)
         with open(dpo_path, "w", encoding="utf-8") as f:
             for d in dpo_pairs:
                 f.write(d.model_dump_json() + "\n")
@@ -124,6 +128,7 @@ class MetrologyExporter:
 
         # 3. Write Dataset Card
         card_path = self.output_dir / "dataset_card.md"
+        card_path.parent.mkdir(parents=True, exist_ok=True)
         with open(card_path, "w", encoding="utf-8") as f:
             f.write(
                 f"# DRUM-ML Metrology Instruct Dataset\n\n"

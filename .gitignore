@@ -33,7 +33,8 @@ ENV/
 env/
 
 # DRUM-ML Generated Datasets (Never commit generated training corpora or raw dumps)
-dataset/
+dataset*/
+datasets/
 data/raw/
 data/cache/
 data/*.json

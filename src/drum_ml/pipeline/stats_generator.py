@@ -211,7 +211,18 @@ class DatasetStatsGenerator:
         summary = stats["summary"]
         tok = stats["token_geometry"]
         math_s = stats["math_and_latex"]
-        lex = stats["lexical_diversity"]
+        lex = stats.get("lexical_diversity", {})
+        total_records = summary.get("total_records", 0)
+        if total_records >= 1_000_000:
+            size_cat = "1M<n<10M"
+        elif total_records >= 100_000:
+            size_cat = "100K<n<1M"
+        elif total_records >= 10_000:
+            size_cat = "10K<n<100K"
+        elif total_records >= 1_000:
+            size_cat = "1K<n<10K"
+        else:
+            size_cat = "n<1K"
 
         card_content = f"""---
 license: cc-by-4.0
@@ -230,7 +241,7 @@ tags:
   - qudt
   - synthetic
 size_categories:
-  - 1K<n<10K
+  - {size_cat}
 pretty_name: DRUM-ML Metrology Instruct & Preference Dataset
 dataset_info:
   features:

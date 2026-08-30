@@ -5,11 +5,6 @@ LLM Model Selection, Recommendations & Performance Guide
 ============================================================
 
 This guide details the evaluation criteria, architectural considerations, recommended model tiers, and compute performance benchmarks for **Agent 3 (Linguistic Diversity & Persona Augmentation)** in the DRUM-ML pipeline.
-
-.. contents:: Table of Contents
-   :local:
-   :depth: 2
-
 ---
 
 1. Role of LLMs in the DRUM-ML Architecture

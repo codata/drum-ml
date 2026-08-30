@@ -29,14 +29,18 @@ The 6 Pedagogical Archetypes
 5. **Metrological Tool Use & Serialization:** Translating natural language into SPARQL queries, QUDT models, or executable Python unit code.
 6. **Metrological Uncertainty & GUM Propagation:** Calculating combined standard uncertainty :math:`u_c(y) = \sqrt{\sum (\frac{\partial f}{\partial x_i})^2 u^2(x_i)}` and distinguishing exact SI constants (:math:`u=0`).
 
-The 5 Linguistic Personas
--------------------------
+The 39 Scientific Unions & Domain Personas
+-------------------------------------------
 
-1. **Academic Metrologist:** Formal terminology citing BIPM 9th Edition SI brochure and VIM3.
-2. **Firmware / IoT Systems Engineer:** Sensor telemetry, ADC bit counts, register scaling, and UCUM format strings.
-3. **Data Scientist / ML Analyst:** Dataframe normalization, unit validation in PyTorch/Pandas.
-4. **Physics / Engineering Student:** Conceptual confusion, homework questions.
-5. **ISO Compliance Auditor:** ISO 17025 / ISO 80000 traceability, calibration certificates, uncertainty budgets.
+DRUM-ML projects canonical ground-truth scaffolds through **39 specialized domain personas** representing the CODATA DRUM Scientific Unions across 5 disciplinary sectors:
+
+1. **Standards Bodies & Metrology Institutes (6 personas):** NIST, NRC Canada, ISC Science Policy, Academic Metrologist, ISO Compliance Auditor, General Inquirer.
+2. **Physical, Chemical & Mathematical Sciences (12 personas):** IUPAP (Physics), IUPAC (Chemistry), IAU (Astronomy), IUCr (Crystallography), IMU (Math), URSI (Radio), IUTAM (Mechanics), Particle Physics, Aerospace Engineering, Firmware/IoT, Data Science/ML, Physics Student.
+3. **Earth, Space & Environmental Sciences (6 personas):** IUGG (Geodesy/Geophysics), IGU (Geography), ISPRS (Remote Sensing), ISDE (Digital Earth), IUSS (Soil Science), Climate & Energy Systems.
+4. **Biological, Medical & Health Sciences (9 personas):** IUBS (Biology), IUIS (Immunology), IUPHAR (Pharmacology), IUPS (Physiology), IUTOX (Toxicology), IUNS (Nutrition), IUFoST (Food Science), IUPESM/IOMP (Medical Physics), IUPESM/IFMBE (Biomedical Engineering).
+5. **Social, Behavioral & Human Sciences (6 personas):** IUPsyS (Psychology), ISA (Sociology), IUSSP (Demography), WAU (Anthropology), 4S (Science Studies), IUHPST (History & Philosophy).
+
+See :ref:`scientific_unions_and_personas` for the comprehensive specification of each union's metrological focus, keys, and reporting tools.
 
 The 4-Tier Automated Validation Gate
 ------------------------------------

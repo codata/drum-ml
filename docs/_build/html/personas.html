@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Scientific Assumptions &amp; Invariants" href="assumptions.html"><link rel="prev" title="Methodology &amp; Metrological Foundations" href="methodology.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="LLM Model Selection, Recommendations &amp; Performance Guide" href="models.html"><link rel="prev" title="Methodology &amp; Metrological Foundations" href="methodology.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Scientific Unions &amp; Domain Personas - DRUM-ML Documentation</title>
@@ -197,6 +197,7 @@
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodology.html">Methodology &amp; Metrological Foundations</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
@@ -240,19 +241,19 @@
         <article role="main" id="furo-main-content">
           <section id="scientific-unions-domain-personas">
 <span id="scientific-unions-and-personas"></span><h1>Scientific Unions &amp; Domain Personas<a class="headerlink" href="#scientific-unions-domain-personas" title="Link to this heading">¶</a></h1>
-<p>The <strong>DRUM-ML</strong> pipeline integrates domain-specific persona profiles representing the <strong>CODATA DRUM Scientific Unions and Standards Bodies</strong>.</p>
-<p>While <strong>Agent 2 (Archetype Scaffolder)</strong> deterministically derives ground-truth answers from the BIPM, CODATA, and QUDT master knowledge graphs, <strong>Agent 3 (Linguistic Diversity Augmenter)</strong> uses these personas to generate realistic questions from diverse disciplinary perspectives.</p>
+<p>The <strong>DRUM-ML</strong> pipeline integrates domain-specific persona profiles representing the <strong>CODATA DRUM (`Digital Representation of Units of Measurement &lt;https://drum.codata.org&gt;`_) Working Group</strong> and the <strong>30+ International Scientific Unions &amp; Standards Bodies</strong> of the International Science Council (ISC).</p>
+<p>While <strong>Agent 2 (Archetype Scaffolder)</strong> deterministically derives ground-truth answers and dimensional derivations from the BIPM, CODATA, and QUDT master knowledge graphs, <strong>Agent 3 (Linguistic Diversity Augmenter)</strong> projects these scaffolds through <strong>39 specialized scientific personas</strong> to generate authentic, diverse, and contextually rich questions from practitioners in each field.</p>
 <section id="overview-of-union-standards-coverage">
 <h2>Overview of Union &amp; Standards Coverage<a class="headerlink" href="#overview-of-union-standards-coverage" title="Link to this heading">¶</a></h2>
-<p>The 35 available personas in DRUM-ML are organized into 5 major disciplinary sectors:</p>
-<section id="standards-bodies-global-science-infrastructure">
-<h3>1. Standards Bodies &amp; Global Science Infrastructure<a class="headerlink" href="#standards-bodies-global-science-infrastructure" title="Link to this heading">¶</a></h3>
+<p>The <strong>39 personas</strong> in DRUM-ML are organized into 5 major disciplinary sectors:</p>
+<section id="standards-bodies-metrology-institutes-global-infrastructure">
+<h3>1. Standards Bodies, Metrology Institutes &amp; Global Infrastructure<a class="headerlink" href="#standards-bodies-metrology-institutes-global-infrastructure" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 30.0%" />
-<col style="width: 25.0%" />
-<col style="width: 45.0%" />
+<col style="width: 28.0%" />
+<col style="width: 22.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Scientific Body / Organization</p></th>
@@ -263,19 +264,27 @@
 <tbody>
 <tr class="row-even"><td><p><strong>National Institute of Standards and Technology (NIST)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">nist_metrologist</span></code></p></td>
-<td><p>NIST SP 330/811 guidelines, Kibble balance, optical clocks, primary calibration standards, fundamental constants.</p></td>
+<td><p>NIST SP 330/811 guidelines, Kibble balance realizations, optical clocks, primary calibration standards, CODATA fundamental constants.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>National Research Council Canada (NRC)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">nrc_metrologist</span></code></p></td>
-<td><p>Quantum Hall resistance, Josephson voltage standards, mass dissemination, precision electrical metrology.</p></td>
+<td><p>Quantum Hall resistance (<span class="math notranslate nohighlight">\(R_{\text{K}}\)</span>), Josephson voltage standards (<span class="math notranslate nohighlight">\(K_{\text{J}}\)</span>), mass dissemination, precision electrical metrology.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Science Council (ISC)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">isc_science_policy</span></code></p></td>
-<td><p>Interdisciplinary science data interoperability, FAIR digital representation of units, global scientific cooperation.</p></td>
+<td><p>Interdisciplinary science data interoperability, FAIR digital representation of units, global scientific cooperation across domain unions.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Academic Metrologist (BIPM / NMI)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">academic_metrologist</span></code></p></td>
-<td><p>BIPM 9th Edition SI brochure, VIM3 terminology, exact SI 2019 defining constants, LaTeX formulas.</p></td>
+<td><p>BIPM 9th Edition SI brochure, VIM3 terminology, exact SI 2019 defining constants, formal LaTeX derivations.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ISO / IEC Calibration Auditor</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">iso_compliance_auditor</span></code></p></td>
+<td><p>ISO/IEC 17025 accreditation, ISO 80000 quantities and units, calibration certificates, GUM uncertainty budgets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>General User / Everyday Inquirer</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">general_user</span></code></p></td>
+<td><p>Concise, direct questions on common physical units, basic conversions, and fundamental constants.</p></td>
 </tr>
 </tbody>
 </table>
@@ -286,12 +295,12 @@
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 30.0%" />
-<col style="width: 25.0%" />
-<col style="width: 45.0%" />
+<col style="width: 28.0%" />
+<col style="width: 22.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Scientific Union</p></th>
+<tr class="row-odd"><th class="head"><p>Scientific Union / Organization</p></th>
 <th class="head"><p>Persona Key</p></th>
 <th class="head"><p>Metrological Focus &amp; Domain Coverage</p></th>
 </tr>
@@ -299,19 +308,19 @@
 <tbody>
 <tr class="row-even"><td><p><strong>International Union of Pure and Applied Physics (IUPAP)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iupap_physicist</span></code></p></td>
-<td><p>IUPAP SUNAMCO symbols, base units, physical dimensions, SI realizations.</p></td>
+<td><p>IUPAP SUNAMCO symbols, base units, physical dimensions, SI realizations, relativistic kinematics.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Union of Pure and Applied Chemistry (IUPAC)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iupac_chemist</span></code></p></td>
-<td><p>IUPAC Green Book, amount-of-substance (mol, mol/L), molar gas constant, standard atomic weights.</p></td>
+<td><p>IUPAC Green Book, amount-of-substance (<span class="math notranslate nohighlight">\(\text{mol}, \text{mol/L}\)</span>), standard atomic weights, molar gas constant relations.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Astronomical Union (IAU)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iau_astronomer</span></code></p></td>
-<td><p>Parsecs, light-years, astronomical units, solar masses (<span class="math notranslate nohighlight">\(M_\odot\)</span>), Jansky (<span class="math notranslate nohighlight">\(\text{Jy}\)</span>) spectral flux.</p></td>
+<td><p>Parsecs, light-years, astronomical units (<span class="math notranslate nohighlight">\(\text{au}\)</span>), solar masses (<span class="math notranslate nohighlight">\(M_\odot\)</span>), Jansky (<span class="math notranslate nohighlight">\(\text{Jy}\)</span>) spectral flux densities, stellar photometry.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Union of Crystallography (IUCr)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iucr_crystallographer</span></code></p></td>
-<td><p>Unit cell dimensions (<span class="math notranslate nohighlight">\(\text{Å}\)</span>, <span class="math notranslate nohighlight">\(\text{pm}\)</span>), reciprocal lattice vectors, electron density (<span class="math notranslate nohighlight">\(e/\text{Å}^3\)</span>).</p></td>
+<td><p>Unit cell dimensions (<span class="math notranslate nohighlight">\(\text{Å}, \text{pm}\)</span>), reciprocal lattice vectors (<span class="math notranslate nohighlight">\(\text{nm}^{-1}\)</span>), electron density (<span class="math notranslate nohighlight">\(e/\text{Å}^3\)</span>), Bragg X-ray angles.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Mathematical Union (IMU)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">imu_mathematician</span></code></p></td>
@@ -319,19 +328,31 @@
 </tr>
 <tr class="row-odd"><td><p><strong>Union Radio Scientifique Internationale (URSI)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ursi_radio_scientist</span></code></p></td>
-<td><p>RF telemetry, antenna gain (<span class="math notranslate nohighlight">\(\text{dBi}\)</span>), antenna noise temperature (<span class="math notranslate nohighlight">\(\text{K}\)</span>), Poynting vectors.</p></td>
+<td><p>RF telemetry, antenna gain (<span class="math notranslate nohighlight">\(\text{dBi}\)</span>), antenna noise temperature (<span class="math notranslate nohighlight">\(\text{K}\)</span>), Poynting vectors (<span class="math notranslate nohighlight">\(\text{W/m}^2\)</span>), plasma frequencies.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Union of Theoretical and Applied Mechanics (IUTAM)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iutam_mechanics_engineer</span></code></p></td>
-<td><p>Stress tensors (<span class="math notranslate nohighlight">\(\text{Pa}\)</span>), dynamic/kinematic viscosity, Reynolds/Mach/Nusselt numbers.</p></td>
+<td><p>Stress tensors (<span class="math notranslate nohighlight">\(\text{Pa}\)</span>), dynamic/kinematic viscosity (<span class="math notranslate nohighlight">\(\text{Pa}\cdot\text{s}, \text{m}^2/\text{s}\)</span>), strain energy density, dimensionless hydrodynamic numbers (Reynolds, Mach, Nusselt).</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>High-Energy Particle Physics</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">particle_physicist</span></code></p></td>
-<td><p>Electronvolts (<span class="math notranslate nohighlight">\(\text{eV/GeV/TeV}\)</span>), barn (<span class="math notranslate nohighlight">\(\text{b}\)</span>) cross-sections, natural Planck units.</p></td>
+<td><p>Electronvolts (<span class="math notranslate nohighlight">\(\text{eV, GeV, TeV}\)</span>), barn (<span class="math notranslate nohighlight">\(\text{b}\)</span>) cross-sections, invariant mass (<span class="math notranslate nohighlight">\(\text{GeV}/c^2\)</span>), natural Planck units.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>Aerospace &amp; Propulsion</strong></p></td>
+<tr class="row-even"><td><p><strong>Aerospace &amp; Propulsion Dynamics</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">aerospace_propulsion_engineer</span></code></p></td>
-<td><p>Specific impulse (<span class="math notranslate nohighlight">\(I_{\text{sp}}\)</span> in seconds), Mach numbers, knots, dynamic pressure, hypersonic flow.</p></td>
+<td><p>Specific impulse (<span class="math notranslate nohighlight">\(I_{\text{sp}}\)</span> in <span class="math notranslate nohighlight">\(\text{s}\)</span> or <span class="math notranslate nohighlight">\(\text{N}\cdot\text{s/kg}\)</span>), thrust (<span class="math notranslate nohighlight">\(\text{kN}\)</span>), dynamic pressure (<span class="math notranslate nohighlight">\(\text{kPa}\)</span>), hypersonic flow.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Firmware &amp; Embedded IoT Engineering</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">firmware_iot_engineer</span></code></p></td>
+<td><p>ADC bit counts, register scaling factors, microcontroller fixed-point units, UCUM format strings, sensor telemetry.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Data Science &amp; ML Pipeline Engineering</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">data_scientist_analyst</span></code></p></td>
+<td><p>DataFrame unit normalization, PyTorch/Pandas tensor unit verification, multimodal telemetry alignment.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Physics &amp; STEM Education</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">physics_student</span></code></p></td>
+<td><p>Inquisitive conceptual homework questions clarifying confusing metrological nuances (e.g. torque <span class="math notranslate nohighlight">\(\text{N}\cdot\text{m}\)</span> vs energy <span class="math notranslate nohighlight">\(\text{J}\)</span>, frequency <span class="math notranslate nohighlight">\(\text{Hz}\)</span> vs activity <span class="math notranslate nohighlight">\(\text{Bq}\)</span>).</p></td>
 </tr>
 </tbody>
 </table>
@@ -342,12 +363,12 @@
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 30.0%" />
-<col style="width: 25.0%" />
-<col style="width: 45.0%" />
+<col style="width: 28.0%" />
+<col style="width: 22.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Scientific Union</p></th>
+<tr class="row-odd"><th class="head"><p>Scientific Union / Organization</p></th>
 <th class="head"><p>Persona Key</p></th>
 <th class="head"><p>Metrological Focus &amp; Domain Coverage</p></th>
 </tr>
@@ -355,7 +376,7 @@
 <tbody>
 <tr class="row-even"><td><p><strong>International Union of Geodesy and Geophysics (IUGG)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iugg_geodesist_geophysicist</span></code></p></td>
-<td><p>Gravitational anomalies (<span class="math notranslate nohighlight">\(\text{mGal}\)</span>), geoid heights, seismic moments (<span class="math notranslate nohighlight">\(\text{N}\cdot\text{m}\)</span>), geomagnetic field (<span class="math notranslate nohighlight">\(\text{nT}\)</span>).</p></td>
+<td><p>Gravitational anomalies (<span class="math notranslate nohighlight">\(\text{mGal}\)</span>), geoid undulations, seismic moments (<span class="math notranslate nohighlight">\(\text{N}\cdot\text{m}\)</span>), geomagnetic field (<span class="math notranslate nohighlight">\(\text{nT}\)</span>).</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Geographical Union (IGU)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">igu_geographer</span></code></p></td>
@@ -363,7 +384,7 @@
 </tr>
 <tr class="row-even"><td><p><strong>International Society for Photogrammetry and Remote Sensing (ISPRS)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">isprs_photogrammetrist</span></code></p></td>
-<td><p>Ground sampling distance (<span class="math notranslate nohighlight">\(\text{cm/px}\)</span>), spectral radiance, LiDAR point density (<span class="math notranslate nohighlight">\(\text{pts/m}^2\)</span>).</p></td>
+<td><p>Ground sampling distance (<span class="math notranslate nohighlight">\(\text{cm/px}\)</span>), spectral radiance (<span class="math notranslate nohighlight">\(\text{W}/(\text{m}^2\cdot\text{sr}\cdot\mu\text{m})\)</span>), LiDAR point density (<span class="math notranslate nohighlight">\(\text{pts/m}^2\)</span>).</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Society for Digital Earth (ISDE)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">isde_digital_earth</span></code></p></td>
@@ -371,11 +392,11 @@
 </tr>
 <tr class="row-even"><td><p><strong>International Union of Soil Science (IUSS)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iuss_soil_scientist</span></code></p></td>
-<td><p>Soil bulk density (<span class="math notranslate nohighlight">\(\text{g/cm}^3\)</span>), cation exchange capacity (<span class="math notranslate nohighlight">\(\text{cmol}(+)/\text{kg}\)</span>), hydraulic conductivity.</p></td>
+<td><p>Soil bulk density (<span class="math notranslate nohighlight">\(\text{g/cm}^3\)</span>), cation exchange capacity (<span class="math notranslate nohighlight">\(\text{cmol}(+)/\text{kg}\)</span>), saturated hydraulic conductivity (<span class="math notranslate nohighlight">\(\text{mm/h}\)</span>).</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Climate &amp; Energy Systems</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">energy_environmental_scientist</span></code></p></td>
-<td><p>Atmospheric trace gases (<span class="math notranslate nohighlight">\(\text{ppm, ppb}\)</span>), grid storage (<span class="math notranslate nohighlight">\(\text{MWh, GWh}\)</span>), solar irradiance (<span class="math notranslate nohighlight">\(\text{W/m}^2\)</span>).</p></td>
+<td><p>Atmospheric trace gases (<span class="math notranslate nohighlight">\(\text{ppm, ppb}\)</span>), grid storage (<span class="math notranslate nohighlight">\(\text{MWh, GWh}\)</span>), solar irradiance (<span class="math notranslate nohighlight">\(\text{W/m}^2\)</span>), carbon intensity (<span class="math notranslate nohighlight">\(\text{g CO}_2/\text{kWh}\)</span>).</p></td>
 </tr>
 </tbody>
 </table>
@@ -386,12 +407,12 @@
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 30.0%" />
-<col style="width: 25.0%" />
-<col style="width: 45.0%" />
+<col style="width: 28.0%" />
+<col style="width: 22.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Scientific Union</p></th>
+<tr class="row-odd"><th class="head"><p>Scientific Union / Organization</p></th>
 <th class="head"><p>Persona Key</p></th>
 <th class="head"><p>Metrological Focus &amp; Domain Coverage</p></th>
 </tr>
@@ -399,39 +420,39 @@
 <tbody>
 <tr class="row-even"><td><p><strong>International Union of Biological Sciences (IUBS)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iubs_biologist</span></code></p></td>
-<td><p>Metabolic scaling rates (<span class="math notranslate nohighlight">\(\text{W/kg}\)</span>), biomass density, population dynamics.</p></td>
+<td><p>Metabolic scaling rates (<span class="math notranslate nohighlight">\(\text{W/kg}\)</span>), biomass density, population dynamics, physiological allometry.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Union of Immunological Societies (IUIS)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iuis_immunologist</span></code></p></td>
-<td><p>International Units (<span class="math notranslate nohighlight">\(\text{IU/mL}\)</span>) of biological activity, antibody titers, cytokine concentrations.</p></td>
+<td><p>International Units (<span class="math notranslate nohighlight">\(\text{IU/mL}\)</span>) of biological activity, antibody titers, cytokine concentrations, flow cytometry fluorophore intensities.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Union of Basic and Clinical Pharmacology (IUPHAR)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iuphar_pharmacologist</span></code></p></td>
-<td><p>Pharmacokinetics (PK/PD), drug clearance (<span class="math notranslate nohighlight">\(\text{mL/min/kg}\)</span>), half-life, receptor binding affinity (<span class="math notranslate nohighlight">\(K_d\)</span>).</p></td>
+<td><p>Pharmacokinetics (PK/PD), drug clearance (<span class="math notranslate nohighlight">\(\text{mL/min/kg}\)</span>), elimination half-life, receptor binding affinity (<span class="math notranslate nohighlight">\(K_d\)</span>).</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Union of Physiological Sciences (IUPS)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iups_physiologist</span></code></p></td>
-<td><p>Cardiac output (<span class="math notranslate nohighlight">\(\text{L/min}\)</span>), GFR (<span class="math notranslate nohighlight">\(\text{mL/min/1.73m}^2\)</span>), membrane potential (<span class="math notranslate nohighlight">\(\text{mV}\)</span>), blood pressure.</p></td>
+<td><p>Cardiac output (<span class="math notranslate nohighlight">\(\text{L/min}\)</span>), glomerular filtration rate (<span class="math notranslate nohighlight">\(\text{mL/min/1.73m}^2\)</span>), membrane potential (<span class="math notranslate nohighlight">\(\text{mV}\)</span>), blood pressure (<span class="math notranslate nohighlight">\(\text{mmHg}\)</span>).</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Union of Toxicology (IUTOX)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iutox_toxicologist</span></code></p></td>
-<td><p><span class="math notranslate nohighlight">\(\text{LD}_{50}\)</span> (<span class="math notranslate nohighlight">\(\text{mg/kg}\)</span>), <span class="math notranslate nohighlight">\(\text{LC}_{50}\)</span> (<span class="math notranslate nohighlight">\(\text{mg/m}^3\)</span>), acceptable daily intake (ADI), threshold limits.</p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{LD}_{50}\)</span> (<span class="math notranslate nohighlight">\(\text{mg/kg}\)</span>), <span class="math notranslate nohighlight">\(\text{LC}_{50}\)</span> (<span class="math notranslate nohighlight">\(\text{mg/m}^3\)</span>), acceptable daily intake (ADI), benchmark dose levels.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Union of Nutritional Sciences (IUNS)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iuns_nutritionist</span></code></p></td>
-<td><p>Dietary reference intakes, <span class="math notranslate nohighlight">\(\text{kcal}\)</span> vs <span class="math notranslate nohighlight">\(\text{kJ}\)</span>, retinol equivalents (<span class="math notranslate nohighlight">\(\mu\text{g RAE}\)</span>), glycemic index.</p></td>
+<td><p>Dietary reference intakes, <span class="math notranslate nohighlight">\(\text{kcal}\)</span> vs <span class="math notranslate nohighlight">\(\text{kJ}\)</span>, retinol activity equivalents (<span class="math notranslate nohighlight">\(\mu\text{g RAE}\)</span>), macronutrient energy densities.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Union of Food Science and Technology (IUFoST)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iufost_food_scientist</span></code></p></td>
-<td><p>Water activity (<span class="math notranslate nohighlight">\(a_w\)</span>), pasteurization lethality (<span class="math notranslate nohighlight">\(F_0\)</span>), thermal death time (<span class="math notranslate nohighlight">\(D\)</span>-value), food rheology.</p></td>
+<td><p>Water activity (<span class="math notranslate nohighlight">\(a_w\)</span>), pasteurization lethality (<span class="math notranslate nohighlight">\(F_0\)</span>), thermal death time (<span class="math notranslate nohighlight">\(D\)</span>-value), food rheology (Bostwick consistometer).</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>IUPESM / IOMP (Medical Physics)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iomp_medical_physicist</span></code></p></td>
-<td><p>Absorbed radiation dose (Gray, <span class="math notranslate nohighlight">\(\text{Gy}\)</span>), biological dose (Sievert, <span class="math notranslate nohighlight">\(\text{Sv}\)</span>), Kerma product.</p></td>
+<td><p>Absorbed radiation dose (Gray, <span class="math notranslate nohighlight">\(\text{Gy}\)</span>), equivalent biological dose (Sievert, <span class="math notranslate nohighlight">\(\text{Sv}\)</span>), Kerma-area product (<span class="math notranslate nohighlight">\(\text{Gy}\cdot\text{cm}^2\)</span>).</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>IUPESM / IFMBE (Biomedical Engineering)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ifmbe_biomedical_engineer</span></code></p></td>
-<td><p>Biosensor impedance (<span class="math notranslate nohighlight">\(\Omega\cdot\text{cm}^2\)</span>), physiological transducers, IEEE 11073 / UCUM device metrics.</p></td>
+<td><p>Biosensor impedance (<span class="math notranslate nohighlight">\(\Omega\cdot\text{cm}^2\)</span>), physiological transducers, IEEE 11073 / UCUM medical device metrics.</p></td>
 </tr>
 </tbody>
 </table>
@@ -442,12 +463,12 @@
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 30.0%" />
-<col style="width: 25.0%" />
-<col style="width: 45.0%" />
+<col style="width: 28.0%" />
+<col style="width: 22.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Scientific Union</p></th>
+<tr class="row-odd"><th class="head"><p>Scientific Union / Organization</p></th>
 <th class="head"><p>Persona Key</p></th>
 <th class="head"><p>Metrological Focus &amp; Domain Coverage</p></th>
 </tr>
@@ -455,47 +476,68 @@
 <tbody>
 <tr class="row-even"><td><p><strong>International Union of Psychological Science (IUPsyS)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iupsys_psychologist</span></code></p></td>
-<td><p>Reaction time latency (<span class="math notranslate nohighlight">\(\text{ms}\)</span>), psychophysical thresholds (JND, <span class="math notranslate nohighlight">\(\text{dB}\)</span>), psychometric <span class="math notranslate nohighlight">\(z\)</span>-scores.</p></td>
+<td><p>Reaction time latency (<span class="math notranslate nohighlight">\(\text{ms}\)</span>), psychophysical thresholds (JND, <span class="math notranslate nohighlight">\(\text{dB}\)</span>), psychometric <span class="math notranslate nohighlight">\(z\)</span>-scores, Likert scale standardization.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Sociological Association (ISA)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">isa_sociologist</span></code></p></td>
-<td><p>Socio-economic status indexes, Gini inequality coefficients, demographic rates per 1,000 population.</p></td>
+<td><p>Socio-economic status indexes, Gini inequality coefficients, demographic rates per 1,000 population, survey weight normalizations.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>International Union for the Scientific Study of Population (IUSSP)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iussp_demographer</span></code></p></td>
-<td><p>Total fertility rates, infant mortality rates, life expectancy, net migration metrics.</p></td>
+<td><p>Total fertility rates, age-specific mortality rates, life expectancy at birth, net migration rates per 1,000 person-years.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>World Anthropological Union (WAU)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">wau_anthropologist</span></code></p></td>
-<td><p>Cranial morphology (<span class="math notranslate nohighlight">\(\text{mm}\)</span>), radiocarbon dating (years BP), customary ethno-metrology systems.</p></td>
+<td><p>Osteometric dimensions (<span class="math notranslate nohighlight">\(\text{mm}\)</span>), radiocarbon dating (calibrated years BP), customary and indigenous ethno-metrology systems.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Society for Social Studies of Science (4S)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">four_s_science_studies</span></code></p></td>
-<td><p>Sociotechnical infrastructure of SI redefinition, metrological standardization rituals in society.</p></td>
+<td><p>Sociotechnical infrastructure of SI redefinition, institutional standardization rituals, metrological conventions in policy.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>International Union for History and Philosophy of Science and Technology (IUHPST)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">iuhpst_historian_philosopher</span></code></p></td>
-<td><p>Epistemology of measurement, operationalism vs realism in SI base units, 1875 Metre Convention, 2019 quantum SI shift.</p></td>
+<td><p>Epistemology of measurement, operationalism vs realism in SI base units, 1875 Metre Convention, 2019 quantum SI redefinition.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </section>
 </section>
+<section id="persona-reporting-distribution-analytics">
+<h2>Persona Reporting &amp; Distribution Analytics<a class="headerlink" href="#persona-reporting-distribution-analytics" title="Link to this heading">¶</a></h2>
+<p>During every generation cycle, DRUM-ML automatically aggregates persona generation statistics and generates a dedicated <strong>Persona Distribution Report</strong> at <code class="docutils literal notranslate"><span class="pre">dataset/persona_report.md</span></code> and <code class="docutils literal notranslate"><span class="pre">dataset/persona_report.json</span></code>.</p>
+<p>You can also generate and view this report on-demand using the CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>drum-ml<span class="w"> </span>persona-report
+</pre></div>
+</div>
+<p>This generates:</p>
+<ul class="simple">
+<li><p><strong>Disciplinary Sector Breakdown:</strong> Percentage and count of samples across Physical, Bio-Medical, Earth/Space, Social, and Standards sectors.</p></li>
+<li><p><strong>Per-Persona Sample Counts:</strong> Exact sample tally and balance metrics across all 39 scientific unions.</p></li>
+<li><p><strong>Archetype Interaction Matrix:</strong> Cross-tabulation showing how each persona intersects with the 6 pedagogical archetypes.</p></li>
+</ul>
+</section>
 <section id="configuring-personas-in-config-yaml">
 <h2>Configuring Personas in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code><a class="headerlink" href="#configuring-personas-in-config-yaml" title="Link to this heading">¶</a></h2>
-<p>To activate specific scientific unions in your dataset generation run:</p>
+<p>By default, all 39 personas are active in the pipeline. To target specific scientific unions or run domain-adapted subsets:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">augmenter</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="s">"ollama"</span>
-<span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">"nemotron-3-nano:4b"</span>
+<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="s">"openai"</span>
+<span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">"nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16"</span>
+<span class="w">  </span><span class="nt">api_base</span><span class="p">:</span><span class="w"> </span><span class="s">"http://localhost:8000/v1"</span>
+<span class="w">  </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">"d2855fd4ce293b5e91aae58ae425cd09f7229cb8c97810f597a75a20848e6d69"</span>
+<span class="w">  </span><span class="nt">concurrency_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.7</span>
+<span class="w">  </span><span class="nt">variations_per_archetype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="w">  </span><span class="nt">personas</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"general_user"</span>
+<span class="w">    </span><span class="c1"># Run specific disciplinary unions:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"nist_metrologist"</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"iupac_chemist"</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"iau_astronomer"</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"iucr_crystallographer"</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"iugg_geodesist_geophysicist"</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"iomp_medical_physicist"</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"firmware_iot_engineer"</span>
 </pre></div>
 </div>
 </section>
@@ -506,12 +548,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="assumptions.html">
+          <a class="next-page" href="models.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Scientific Assumptions &amp; Invariants</div>
+                <div class="title">LLM Model Selection, Recommendations &amp; Performance Guide</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -558,13 +600,14 @@
             <ul>
 <li><a class="reference internal" href="#">Scientific Unions &amp; Domain Personas</a><ul>
 <li><a class="reference internal" href="#overview-of-union-standards-coverage">Overview of Union &amp; Standards Coverage</a><ul>
-<li><a class="reference internal" href="#standards-bodies-global-science-infrastructure">1. Standards Bodies &amp; Global Science Infrastructure</a></li>
+<li><a class="reference internal" href="#standards-bodies-metrology-institutes-global-infrastructure">1. Standards Bodies, Metrology Institutes &amp; Global Infrastructure</a></li>
 <li><a class="reference internal" href="#physical-chemical-mathematical-sciences">2. Physical, Chemical &amp; Mathematical Sciences</a></li>
 <li><a class="reference internal" href="#earth-space-environmental-sciences">3. Earth, Space &amp; Environmental Sciences</a></li>
 <li><a class="reference internal" href="#biological-medical-health-sciences">4. Biological, Medical &amp; Health Sciences</a></li>
 <li><a class="reference internal" href="#social-behavioral-human-sciences">5. Social, Behavioral &amp; Human Sciences</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#persona-reporting-distribution-analytics">Persona Reporting &amp; Distribution Analytics</a></li>
 <li><a class="reference internal" href="#configuring-personas-in-config-yaml">Configuring Personas in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code></a></li>
 </ul>
 </li>

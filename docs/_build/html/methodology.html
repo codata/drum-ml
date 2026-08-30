@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Scientific Assumptions &amp; Invariants" href="assumptions.html"><link rel="prev" title="Multi-Agent Pipeline Architecture" href="architecture.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Scientific Unions &amp; Domain Personas" href="personas.html"><link rel="prev" title="Multi-Agent Pipeline Architecture" href="architecture.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Methodology &amp; Metrological Foundations - DRUM-ML Documentation</title>
@@ -196,6 +196,8 @@
 <li class="toctree-l1"><a class="reference internal" href="objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
@@ -268,15 +270,17 @@
 <li><p><strong>Metrological Uncertainty &amp; GUM Propagation:</strong> Calculating combined standard uncertainty <span class="math notranslate nohighlight">\(u_c(y) = \sqrt{\sum (\frac{\partial f}{\partial x_i})^2 u^2(x_i)}\)</span> and distinguishing exact SI constants (<span class="math notranslate nohighlight">\(u=0\)</span>).</p></li>
 </ol>
 </section>
-<section id="the-5-linguistic-personas">
-<h2>The 5 Linguistic Personas<a class="headerlink" href="#the-5-linguistic-personas" title="Link to this heading">¶</a></h2>
+<section id="the-39-scientific-unions-domain-personas">
+<h2>The 39 Scientific Unions &amp; Domain Personas<a class="headerlink" href="#the-39-scientific-unions-domain-personas" title="Link to this heading">¶</a></h2>
+<p>DRUM-ML projects canonical ground-truth scaffolds through <strong>39 specialized domain personas</strong> representing the CODATA DRUM Scientific Unions across 5 disciplinary sectors:</p>
 <ol class="arabic simple">
-<li><p><strong>Academic Metrologist:</strong> Formal terminology citing BIPM 9th Edition SI brochure and VIM3.</p></li>
-<li><p><strong>Firmware / IoT Systems Engineer:</strong> Sensor telemetry, ADC bit counts, register scaling, and UCUM format strings.</p></li>
-<li><p><strong>Data Scientist / ML Analyst:</strong> Dataframe normalization, unit validation in PyTorch/Pandas.</p></li>
-<li><p><strong>Physics / Engineering Student:</strong> Conceptual confusion, homework questions.</p></li>
-<li><p><strong>ISO Compliance Auditor:</strong> ISO 17025 / ISO 80000 traceability, calibration certificates, uncertainty budgets.</p></li>
+<li><p><strong>Standards Bodies &amp; Metrology Institutes (6 personas):</strong> NIST, NRC Canada, ISC Science Policy, Academic Metrologist, ISO Compliance Auditor, General Inquirer.</p></li>
+<li><p><strong>Physical, Chemical &amp; Mathematical Sciences (12 personas):</strong> IUPAP (Physics), IUPAC (Chemistry), IAU (Astronomy), IUCr (Crystallography), IMU (Math), URSI (Radio), IUTAM (Mechanics), Particle Physics, Aerospace Engineering, Firmware/IoT, Data Science/ML, Physics Student.</p></li>
+<li><p><strong>Earth, Space &amp; Environmental Sciences (6 personas):</strong> IUGG (Geodesy/Geophysics), IGU (Geography), ISPRS (Remote Sensing), ISDE (Digital Earth), IUSS (Soil Science), Climate &amp; Energy Systems.</p></li>
+<li><p><strong>Biological, Medical &amp; Health Sciences (9 personas):</strong> IUBS (Biology), IUIS (Immunology), IUPHAR (Pharmacology), IUPS (Physiology), IUTOX (Toxicology), IUNS (Nutrition), IUFoST (Food Science), IUPESM/IOMP (Medical Physics), IUPESM/IFMBE (Biomedical Engineering).</p></li>
+<li><p><strong>Social, Behavioral &amp; Human Sciences (6 personas):</strong> IUPsyS (Psychology), ISA (Sociology), IUSSP (Demography), WAU (Anthropology), 4S (Science Studies), IUHPST (History &amp; Philosophy).</p></li>
 </ol>
+<p>See <a class="reference internal" href="personas.html#scientific-unions-and-personas"><span class="std std-ref">Scientific Unions &amp; Domain Personas</span></a> for the comprehensive specification of each union’s metrological focus, keys, and reporting tools.</p>
 </section>
 <section id="the-4-tier-automated-validation-gate">
 <h2>The 4-Tier Automated Validation Gate<a class="headerlink" href="#the-4-tier-automated-validation-gate" title="Link to this heading">¶</a></h2>
@@ -299,12 +303,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="assumptions.html">
+          <a class="next-page" href="personas.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Scientific Assumptions &amp; Invariants</div>
+                <div class="title">Scientific Unions &amp; Domain Personas</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -355,7 +359,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#the-6-pedagogical-archetypes">The 6 Pedagogical Archetypes</a></li>
-<li><a class="reference internal" href="#the-5-linguistic-personas">The 5 Linguistic Personas</a></li>
+<li><a class="reference internal" href="#the-39-scientific-unions-domain-personas">The 39 Scientific Unions &amp; Domain Personas</a></li>
 <li><a class="reference internal" href="#the-4-tier-automated-validation-gate">The 4-Tier Automated Validation Gate</a></li>
 <li><a class="reference internal" href="#high-fidelity-dpo-negative-mining">High-Fidelity DPO Negative Mining</a></li>
 </ul>

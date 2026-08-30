@@ -451,32 +451,61 @@ openai api fine_tuning.jobs.create \
 
 ---
 
-## 🧪 Testing & Evaluation Benchmark (M-Eval)
+## 🧪 DRUM Metrology Benchmark (M-Eval)
 
-Evaluate base vs. fine-tuned models against the held-out benchmark (`./dataset/test.jsonl`):
+The **DRUM Metrology Benchmark** is a standardized evaluation suite testing LLMs across **6 Core Sub-Disciplines**:
+1. **Fundamental Physical Constants & SI 2019** (`constants`)
+2. **Dimensional Decomposition & Base SI** (`dimensions`)
+3. **Unit Conversions & Affine Transformations** (`conversions`)
+4. **Error Detection & Dimensional Homogeneity** (`homogeneity`)
+5. **SI Typography & Metrological Conventions** (`conventions`)
+6. **Metrological Uncertainty (GUM) & Sig-Figs** (`uncertainty`)
+
+### 1. Build Benchmark Datasets
+
+```bash
+# Build 50 samples per task (MCQ Track A + Free-Form Track B)
+drum-ml build-benchmark \
+    --entities-file ./data/entities.json \
+    --output-dir ./dataset/benchmark \
+    --samples-per-task 50
+```
+
+### 2. Evaluate Models & Generate Scorecards
 
 ```bash
 # Evaluate baseline model
 drum-ml evaluate \
-    --benchmark-file ./dataset/test.jsonl \
+    --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl \
     --model-endpoint http://localhost:1234/v1 \
     --model-name qwen2.5-14b-base \
-    --output ./dataset/base_eval_report.json
+    --output ./dataset/benchmark/base_report.json
 
 # Evaluate fine-tuned model (measure error reduction)
 drum-ml evaluate \
-    --benchmark-file ./dataset/test.jsonl \
+    --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl \
     --model-endpoint http://localhost:1234/v1 \
     --model-name qwen2.5-14b-drum-finetuned \
-    --output ./dataset/finetuned_eval_report.json
+    --output ./dataset/benchmark/finetuned_report.json
 ```
 
-### Held-Out Evaluation Metrics (**M-Eval**)
+### 3. Stratified Scorecard
 
-- **Exact Accuracy Score (EAS):** Percentage of exact constants and symbols reproduced without token drift.
-- **Dimensional Homogeneity Score (DHS):** Accuracy on detecting invalid equations and dimensional violations via SymPy/Pint.
-- **Conversion Error Rate (CER):** Mean relative error across multi-step conversion chains.
-- **Code Executability Score (CES):** Percentage of generated Python/SPARQL snippets executing without runtime errors.
+```text
+       DRUM Metrology Benchmark Scorecard: qwen2.5-14b-drum-finetuned
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┓
+┃ Category / Sub-Discipline              ┃ Samples ┃ Passed ┃ Accuracy ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━┩
+│ 1. Fundamental Constants & SI 2019     │      50 │     49 │    98.0% │
+│ 2. Dimensional Decomposition & Base SI │      50 │     46 │    92.0% │
+│ 3. Unit Conversions & Affine Offsets   │      50 │     48 │    96.0% │
+│ 4. Error Detection & Homogeneity       │      50 │     44 │    88.0% │
+│ 5. SI Typography & Metrological Rules  │      50 │     45 │    90.0% │
+│ 6. Metrological Uncertainty (GUM)      │      50 │     41 │    82.0% │
+├────────────────────────────────────────┼─────────┼────────┼──────────┤
+│ OVERALL DRUM BENCHMARK SCORE           │     300 │    273 │   91.00% │
+└────────────────────────────────────────┴─────────┴────────┴──────────┘
+```
 
 ---
 

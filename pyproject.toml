@@ -63,6 +63,15 @@ docs = [
     "sphinx-autodoc-typehints>=2.1.0",
     "sphinx-copybutton>=0.5.2",
 ]
+training = [
+    "torch>=2.2.0",
+    "transformers>=4.44.0",
+    "datasets>=2.20.0",
+    "trl>=0.9.6",
+    "peft>=0.11.1",
+    "accelerate>=0.33.0",
+    "bitsandbytes>=0.43.1",
+]
 
 [project.scripts]
 drum-ml = "drum_ml.cli:app"

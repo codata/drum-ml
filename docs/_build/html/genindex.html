@@ -194,6 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="personas.html">Scientific Unions &amp; Domain Personas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
@@ -234,7 +235,7 @@
           
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#Z"><strong>Z</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#Z"><strong>Z</strong></a></div>
 </section>
 <section id="A" class="genindex-section">
   <h2>A</h2>
@@ -242,14 +243,22 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.ACADEMIC_METROLOGIST">ACADEMIC_METROLOGIST (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier.ADVANCED">ADVANCED (drum_ml.models.scaffolds.DifficultyTier attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.TaskScore.accuracy_pct">accuracy_pct (drum_ml.benchmark.models.TaskScore attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.DifficultyTier.ADVANCED">ADVANCED (drum_ml.benchmark.models.DifficultyTier attribute)</a>
+
+        <ul>
+          <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier.ADVANCED">(drum_ml.models.scaffolds.DifficultyTier attribute)</a>
+</li>
+        </ul></li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.AEROSPACE_PROPULSION_ENGINEER">AEROSPACE_PROPULSION_ENGINEER (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.BaseDimension.AMOUNT_OF_SUBSTANCE">AMOUNT_OF_SUBSTANCE (drum_ml.models.entities.BaseDimension attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.QuantityKindEntity.applicable_units">applicable_units (drum_ml.models.entities.QuantityKindEntity attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.archetype">archetype (drum_ml.models.export.DPOPreferenceRecord attribute)</a>
 
         <ul>
@@ -260,8 +269,6 @@
           <li><a href="api_reference.html#drum_ml.models.scaffolds.ScaffoldRecord.archetype">(drum_ml.models.scaffolds.ScaffoldRecord attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.ArchetypeType">ArchetypeType (class in drum_ml.models.scaffolds)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.pipeline.augmenter.MetrologyAugmenter.augment_all">augment_all() (drum_ml.pipeline.augmenter.MetrologyAugmenter method)</a>
@@ -286,9 +293,17 @@
           <li><a href="api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.BASE_GITHUB_RAW">(drum_ml.data_sources.codata_client.CODATAClient attribute)</a>
 </li>
         </ul></li>
+        <li><a href="api_reference.html#drum_ml.models.entities.BaseDimension">BaseDimension (class in drum_ml.models.entities)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkFormat">BenchmarkFormat (class in drum_ml.benchmark.models)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_reference.html#drum_ml.models.entities.BaseDimension">BaseDimension (class in drum_ml.models.entities)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample">BenchmarkSample (class in drum_ml.benchmark.models)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard">BenchmarkScorecard (class in drum_ml.benchmark.models)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkTask">BenchmarkTask (class in drum_ml.benchmark.models)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.data_sources.bipm_client.BIPMClient">BIPMClient (class in drum_ml.data_sources.bipm_client)</a>
 </li>
@@ -320,15 +335,23 @@
 </li>
         <li><a href="api_reference.html#drum_ml.data_sources.codata_client.CODATAClient">CODATAClient (class in drum_ml.data_sources.codata_client)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.compute_scorecard">compute_scorecard() (drum_ml.pipeline.evaluator.MEvalBenchmark method)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.entities.ConstantCategory">ConstantCategory (class in drum_ml.models.entities)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkTask.CONSTANTS">CONSTANTS (drum_ml.benchmark.models.BenchmarkTask attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.entities.CanonicalEntityStore.constants">constants (drum_ml.models.entities.CanonicalEntityStore attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.export.OpenAIChatMessage.content">content (drum_ml.models.export.OpenAIChatMessage attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.context">context (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.ScaffoldRecord.context_facts">context_facts (drum_ml.models.scaffolds.ScaffoldRecord attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkTask.CONVENTIONS">CONVENTIONS (drum_ml.benchmark.models.BenchmarkTask attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.export.ShareGPTRecord.conversations">conversations (drum_ml.models.export.ShareGPTRecord attribute)</a>
 </li>
@@ -339,6 +362,10 @@
         <li><a href="api_reference.html#drum_ml.models.scaffolds.ArchetypeType.CONVERSION_SCALING">CONVERSION_SCALING (drum_ml.models.scaffolds.ArchetypeType attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.ConversionRelation">ConversionRelation (class in drum_ml.models.entities)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkTask.CONVERSIONS">CONVERSIONS (drum_ml.benchmark.models.BenchmarkTask attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.correct_option_key">correct_option_key (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.validation.ValidationResult.corrected_response">corrected_response (drum_ml.models.validation.ValidationResult attribute)</a>
 </li>
@@ -364,10 +391,22 @@
           <li><a href="api_reference.html#drum_ml.models.entities.UnitEntity.description">(drum_ml.models.entities.UnitEntity attribute)</a>
 </li>
         </ul></li>
-        <li><a href="api_reference.html#drum_ml.models.scaffolds.ScaffoldRecord.difficulty">difficulty (drum_ml.models.scaffolds.ScaffoldRecord attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.detailed_results">detailed_results (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier">DifficultyTier (class in drum_ml.models.scaffolds)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.difficulty">difficulty (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
+
+        <ul>
+          <li><a href="api_reference.html#drum_ml.models.scaffolds.ScaffoldRecord.difficulty">(drum_ml.models.scaffolds.ScaffoldRecord attribute)</a>
 </li>
+        </ul></li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.difficulty_breakdown">difficulty_breakdown (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.DifficultyTier">DifficultyTier (class in drum_ml.benchmark.models)</a>
+
+        <ul>
+          <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier">(class in drum_ml.models.scaffolds)</a>
+</li>
+        </ul></li>
         <li><a href="api_reference.html#drum_ml.models.entities.PhysicalConstantEntity.dimension_vector">dimension_vector (drum_ml.models.entities.PhysicalConstantEntity attribute)</a>
 
         <ul>
@@ -380,11 +419,15 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.ArchetypeType.DIMENSIONAL_ERROR_DETECTION">DIMENSIONAL_ERROR_DETECTION (drum_ml.models.scaffolds.ArchetypeType attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkTask.DIMENSIONS">DIMENSIONS (drum_ml.benchmark.models.BenchmarkTask attribute)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.validation.Tier2SymbolicReport.dimensions_homogeneous">dimensions_homogeneous (drum_ml.models.validation.Tier2SymbolicReport attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.DimensionVector">DimensionVector (class in drum_ml.models.entities)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.ArchetypeType.DIRECT_IDENTIFICATION">DIRECT_IDENTIFICATION (drum_ml.models.scaffolds.ArchetypeType attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.MCQOption.distractor_rationale">distractor_rationale (drum_ml.benchmark.models.MCQOption attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.download_latest_data">download_latest_data() (drum_ml.data_sources.codata_client.CODATAClient method)</a>
 </li>
@@ -396,6 +439,20 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord">DPOPreferenceRecord (class in drum_ml.models.export)</a>
 </li>
+        <li>
+    drum_ml.benchmark.generator
+
+        <ul>
+          <li><a href="api_reference.html#module-drum_ml.benchmark.generator">module</a>
+</li>
+        </ul></li>
+        <li>
+    drum_ml.benchmark.models
+
+        <ul>
+          <li><a href="api_reference.html#module-drum_ml.benchmark.models">module</a>
+</li>
+        </ul></li>
         <li>
     drum_ml.data_sources.bipm_client
 
@@ -410,6 +467,8 @@
           <li><a href="api_reference.html#module-drum_ml.data_sources.codata_client">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     drum_ml.data_sources.qudt_fetcher
 
@@ -424,8 +483,6 @@
           <li><a href="api_reference.html#module-drum_ml.models.entities">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     drum_ml.models.export
 
@@ -531,6 +588,8 @@
           <li><a href="api_reference.html#module-drum_ml.symbolic.quantity_kinds">module</a>
 </li>
         </ul></li>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator">DRUMBenchmarkGenerator (class in drum_ml.benchmark.generator)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -543,9 +602,11 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.ENERGY_ENVIRONMENTAL_SCIENTIST">ENERGY_ENVIRONMENTAL_SCIENTIST (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.entity_uri">entity_uri (drum_ml.models.export.DPOPreferenceRecord attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.entity_uri">entity_uri (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
 
         <ul>
+          <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.entity_uri">(drum_ml.models.export.DPOPreferenceRecord attribute)</a>
+</li>
           <li><a href="api_reference.html#drum_ml.models.export.OpenAIChatRecord.entity_uri">(drum_ml.models.export.OpenAIChatRecord attribute)</a>
 </li>
           <li><a href="api_reference.html#drum_ml.models.scaffolds.AugmentedRecord.entity_uri">(drum_ml.models.scaffolds.AugmentedRecord attribute)</a>
@@ -577,6 +638,8 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.entities.ConstantCategory.EXACT_SI_DEFINING">EXACT_SI_DEFINING (drum_ml.models.entities.ConstantCategory attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.explanation">explanation (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.export_all">export_all() (drum_ml.pipeline.exporter.MetrologyExporter method)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.data_sources.bipm_client.BIPMClient.extract_all">extract_all() (drum_ml.data_sources.bipm_client.BIPMClient method)</a>
@@ -597,6 +660,8 @@
 </li>
         <li><a href="api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.extract_from_json">extract_from_json() (drum_ml.data_sources.codata_client.CODATAClient method)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.extract_mcq_answer">extract_mcq_answer() (drum_ml.pipeline.evaluator.MEvalBenchmark method)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.data_sources.qudt_fetcher.QUDTFetcher.extract_quantity_kinds_from_graph">extract_quantity_kinds_from_graph() (drum_ml.data_sources.qudt_fetcher.QUDTFetcher method)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.data_sources.qudt_fetcher.QUDTFetcher.extract_units_from_graph">extract_units_from_graph() (drum_ml.data_sources.qudt_fetcher.QUDTFetcher method)</a>
@@ -613,9 +678,15 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.FIRMWARE_IOT_ENGINEER">FIRMWARE_IOT_ENGINEER (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.format">format (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.format_breakdown">format_breakdown (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.FOUR_S_SCIENCE_STUDIES">FOUR_S_SCIENCE_STUDIES (drum_ml.models.scaffolds.PersonaType attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkFormat.FREE_FORM">FREE_FORM (drum_ml.benchmark.models.BenchmarkFormat attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.export.ShareGPTTurn.from_">from_ (drum_ml.models.export.ShareGPTTurn attribute)</a>
 </li>
@@ -629,15 +700,33 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.GENERAL_USER">GENERAL_USER (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.pipeline.scaffolder.MetrologyScaffolder.generate_all">generate_all() (drum_ml.pipeline.scaffolder.MetrologyScaffolder method)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_all">generate_all() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
+
+        <ul>
+          <li><a href="api_reference.html#drum_ml.pipeline.scaffolder.MetrologyScaffolder.generate_all">(drum_ml.pipeline.scaffolder.MetrologyScaffolder method)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_constants_task">generate_constants_task() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conventions_task">generate_conventions_task() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conversions_task">generate_conversions_task() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_dimensions_task">generate_dimensions_task() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_homogeneity_task">generate_homogeneity_task() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_uncertainty_task">generate_uncertainty_task() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.grade_response">grade_response() (drum_ml.pipeline.evaluator.MEvalBenchmark method)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.scaffolds.AugmentedRecord.ground_truth_answer">ground_truth_answer (drum_ml.models.scaffolds.AugmentedRecord attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.ground_truth_answer">ground_truth_answer (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
 
         <ul>
+          <li><a href="api_reference.html#drum_ml.models.scaffolds.AugmentedRecord.ground_truth_answer">(drum_ml.models.scaffolds.AugmentedRecord attribute)</a>
+</li>
           <li><a href="api_reference.html#drum_ml.models.scaffolds.ScaffoldRecord.ground_truth_answer">(drum_ml.models.scaffolds.ScaffoldRecord attribute)</a>
 </li>
         </ul></li>
@@ -652,6 +741,10 @@
         <li><a href="api_reference.html#drum_ml.models.entities.UnitEntity.has_quantity_kinds">has_quantity_kinds (drum_ml.models.entities.UnitEntity attribute)</a>
 </li>
     </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkTask.HOMOGENEITY">HOMOGENEITY (drum_ml.benchmark.models.BenchmarkTask attribute)</a>
+</li>
+    </ul></td>
   </tr></table>
 </section>
 
@@ -663,9 +756,11 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.IAU_ASTRONOMER">IAU_ASTRONOMER (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.id">id (drum_ml.models.export.DPOPreferenceRecord attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.id">id (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
 
         <ul>
+          <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.id">(drum_ml.models.export.DPOPreferenceRecord attribute)</a>
+</li>
           <li><a href="api_reference.html#drum_ml.models.export.OpenAIChatRecord.id">(drum_ml.models.export.OpenAIChatRecord attribute)</a>
 </li>
           <li><a href="api_reference.html#drum_ml.models.export.ShareGPTRecord.id">(drum_ml.models.export.ShareGPTRecord attribute)</a>
@@ -683,13 +778,23 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.IMU_MATHEMATICIAN">IMU_MATHEMATICIAN (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier.INTERMEDIATE">INTERMEDIATE (drum_ml.models.scaffolds.DifficultyTier attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.DifficultyTier.INTERMEDIATE">INTERMEDIATE (drum_ml.benchmark.models.DifficultyTier attribute)</a>
+
+        <ul>
+          <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier.INTERMEDIATE">(drum_ml.models.scaffolds.DifficultyTier attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier.INTRODUCTORY">INTRODUCTORY (drum_ml.models.scaffolds.DifficultyTier attribute)</a>
+        </ul></li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.DifficultyTier.INTRODUCTORY">INTRODUCTORY (drum_ml.benchmark.models.DifficultyTier attribute)</a>
+
+        <ul>
+          <li><a href="api_reference.html#drum_ml.models.scaffolds.DifficultyTier.INTRODUCTORY">(drum_ml.models.scaffolds.DifficultyTier attribute)</a>
 </li>
+        </ul></li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.IOMP_MEDICAL_PHYSICIST">IOMP_MEDICAL_PHYSICIST (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.UnitEntity.is_coherent">is_coherent (drum_ml.models.entities.UnitEntity attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.MCQOption.is_correct">is_correct (drum_ml.benchmark.models.MCQOption attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.DimensionVector.is_dimensionless">is_dimensionless() (drum_ml.models.entities.DimensionVector method)</a>
 </li>
@@ -697,12 +802,12 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.UnitEntity.is_si_base">is_si_base (drum_ml.models.entities.UnitEntity attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.entities.UnitEntity.is_si_derived">is_si_derived (drum_ml.models.entities.UnitEntity attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.symbolic.quantity_kinds.is_unit_compatible_with_quantity_kind">is_unit_compatible_with_quantity_kind() (in module drum_ml.symbolic.quantity_kinds)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.ISA_SOCIOLOGIST">ISA_SOCIOLOGIST (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.ISC_SCIENCE_POLICY">ISC_SCIENCE_POLICY (drum_ml.models.scaffolds.PersonaType attribute)</a>
@@ -759,6 +864,16 @@
   </tr></table>
 </section>
 
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.MCQOption.key">key (drum_ml.benchmark.models.MCQOption attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
 <section id="L" class="genindex-section">
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
@@ -809,11 +924,17 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.BaseDimension.MASS">MASS (drum_ml.models.entities.BaseDimension attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkFormat.MCQ">MCQ (drum_ml.benchmark.models.BenchmarkFormat attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.MCQOption">MCQOption (class in drum_ml.benchmark.models)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.export.OpenAIChatRecord.messages">messages (drum_ml.models.export.OpenAIChatRecord attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.metadata">metadata (drum_ml.models.export.DPOPreferenceRecord attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.metadata">metadata (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
 
         <ul>
+          <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.metadata">(drum_ml.models.export.DPOPreferenceRecord attribute)</a>
+</li>
           <li><a href="api_reference.html#drum_ml.models.export.OpenAIChatRecord.metadata">(drum_ml.models.export.OpenAIChatRecord attribute)</a>
 </li>
           <li><a href="api_reference.html#drum_ml.models.export.ShareGPTRecord.metadata">(drum_ml.models.export.ShareGPTRecord attribute)</a>
@@ -837,9 +958,17 @@
 </li>
         <li><a href="api_reference.html#drum_ml.pipeline.dpo_miner.DPOMiner.mine_pairs">mine_pairs() (drum_ml.pipeline.dpo_miner.DPOMiner method)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.entities.CanonicalEntityStore.model_config">model_config (drum_ml.models.entities.CanonicalEntityStore attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.model_config">model_config (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
 
         <ul>
+          <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.model_config">(drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
+</li>
+          <li><a href="api_reference.html#drum_ml.benchmark.models.MCQOption.model_config">(drum_ml.benchmark.models.MCQOption attribute)</a>
+</li>
+          <li><a href="api_reference.html#drum_ml.benchmark.models.TaskScore.model_config">(drum_ml.benchmark.models.TaskScore attribute)</a>
+</li>
+          <li><a href="api_reference.html#drum_ml.models.entities.CanonicalEntityStore.model_config">(drum_ml.models.entities.CanonicalEntityStore attribute)</a>
+</li>
           <li><a href="api_reference.html#drum_ml.models.entities.ConversionRelation.model_config">(drum_ml.models.entities.ConversionRelation attribute)</a>
 </li>
           <li><a href="api_reference.html#drum_ml.models.entities.DimensionVector.model_config">(drum_ml.models.entities.DimensionVector attribute)</a>
@@ -877,10 +1006,16 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.model_name">model_name (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
+</li>
         <li>
     module
 
         <ul>
+          <li><a href="api_reference.html#module-drum_ml.benchmark.generator">drum_ml.benchmark.generator</a>
+</li>
+          <li><a href="api_reference.html#module-drum_ml.benchmark.models">drum_ml.benchmark.models</a>
+</li>
           <li><a href="api_reference.html#module-drum_ml.data_sources.bipm_client">drum_ml.data_sources.bipm_client</a>
 </li>
           <li><a href="api_reference.html#module-drum_ml.data_sources.codata_client">drum_ml.data_sources.codata_client</a>
@@ -954,11 +1089,15 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.entities.ConversionRelation.offset">offset (drum_ml.models.entities.ConversionRelation attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.export.OpenAIChatMessage">OpenAIChatMessage (class in drum_ml.models.export)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.export.OpenAIChatRecord">OpenAIChatRecord (class in drum_ml.models.export)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.options">options (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.overall_accuracy_pct">overall_accuracy_pct (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -974,9 +1113,11 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.PARTICLE_PHYSICIST">PARTICLE_PHYSICIST (drum_ml.models.scaffolds.PersonaType attribute)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.validation.Tier1SyntaxReport.passed">passed (drum_ml.models.validation.Tier1SyntaxReport attribute)</a>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.TaskScore.passed">passed (drum_ml.benchmark.models.TaskScore attribute)</a>
 
         <ul>
+          <li><a href="api_reference.html#drum_ml.models.validation.Tier1SyntaxReport.passed">(drum_ml.models.validation.Tier1SyntaxReport attribute)</a>
+</li>
           <li><a href="api_reference.html#drum_ml.models.validation.Tier2SymbolicReport.passed">(drum_ml.models.validation.Tier2SymbolicReport attribute)</a>
 </li>
           <li><a href="api_reference.html#drum_ml.models.validation.Tier3PrecisionReport.passed">(drum_ml.models.validation.Tier3PrecisionReport attribute)</a>
@@ -988,6 +1129,8 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.passed_samples">passed_samples (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.AugmentedRecord.persona">persona (drum_ml.models.scaffolds.AugmentedRecord attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType">PersonaType (class in drum_ml.models.scaffolds)</a>
@@ -995,6 +1138,8 @@
         <li><a href="api_reference.html#drum_ml.models.entities.PhysicalConstantEntity">PhysicalConstantEntity (class in drum_ml.models.entities)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.PersonaType.PHYSICS_STUDENT">PHYSICS_STUDENT (drum_ml.models.scaffolds.PersonaType attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.print_scorecard">print_scorecard() (drum_ml.pipeline.evaluator.MEvalBenchmark method)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.export.DPOPreferenceRecord.prompt">prompt (drum_ml.models.export.DPOPreferenceRecord attribute)</a>
 </li>
@@ -1027,6 +1172,8 @@
         <li><a href="api_reference.html#drum_ml.data_sources.qudt_fetcher.QUDTFetcher.QUDT_VOCAB_URLS">QUDT_VOCAB_URLS (drum_ml.data_sources.qudt_fetcher.QUDTFetcher attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.data_sources.qudt_fetcher.QUDTFetcher">QUDTFetcher (class in drum_ml.data_sources.qudt_fetcher)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.question">question (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1061,6 +1208,8 @@
         <li><a href="api_reference.html#drum_ml.models.validation.Tier4CodeReport.sandbox_execution_success">sandbox_execution_success (drum_ml.models.validation.Tier4CodeReport attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.symbolic.latex_parser.sanitize_latex_units">sanitize_latex_units() (in module drum_ml.symbolic.latex_parser)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.save_jsonl">save_jsonl() (drum_ml.benchmark.generator.DRUMBenchmarkGenerator method)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.pipeline.augmenter.MetrologyAugmenter.save_to_json">save_to_json() (drum_ml.pipeline.augmenter.MetrologyAugmenter method)</a>
 
@@ -1108,7 +1257,19 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.entities.DimensionVector.T">T (drum_ml.models.entities.DimensionVector attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkSample.task">task (drum_ml.benchmark.models.BenchmarkSample attribute)</a>
+
+        <ul>
+          <li><a href="api_reference.html#drum_ml.benchmark.models.TaskScore.task">(drum_ml.benchmark.models.TaskScore attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.task_breakdown">task_breakdown (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.TaskScore">TaskScore (class in drum_ml.benchmark.models)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.scaffolds.AugmentedRecord.temperature">temperature (drum_ml.models.scaffolds.AugmentedRecord attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.MCQOption.text">text (drum_ml.benchmark.models.MCQOption attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.BaseDimension.THERMODYNAMIC_TEMP">THERMODYNAMIC_TEMP (drum_ml.models.entities.BaseDimension attribute)</a>
 </li>
@@ -1118,12 +1279,12 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.validation.Tier1SyntaxReport">Tier1SyntaxReport (class in drum_ml.models.validation)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.validation.ValidationResult.tier2_symbolic">tier2_symbolic (drum_ml.models.validation.ValidationResult attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.validation.Tier2SymbolicReport">Tier2SymbolicReport (class in drum_ml.models.validation)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.validation.ValidationResult.tier3_precision">tier3_precision (drum_ml.models.validation.ValidationResult attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.validation.Tier3PrecisionReport">Tier3PrecisionReport (class in drum_ml.models.validation)</a>
@@ -1140,6 +1301,10 @@
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.DimensionVector.to_si_base_unit_latex">to_si_base_unit_latex() (drum_ml.models.entities.DimensionVector method)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.TaskScore.total">total (drum_ml.benchmark.models.TaskScore attribute)</a>
+</li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkScorecard.total_samples">total_samples (drum_ml.benchmark.models.BenchmarkScorecard attribute)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -1150,16 +1315,18 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_reference.html#drum_ml.models.entities.UnitEntity.ucum_code">ucum_code (drum_ml.models.entities.UnitEntity attribute)</a>
 </li>
+        <li><a href="api_reference.html#drum_ml.benchmark.models.BenchmarkTask.UNCERTAINTY">UNCERTAINTY (drum_ml.benchmark.models.BenchmarkTask attribute)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.entities.PhysicalConstantEntity.unit_symbol">unit_symbol (drum_ml.models.entities.PhysicalConstantEntity attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.PhysicalConstantEntity.unit_uri">unit_uri (drum_ml.models.entities.PhysicalConstantEntity attribute)</a>
 </li>
         <li><a href="api_reference.html#drum_ml.models.entities.UnitEntity">UnitEntity (class in drum_ml.models.entities)</a>
 </li>
-        <li><a href="api_reference.html#drum_ml.models.entities.CanonicalEntityStore.units">units (drum_ml.models.entities.CanonicalEntityStore attribute)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_reference.html#drum_ml.models.entities.CanonicalEntityStore.units">units (drum_ml.models.entities.CanonicalEntityStore attribute)</a>
+</li>
         <li><a href="api_reference.html#drum_ml.models.entities.PhysicalConstantEntity.uri">uri (drum_ml.models.entities.PhysicalConstantEntity attribute)</a>
 
         <ul>

@@ -196,6 +196,7 @@
 <li class="toctree-l1"><a class="reference internal" href="objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="personas.html">Scientific Unions &amp; Domain Personas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
@@ -1656,6 +1657,452 @@ SI_val = (val * multiplier) + offset.</p>
 </dd></dl>
 
 </section>
+<section id="module-drum_ml.benchmark.models">
+<span id="benchmark-suite-drum-ml-benchmark"></span><h2>Benchmark Suite (<code class="docutils literal notranslate"><span class="pre">drum_ml.benchmark</span></code>)<a class="headerlink" href="#module-drum_ml.benchmark.models" title="Link to this heading">¶</a></h2>
+<p>Data Models for the DRUM Metrology Benchmark (M-Eval) Suite.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">BenchmarkTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#BenchmarkTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>The 6 Core Metrology Benchmark Tasks.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask.CONSTANTS">
+<span class="sig-name descname"><span class="pre">CONSTANTS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'constants'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask.CONSTANTS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask.DIMENSIONS">
+<span class="sig-name descname"><span class="pre">DIMENSIONS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dimensions'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask.DIMENSIONS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask.CONVERSIONS">
+<span class="sig-name descname"><span class="pre">CONVERSIONS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'conversions'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask.CONVERSIONS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask.HOMOGENEITY">
+<span class="sig-name descname"><span class="pre">HOMOGENEITY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'homogeneity'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask.HOMOGENEITY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask.CONVENTIONS">
+<span class="sig-name descname"><span class="pre">CONVENTIONS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'conventions'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask.CONVENTIONS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask.UNCERTAINTY">
+<span class="sig-name descname"><span class="pre">UNCERTAINTY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'uncertainty'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask.UNCERTAINTY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkFormat">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">BenchmarkFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#BenchmarkFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkFormat" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Evaluation formats.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkFormat.MCQ">
+<span class="sig-name descname"><span class="pre">MCQ</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'mcq'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkFormat.MCQ" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkFormat.FREE_FORM">
+<span class="sig-name descname"><span class="pre">FREE_FORM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'free_form'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkFormat.FREE_FORM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.DifficultyTier">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">DifficultyTier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#DifficultyTier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.DifficultyTier" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.DifficultyTier.INTRODUCTORY">
+<span class="sig-name descname"><span class="pre">INTRODUCTORY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'introductory'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.DifficultyTier.INTRODUCTORY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.DifficultyTier.INTERMEDIATE">
+<span class="sig-name descname"><span class="pre">INTERMEDIATE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'intermediate'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.DifficultyTier.INTERMEDIATE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.DifficultyTier.ADVANCED">
+<span class="sig-name descname"><span class="pre">ADVANCED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'advanced'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.DifficultyTier.ADVANCED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.MCQOption">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">MCQOption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#MCQOption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.MCQOption" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>)</p></li>
+<li><p><strong>text</strong> (<em>str</em>)</p></li>
+<li><p><strong>is_correct</strong> (<em>bool</em>)</p></li>
+<li><p><strong>distractor_rationale</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.MCQOption.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.benchmark.models.MCQOption.key" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.MCQOption.text">
+<span class="sig-name descname"><span class="pre">text</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.benchmark.models.MCQOption.text" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.MCQOption.is_correct">
+<span class="sig-name descname"><span class="pre">is_correct</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#drum_ml.benchmark.models.MCQOption.is_correct" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.MCQOption.distractor_rationale">
+<span class="sig-name descname"><span class="pre">distractor_rationale</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.MCQOption.distractor_rationale" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.MCQOption.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#drum_ml.benchmark.models.MCQOption.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">BenchmarkSample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#BenchmarkSample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>)</p></li>
+<li><p><strong>task</strong> (<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask" title="drum_ml.benchmark.models.BenchmarkTask"><em>BenchmarkTask</em></a>)</p></li>
+<li><p><strong>format</strong> (<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkFormat" title="drum_ml.benchmark.models.BenchmarkFormat"><em>BenchmarkFormat</em></a>)</p></li>
+<li><p><strong>difficulty</strong> (<a class="reference internal" href="#drum_ml.benchmark.models.DifficultyTier" title="drum_ml.benchmark.models.DifficultyTier"><em>DifficultyTier</em></a>)</p></li>
+<li><p><strong>question</strong> (<em>str</em>)</p></li>
+<li><p><strong>context</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>options</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption" title="drum_ml.benchmark.models.MCQOption"><em>MCQOption</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>correct_option_key</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>ground_truth_answer</strong> (<em>str</em>)</p></li>
+<li><p><strong>entity_uri</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>explanation</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>metadata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.task">
+<span class="sig-name descname"><span class="pre">task</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask" title="drum_ml.benchmark.models.BenchmarkTask"><span class="pre">BenchmarkTask</span></a></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.task" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkFormat" title="drum_ml.benchmark.models.BenchmarkFormat"><span class="pre">BenchmarkFormat</span></a></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.format" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.difficulty">
+<span class="sig-name descname"><span class="pre">difficulty</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.DifficultyTier" title="drum_ml.benchmark.models.DifficultyTier"><span class="pre">DifficultyTier</span></a></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.difficulty" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.question">
+<span class="sig-name descname"><span class="pre">question</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.question" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.context">
+<span class="sig-name descname"><span class="pre">context</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.context" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.options">
+<span class="sig-name descname"><span class="pre">options</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption" title="drum_ml.benchmark.models.MCQOption"><span class="pre">MCQOption</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.options" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.correct_option_key">
+<span class="sig-name descname"><span class="pre">correct_option_key</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.correct_option_key" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.ground_truth_answer">
+<span class="sig-name descname"><span class="pre">ground_truth_answer</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.ground_truth_answer" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.entity_uri">
+<span class="sig-name descname"><span class="pre">entity_uri</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.entity_uri" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.explanation">
+<span class="sig-name descname"><span class="pre">explanation</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.explanation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.metadata" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.TaskScore">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">TaskScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#TaskScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.TaskScore" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<em>str</em>)</p></li>
+<li><p><strong>total</strong> (<em>int</em>)</p></li>
+<li><p><strong>passed</strong> (<em>int</em>)</p></li>
+<li><p><strong>accuracy_pct</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.TaskScore.task">
+<span class="sig-name descname"><span class="pre">task</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.benchmark.models.TaskScore.task" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.TaskScore.total">
+<span class="sig-name descname"><span class="pre">total</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#drum_ml.benchmark.models.TaskScore.total" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.TaskScore.passed">
+<span class="sig-name descname"><span class="pre">passed</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#drum_ml.benchmark.models.TaskScore.passed" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.TaskScore.accuracy_pct">
+<span class="sig-name descname"><span class="pre">accuracy_pct</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#drum_ml.benchmark.models.TaskScore.accuracy_pct" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.TaskScore.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#drum_ml.benchmark.models.TaskScore.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">BenchmarkScorecard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#BenchmarkScorecard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_name</strong> (<em>str</em>)</p></li>
+<li><p><strong>total_samples</strong> (<em>int</em>)</p></li>
+<li><p><strong>passed_samples</strong> (<em>int</em>)</p></li>
+<li><p><strong>overall_accuracy_pct</strong> (<em>float</em>)</p></li>
+<li><p><strong>task_breakdown</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
+<li><p><strong>format_breakdown</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
+<li><p><strong>difficulty_breakdown</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
+<li><p><strong>detailed_results</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.model_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.total_samples">
+<span class="sig-name descname"><span class="pre">total_samples</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.total_samples" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.passed_samples">
+<span class="sig-name descname"><span class="pre">passed_samples</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.passed_samples" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.overall_accuracy_pct">
+<span class="sig-name descname"><span class="pre">overall_accuracy_pct</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.overall_accuracy_pct" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.task_breakdown">
+<span class="sig-name descname"><span class="pre">task_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.task_breakdown" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.format_breakdown">
+<span class="sig-name descname"><span class="pre">format_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.format_breakdown" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.difficulty_breakdown">
+<span class="sig-name descname"><span class="pre">difficulty_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.difficulty_breakdown" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.detailed_results">
+<span class="sig-name descname"><span class="pre">detailed_results</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.detailed_results" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-drum_ml.benchmark.generator">DRUM Metrology Benchmark Dataset Generator.</p>
+<p>Synthesizes standardized, held-out gold benchmark samples across the 6 Core Metrology Tasks
+in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.generator.</span></span><span class="sig-name descname"><span class="pre">DRUMBenchmarkGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Generates the DRUM Metrology Benchmark suite from canonical RDF entities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entities</strong> (<a class="reference internal" href="#drum_ml.models.entities.CanonicalEntityStore" title="drum_ml.models.entities.CanonicalEntityStore"><em>CanonicalEntityStore</em></a>)</p></li>
+<li><p><strong>seed</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_all">
+<span class="sig-name descname"><span class="pre">generate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples_per_task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_all" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a balanced benchmark dataset across all 6 tasks and formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>samples_per_task</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_constants_task">
+<span class="sig-name descname"><span class="pre">generate_constants_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_constants_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_constants_task" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_dimensions_task">
+<span class="sig-name descname"><span class="pre">generate_dimensions_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_dimensions_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_dimensions_task" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conversions_task">
+<span class="sig-name descname"><span class="pre">generate_conversions_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_conversions_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conversions_task" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_homogeneity_task">
+<span class="sig-name descname"><span class="pre">generate_homogeneity_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_homogeneity_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_homogeneity_task" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conventions_task">
+<span class="sig-name descname"><span class="pre">generate_conventions_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_conventions_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conventions_task" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_uncertainty_task">
+<span class="sig-name descname"><span class="pre">generate_uncertainty_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_uncertainty_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_uncertainty_task" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.benchmark.generator.DRUMBenchmarkGenerator.save_jsonl">
+<span class="sig-name descname"><span class="pre">save_jsonl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.save_jsonl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.save_jsonl" title="Link to this definition">¶</a></dt>
+<dd><p>Save benchmark samples to a JSONL file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>samples</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><em>BenchmarkSample</em></a><em>]</em>)</p></li>
+<li><p><strong>filepath</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-drum_ml.symbolic.dimensions">
 <span id="symbolic-core-drum-ml-symbolic"></span><h2>Symbolic Core (<code class="docutils literal notranslate"><span class="pre">drum_ml.symbolic</span></code>)<a class="headerlink" href="#module-drum_ml.symbolic.dimensions" title="Link to this heading">¶</a></h2>
 <p>SI 7-Base Dimension Vector Arithmetic and Representation.</p>
@@ -2403,12 +2850,15 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 
 </dd></dl>
 
-<p id="module-drum_ml.pipeline.evaluator">M-Eval Metrology Benchmark Evaluation Runner.</p>
+<p id="module-drum_ml.pipeline.evaluator">DRUM Metrology Benchmark (M-Eval) Evaluation &amp; Grading Engine.</p>
+<p>Evaluates local or frontier models against the held-out DRUM benchmark suite,
+performing dual-track verification (deterministic MCQ extraction + symbolic physics equivalence)
+and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.pipeline.evaluator.MEvalBenchmark">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.pipeline.evaluator.</span></span><span class="sig-name descname"><span class="pre">MEvalBenchmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">benchmark_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset/test.jsonl'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.pipeline.evaluator.</span></span><span class="sig-name descname"><span class="pre">MEvalBenchmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">benchmark_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset/drum_benchmark_mcq.jsonl'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Evaluates local or frontier models against the held-out M-Eval metrology test set.</p>
+<p>Evaluator and grader for the DRUM Metrology Benchmark suite.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>benchmark_file</strong> (<em>str</em>)</p>
@@ -2417,7 +2867,8 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="drum_ml.pipeline.evaluator.MEvalBenchmark.load_benchmark_records">
 <span class="sig-name descname"><span class="pre">load_benchmark_records</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark.load_benchmark_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.load_benchmark_records" title="Link to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Load benchmark samples from JSONL.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span></p>
 </dd>
@@ -2425,17 +2876,65 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.pipeline.evaluator.MEvalBenchmark.extract_mcq_answer">
+<span class="sig-name descname"><span class="pre">extract_mcq_answer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark.extract_mcq_answer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.extract_mcq_answer" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts the predicted MCQ option letter (A, B, C, D) from an LLM response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>response_text</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="drum_ml.pipeline.evaluator.MEvalBenchmark.grade_response">
-<span class="sig-name descname"><span class="pre">grade_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark.grade_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.grade_response" title="Link to this definition">¶</a></dt>
-<dd><p>Dual-format grading: deterministic string check + symbolic equivalence check.</p>
+<span class="sig-name descname"><span class="pre">grade_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark.grade_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.grade_response" title="Link to this definition">¶</a></dt>
+<dd><p>Grades a response against ground truth using MCQ extraction or symbolic equivalence.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ground_truth</strong> (<em>str</em>)</p></li>
-<li><p><strong>predicted</strong> (<em>str</em>)</p></li>
+<li><p><strong>record</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>predicted_text</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.pipeline.evaluator.MEvalBenchmark.compute_scorecard">
+<span class="sig-name descname"><span class="pre">compute_scorecard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark.compute_scorecard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.compute_scorecard" title="Link to this definition">¶</a></dt>
+<dd><p>Computes stratified scores across all 6 tasks, formats, and difficulties.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard" title="drum_ml.benchmark.models.BenchmarkScorecard"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkScorecard</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>model_name</strong> (<em>str</em>)</p></li>
+<li><p><strong>results</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.pipeline.evaluator.MEvalBenchmark.print_scorecard">
+<span class="sig-name descname"><span class="pre">print_scorecard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scorecard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/evaluator.html#MEvalBenchmark.print_scorecard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.print_scorecard" title="Link to this definition">¶</a></dt>
+<dd><p>Prints a rich, formatted evaluation scorecard to the terminal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>scorecard</strong> (<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard" title="drum_ml.benchmark.models.BenchmarkScorecard"><em>BenchmarkScorecard</em></a>)</p></li>
+<li><p><strong>console</strong> (<em>Console</em><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -2763,6 +3262,84 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#module-drum_ml.benchmark.models">Benchmark Suite (<code class="docutils literal notranslate"><span class="pre">drum_ml.benchmark</span></code>)</a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask"><code class="docutils literal notranslate"><span class="pre">BenchmarkTask</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask.CONSTANTS"><code class="docutils literal notranslate"><span class="pre">BenchmarkTask.CONSTANTS</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask.DIMENSIONS"><code class="docutils literal notranslate"><span class="pre">BenchmarkTask.DIMENSIONS</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask.CONVERSIONS"><code class="docutils literal notranslate"><span class="pre">BenchmarkTask.CONVERSIONS</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask.HOMOGENEITY"><code class="docutils literal notranslate"><span class="pre">BenchmarkTask.HOMOGENEITY</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask.CONVENTIONS"><code class="docutils literal notranslate"><span class="pre">BenchmarkTask.CONVENTIONS</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkTask.UNCERTAINTY"><code class="docutils literal notranslate"><span class="pre">BenchmarkTask.UNCERTAINTY</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkFormat"><code class="docutils literal notranslate"><span class="pre">BenchmarkFormat</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkFormat.MCQ"><code class="docutils literal notranslate"><span class="pre">BenchmarkFormat.MCQ</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkFormat.FREE_FORM"><code class="docutils literal notranslate"><span class="pre">BenchmarkFormat.FREE_FORM</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.DifficultyTier"><code class="docutils literal notranslate"><span class="pre">DifficultyTier</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.DifficultyTier.INTRODUCTORY"><code class="docutils literal notranslate"><span class="pre">DifficultyTier.INTRODUCTORY</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.DifficultyTier.INTERMEDIATE"><code class="docutils literal notranslate"><span class="pre">DifficultyTier.INTERMEDIATE</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.DifficultyTier.ADVANCED"><code class="docutils literal notranslate"><span class="pre">DifficultyTier.ADVANCED</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption"><code class="docutils literal notranslate"><span class="pre">MCQOption</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption.key"><code class="docutils literal notranslate"><span class="pre">MCQOption.key</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption.text"><code class="docutils literal notranslate"><span class="pre">MCQOption.text</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption.is_correct"><code class="docutils literal notranslate"><span class="pre">MCQOption.is_correct</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption.distractor_rationale"><code class="docutils literal notranslate"><span class="pre">MCQOption.distractor_rationale</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption.model_config"><code class="docutils literal notranslate"><span class="pre">MCQOption.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.id"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.id</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.task"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.task</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.format"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.format</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.difficulty"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.difficulty</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.question"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.question</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.context"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.context</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.options"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.options</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.correct_option_key"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.correct_option_key</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.ground_truth_answer"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.ground_truth_answer</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.entity_uri"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.entity_uri</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.explanation"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.explanation</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.metadata"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.metadata</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample.model_config"><code class="docutils literal notranslate"><span class="pre">BenchmarkSample.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore"><code class="docutils literal notranslate"><span class="pre">TaskScore</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore.task"><code class="docutils literal notranslate"><span class="pre">TaskScore.task</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore.total"><code class="docutils literal notranslate"><span class="pre">TaskScore.total</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore.passed"><code class="docutils literal notranslate"><span class="pre">TaskScore.passed</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore.accuracy_pct"><code class="docutils literal notranslate"><span class="pre">TaskScore.accuracy_pct</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore.model_config"><code class="docutils literal notranslate"><span class="pre">TaskScore.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.model_name"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.model_name</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.total_samples"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.total_samples</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.passed_samples"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.passed_samples</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.overall_accuracy_pct"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.overall_accuracy_pct</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.task_breakdown"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.task_breakdown</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.format_breakdown"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.format_breakdown</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.difficulty_breakdown"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.difficulty_breakdown</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.detailed_results"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.detailed_results</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkScorecard.model_config"><code class="docutils literal notranslate"><span class="pre">BenchmarkScorecard.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_all"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.generate_all()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_constants_task"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.generate_constants_task()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_dimensions_task"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.generate_dimensions_task()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conversions_task"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.generate_conversions_task()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_homogeneity_task"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.generate_homogeneity_task()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conventions_task"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.generate_conventions_task()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_uncertainty_task"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.generate_uncertainty_task()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.save_jsonl"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.save_jsonl()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-drum_ml.symbolic.dimensions">Symbolic Core (<code class="docutils literal notranslate"><span class="pre">drum_ml.symbolic</span></code>)</a><ul>
 <li><a class="reference internal" href="#drum_ml.symbolic.dimensions.parse_qudt_dimension_string"><code class="docutils literal notranslate"><span class="pre">parse_qudt_dimension_string()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.symbolic.quantity_kinds.is_unit_compatible_with_quantity_kind"><code class="docutils literal notranslate"><span class="pre">is_unit_compatible_with_quantity_kind()</span></code></a></li>
@@ -2839,7 +3416,10 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 </li>
 <li><a class="reference internal" href="#drum_ml.pipeline.evaluator.MEvalBenchmark"><code class="docutils literal notranslate"><span class="pre">MEvalBenchmark</span></code></a><ul>
 <li><a class="reference internal" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.load_benchmark_records"><code class="docutils literal notranslate"><span class="pre">MEvalBenchmark.load_benchmark_records()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.extract_mcq_answer"><code class="docutils literal notranslate"><span class="pre">MEvalBenchmark.extract_mcq_answer()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.grade_response"><code class="docutils literal notranslate"><span class="pre">MEvalBenchmark.grade_response()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.compute_scorecard"><code class="docutils literal notranslate"><span class="pre">MEvalBenchmark.compute_scorecard()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.pipeline.evaluator.MEvalBenchmark.print_scorecard"><code class="docutils literal notranslate"><span class="pre">MEvalBenchmark.print_scorecard()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -1,0 +1,28 @@
+task: drum_uncertainty
+group: drum_benchmark
+dataset_path: json
+dataset_name: null
+dataset_kwargs:
+  data_files:
+    test: ./dataset/benchmark/drum_benchmark_mcq.jsonl
+test_split: test
+output_type: multiple_choice
+training_split: null
+fewshot_split: null
+
+process_docs: !function utils.filter_uncertainty
+doc_to_text: !function utils.format_mcq_doc
+doc_to_target: "{{correct_option_key}}"
+doc_to_choice: ["A", "B", "C", "D"]
+
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+
+metadata:
+  version: 1.0
+  task_name: "Metrological Uncertainty (GUM) & Sig-Figs"

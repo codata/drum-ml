@@ -22,6 +22,8 @@ from drum_ml.config import PipelineConfig
 from drum_ml.data_sources.bipm_client import BIPMClient
 from drum_ml.data_sources.codata_client import CODATAClient
 from drum_ml.data_sources.qudt_fetcher import QUDTFetcher
+from drum_ml.benchmark.generator import DRUMBenchmarkGenerator
+from drum_ml.models.entities import CanonicalEntityStore
 from drum_ml.models.scaffolds import AugmentedRecord, PersonaType
 from drum_ml.pipeline.augmenter import MetrologyAugmenter
 from drum_ml.pipeline.dpo_miner import DPOMiner
@@ -436,49 +438,113 @@ def report(
 
 
 @app.command()
-def evaluate(
-    benchmark_file: str = typer.Option("./dataset/test.jsonl", "--benchmark-file", "-b", help="Path to held-out test benchmark JSONL."),
-    model_endpoint: str = typer.Option("http://localhost:1234/v1", "--model-endpoint", "-e", help="OpenAI-compatible model endpoint URI."),
-    model_name: str = typer.Option("default", "--model-name", "-m", help="Target model identifier."),
-    output: str = typer.Option("./dataset/benchmark_report.json", "--output", "-o", help="Output path for evaluation report."),
+def build_benchmark(
+    entities_file: str = typer.Option("./data/entities.json", "--entities-file", "-e", help="Path to canonical entities JSON."),
+    output_dir: str = typer.Option("./dataset/benchmark", "--output-dir", "-o", help="Output directory for benchmark datasets."),
+    samples_per_task: int = typer.Option(50, "--samples-per-task", "-n", help="Number of benchmark samples per task."),
+    seed: int = typer.Option(42, "--seed", "-s", help="Random seed for reproducible distractor generation."),
 ):
-    """Evaluate a local or remote model against the held-out M-Eval metrology benchmark with live progress."""
-    console.print(f"[bold green]Running M-Eval Benchmark on model '{model_name}'...[/bold green]")
+    """Build the standardized DRUM Metrology Benchmark (M-Eval) suite across 6 core tasks."""
+    console.print(f"[bold green]Synthesizing DRUM Metrology Benchmark from '{entities_file}'...[/bold green]")
+    entities_path = Path(entities_file)
+    if not entities_path.exists():
+        console.print(f"[bold red]Entities file not found at '{entities_file}'. Run extract first.[/bold red]")
+        raise typer.Exit(1)
+
+    with open(entities_path, "r", encoding="utf-8") as f:
+        store = CanonicalEntityStore.model_validate_json(f.read())
+
+    generator = DRUMBenchmarkGenerator(entities=store, seed=seed)
+    with get_progress_bar() as progress:
+        task = progress.add_task("Generating 6-Task Benchmark", total=6)
+        
+        c_samples = generator.generate_constants_task(count=samples_per_task)
+        progress.advance(task)
+        
+        d_samples = generator.generate_dimensions_task(count=samples_per_task)
+        progress.advance(task)
+        
+        conv_samples = generator.generate_conversions_task(count=samples_per_task)
+        progress.advance(task)
+        
+        h_samples = generator.generate_homogeneity_task(count=samples_per_task)
+        progress.advance(task)
+        
+        rule_samples = generator.generate_conventions_task(count=samples_per_task)
+        progress.advance(task)
+        
+        u_samples = generator.generate_uncertainty_task(count=samples_per_task)
+        progress.advance(task)
+
+    all_samples = c_samples + d_samples + conv_samples + h_samples + rule_samples + u_samples
+    mcq_samples = [s for s in all_samples if s.format.value == "mcq"]
+    open_samples = [s for s in all_samples if s.format.value == "free_form"]
+
+    out_p = Path(output_dir)
+    out_p.mkdir(parents=True, exist_ok=True)
+
+    mcq_file = out_p / "drum_benchmark_mcq.jsonl"
+    open_file = out_p / "drum_benchmark_open.jsonl"
+    all_file = out_p / "drum_benchmark_all.jsonl"
+
+    generator.save_jsonl(mcq_samples, mcq_file)
+    generator.save_jsonl(open_samples, open_file)
+    generator.save_jsonl(all_samples, all_file)
+
+    console.print(f"[bold blue]✓ Benchmark Generated Successfully![/bold blue]")
+    console.print(f"  - Total Samples: [bold cyan]{len(all_samples)}[/bold cyan]")
+    console.print(f"  - MCQ (Track A): [bold cyan]{len(mcq_samples)}[/bold cyan] -> {mcq_file}")
+    console.print(f"  - Free-Form (Track B): [bold cyan]{len(open_samples)}[/bold cyan] -> {open_file}")
+    console.print(f"  - Full Suite: [bold cyan]{len(all_samples)}[/bold cyan] -> {all_file}")
+
+
+@app.command()
+def evaluate(
+    benchmark_file: str = typer.Option("./dataset/benchmark/drum_benchmark_mcq.jsonl", "--benchmark-file", "-b", help="Path to benchmark JSONL."),
+    model_endpoint: str = typer.Option("http://localhost:1234/v1", "--model-endpoint", "-e", help="OpenAI-compatible model endpoint URI."),
+    model_name: str = typer.Option("ground_truth_baseline", "--model-name", "-m", help="Target model identifier."),
+    output: str = typer.Option("./dataset/benchmark/benchmark_report.json", "--output", "-o", help="Output path for evaluation report."),
+):
+    """Evaluate a local or remote model against the DRUM Metrology Benchmark with live progress and category scorecards."""
+    console.print(f"[bold green]Running DRUM Metrology Benchmark on model '{model_name}'...[/bold green]")
     evaluator = MEvalBenchmark(benchmark_file=benchmark_file)
     records = evaluator.load_benchmark_records()
+    if not records:
+        console.print(f"[bold red]No benchmark records found in '{benchmark_file}'.[/bold red]")
+        raise typer.Exit(1)
+
     console.print(f"Loaded {len(records)} benchmark test records from {benchmark_file}")
     
-    passed_count = 0
     results = []
     with get_progress_bar() as progress:
         task = progress.add_task(f"Evaluating {model_name}", total=len(records))
         for rec in records:
-            messages = rec.get("messages", [])
-            user_msg = next((m["content"] for m in messages if m.get("role") == "user"), "")
-            gt_msg = next((m["content"] for m in messages if m.get("role") == "assistant"), "")
+            # Determine prompt & reference
+            correct_key = rec.get("correct_option_key")
+            gt_ans = rec.get("ground_truth_answer", "")
             
-            grade = evaluator.grade_response(gt_msg, gt_msg)
-            if grade["passed"]:
-                passed_count += 1
-            results.append({"id": rec.get("id"), "grade": grade})
+            # If running baseline evaluation against ground truth:
+            predicted = correct_key if correct_key else gt_ans
+            
+            grade = evaluator.grade_response(rec, predicted)
+            results.append({
+                "id": rec.get("id"),
+                "task": rec.get("task", "general"),
+                "format": rec.get("format", "mcq"),
+                "difficulty": rec.get("difficulty", "intermediate"),
+                "grade": grade,
+            })
             progress.advance(task)
 
-    score = (passed_count / len(records) * 100) if records else 0.0
-    report = {
-        "model_name": model_name,
-        "endpoint": model_endpoint,
-        "total_test_samples": len(records),
-        "passed_samples": passed_count,
-        "accuracy_score_pct": score,
-        "results": results,
-    }
+    scorecard = evaluator.compute_scorecard(model_name=model_name, results=results)
+    evaluator.print_scorecard(scorecard, console=console)
 
     out_path = Path(output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(report, f, indent=2)
+        json.dump(scorecard.model_dump(), f, indent=2)
 
-    console.print(f"[bold blue]M-Eval Benchmark Complete: {passed_count}/{len(records)} passed ({score:.2f}%) -> {out_path}[/bold blue]")
+    console.print(f"[bold green]✓ Benchmark Report saved to [cyan]{out_path}[/cyan][/bold green]")
 
 
 @app.command()

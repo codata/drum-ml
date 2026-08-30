@@ -81,33 +81,61 @@ Using Hugging Face ``TRL`` (``SFTTrainer`` & ``DPOTrainer``):
      -v ./dataset/val.jsonl \
      -m gpt-4o-mini-2024-07-18
 
-M-Eval Benchmark Evaluation
----------------------------
+DRUM Metrology Benchmark (M-Eval) Evaluation
+---------------------------------------------
 
-Evaluate base vs. fine-tuned models on the held-out benchmark:
+DRUM-ML includes a dedicated, standardized benchmark suite evaluating LLMs across **6 Core Sub-Disciplines**:
+1. **Fundamental Physical Constants & SI 2019** (``constants``)
+2. **Dimensional Decomposition & Base SI** (``dimensions``)
+3. **Unit Conversions & Affine Transformations** (``conversions``)
+4. **Error Detection & Dimensional Homogeneity** (``homogeneity``)
+5. **SI Typography & Metrological Conventions** (``conventions``)
+6. **Metrological Uncertainty (GUM) & Sig-Figs** (``uncertainty``)
+
+1. Synthesize Benchmark Datasets
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   # Generate 50 samples per task (total 250+ balanced questions)
+   drum-ml build-benchmark \
+       --entities-file ./data/entities.json \
+       --output-dir ./dataset/benchmark \
+       --samples-per-task 50
+
+2. Evaluate Models & Generate Scorecards
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
    # Evaluate baseline model
    drum-ml evaluate \
-       --benchmark-file ./dataset/test.jsonl \
+       --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl \
        --model-endpoint http://localhost:1234/v1 \
        --model-name qwen2.5-14b-base \
-       --output ./dataset/base_eval_report.json
+       --output ./dataset/benchmark/base_eval_report.json
 
-   # Evaluate fine-tuned model
+   # Evaluate fine-tuned model (measure metrological gain)
    drum-ml evaluate \
-       --benchmark-file ./dataset/test.jsonl \
+       --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl \
        --model-endpoint http://localhost:1234/v1 \
        --model-name qwen2.5-14b-drum-finetuned \
-       --output ./dataset/finetuned_eval_report.json
+       --output ./dataset/benchmark/finetuned_eval_report.json
 
-Evaluation Metrics
-~~~~~~~~~~~~~~~~~~
-- **Exact Accuracy Score (EAS):** Percentage of exact constants and symbols reproduced without drift.
-- **Dimensional Homogeneity Score (DHS):** Accuracy on detecting invalid equations and dimensional violations via SymPy/Pint.
-- **Conversion Error Rate (CER):** Mean relative error on multi-step conversion chains.
-- **Code Executability Score (CES):** Percentage of generated Python/SPARQL snippets executing without runtime errors.
+3. Standardized ``lm-evaluation-harness`` Execution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   # Run EleutherAI lm-eval against the complete DRUM benchmark
+   lm_eval --model hf \
+           --model_args pretrained=Qwen/Qwen2.5-7B-Instruct \
+           --include_path ./tasks \
+           --tasks drum_benchmark \
+           --batch_size auto \
+           --output_path ./dataset/benchmark/qwen_eval_results
+
+For full architectural details, data schemas, and distractor rationales, see :doc:`benchmark`.
 
 Publishing to Hugging Face Hub
 ------------------------------

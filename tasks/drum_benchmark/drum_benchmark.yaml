@@ -1,0 +1,13 @@
+group: drum_benchmark
+task:
+  - drum_constants
+  - drum_dimensions
+  - drum_conversions
+  - drum_homogeneity
+  - drum_conventions
+  - drum_uncertainty
+metadata:
+  version: 1.0
+  benchmark: "DRUM Metrology Benchmark (M-Eval)"
+  organization: "CODATA DRUM Working Group"
+  homepage: "https://drum.codata.org"

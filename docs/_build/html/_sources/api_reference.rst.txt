@@ -24,6 +24,19 @@ Canonical Models (``drum_ml.models``)
    :undoc-members:
    :show-inheritance:
 
+Benchmark Suite (``drum_ml.benchmark``)
+---------------------------------------
+
+.. automodule:: drum_ml.benchmark.models
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: drum_ml.benchmark.generator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Symbolic Core (``drum_ml.symbolic``)
 ------------------------------------
 

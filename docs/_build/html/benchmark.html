@@ -1,0 +1,610 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Scientific Unions &amp; Domain Personas" href="personas.html"><link rel="prev" title="Methodology &amp; Metrological Foundations" href="methodology.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>DRUM Metrology Benchmark (M-Eval) Suite - DRUM-ML Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">DRUM-ML Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">DRUM-ML Documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="objectives.html">Project Objectives &amp; Scientific Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Multi-Agent Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training_and_eval.html">Training &amp; Evaluation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/benchmark.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="drum-metrology-benchmark-m-eval-suite">
+<h1>DRUM Metrology Benchmark (M-Eval) Suite<a class="headerlink" href="#drum-metrology-benchmark-m-eval-suite" title="Link to this heading">¶</a></h1>
+<p>The <strong>DRUM Metrology Benchmark</strong> (also designated <strong>M-Eval</strong>) is an authoritative, standardized evaluation testbed designed to measure the knowledge, reasoning, and precision of Large Language Models (LLMs) across physical quantities, units, and fundamental constants.</p>
+<p>Developed under the <strong>CODATA DRUM Working Group</strong>, the benchmark enforces strict alignment with the international ground truth hierarchy:</p>
+<ol class="arabic simple">
+<li><p><strong>Tier 1 (Ultimate Ground Truth):</strong> BIPM SI Digital Framework (Official SI Brochure, 9th Edition, 2019 Revision).</p></li>
+<li><p><strong>Tier 2 (Official Physical Constants):</strong> CODATA Fundamental Physical Constants (2018/2022 NIST/CODATA Re-evaluations).</p></li>
+<li><p><strong>Tier 3 (Broad Semantic Graph):</strong> QUDT 2.1 (Quantities, Units, Dimensions, and Types) &amp; UCUM codes.</p></li>
+</ol>
+<section id="the-6-core-metrological-tasks">
+<h2>1. The 6 Core Metrological Tasks<a class="headerlink" href="#the-6-core-metrological-tasks" title="Link to this heading">¶</a></h2>
+<p>The benchmark evaluates LLMs across six fundamental metrological sub-disciplines:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Benchmark Task</p></th>
+<th class="head"><p>Scope &amp; Concepts Tested</p></th>
+<th class="head"><p>Ground Truth Authority &amp; Validation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>1. Fundamental Constants &amp; SI 2019</strong> (<code class="docutils literal notranslate"><span class="pre">constants</span></code>)</p></td>
+<td><p>Exact defined SI constants (<span class="math notranslate nohighlight">\(c, h, e, k, N_{\text{A}}, \Delta\nu_{\text{Cs}}, K_{\text{cd}}\)</span>) with <span class="math notranslate nohighlight">\(u=0\)</span> vs. experimental CODATA constants (<span class="math notranslate nohighlight">\(G, \alpha, m_e\)</span>), standard uncertainties, relative uncertainties (<span class="math notranslate nohighlight">\(u_r\)</span>), and historical re-evaluations.</p></td>
+<td><p>BIPM SI Core Ontology &amp; CODATA DRUM Constants API (2018/2022).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>2. Dimensional Decomposition &amp; Base SI</strong> (<code class="docutils literal notranslate"><span class="pre">dimensions</span></code>)</p></td>
+<td><p>Derivation and decomposition of derived physical units into the 7 ISQ base dimensions <span class="math notranslate nohighlight">\([L, M, T, I, \Theta, N, J]\)</span> and coherent SI base units (e.g., <span class="math notranslate nohighlight">\(\text{Tesla} = \text{kg}\cdot\text{s}^{-2}\cdot\text{A}^{-1}\)</span>).</p></td>
+<td><p>BIPM SI Digital Framework &amp; SymPy symbolic dimension vector arithmetic.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>3. Unit Conversions &amp; Affine Transformations</strong> (<code class="docutils literal notranslate"><span class="pre">conversions</span></code>)</p></td>
+<td><p>Multiplicative scaling, non-SI accepted units, compound rates (<span class="math notranslate nohighlight">\(\text{kWh} \to \text{J}\)</span>), and affine temperature conversions (<span class="math notranslate nohighlight">\(^\circ\text{C} \leftrightarrow \text{K}\)</span>, <span class="math notranslate nohighlight">\(^\circ\text{F} \leftrightarrow \text{K}\)</span>) distinguishing absolute points from temperature intervals (<span class="math notranslate nohighlight">\(\Delta T\)</span>).</p></td>
+<td><p>QUDT 2.1 Conversion Multipliers &amp; Pint unit algebra engine.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>4. Error Detection &amp; Dimensional Homogeneity</strong> (<code class="docutils literal notranslate"><span class="pre">homogeneity</span></code>)</p></td>
+<td><p>Detection of dimensional inhomogeneity (<span class="math notranslate nohighlight">\(15\,\text{kg} + 4.2\,\text{m}\)</span>), illegal compound metric prefixes (<span class="math notranslate nohighlight">\(\text{k}\mu\text{F}\)</span>), and semantic quantity-kind confusion (e.g. Torque <span class="math notranslate nohighlight">\(\text{N}\cdot\text{m}\)</span> vs. Energy <span class="math notranslate nohighlight">\(\text{J}\)</span>).</p></td>
+<td><p>SymPy Physics Dimensional Homogeneity Engine &amp; VIM3 rules.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>5. SI Typography &amp; Metrological Conventions</strong> (<code class="docutils literal notranslate"><span class="pre">conventions</span></code>)</p></td>
+<td><p>Compliance with BIPM 9th Edition style rules: non-breaking space between value and unit symbol (<span class="math notranslate nohighlight">\(25.4\,\text{mm}\)</span>), lowercase unit names vs. capitalized symbols for person-named units (<span class="math notranslate nohighlight">\(\text{newton} \leftrightarrow \text{N}\)</span>), and Roman vs. italic typography.</p></td>
+<td><p>BIPM SI Brochure (9th Edition, 2019) &amp; ISO 80000-1.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>6. Metrological Uncertainty (GUM) &amp; Sig-Figs</strong> (<code class="docutils literal notranslate"><span class="pre">uncertainty</span></code>)</p></td>
+<td><p>Combined standard uncertainty propagation (<span class="math notranslate nohighlight">\(u_c\)</span>), expanded uncertainty (<span class="math notranslate nohighlight">\(U = k \cdot u_c\)</span>) with coverage factor <span class="math notranslate nohighlight">\(k=2\)</span>, relative standard uncertainty (<span class="math notranslate nohighlight">\(u_r\)</span>), and strict significant figures rules.</p></td>
+<td><p>JCGM 100:2008 (Guide to the Expression of Uncertainty in Measurement - GUM).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+<section id="dual-format-testing-architecture">
+<h2>2. Dual-Format Testing Architecture<a class="headerlink" href="#dual-format-testing-architecture" title="Link to this heading">¶</a></h2>
+<p>The benchmark provides two complementary evaluation tracks to support both zero-ambiguity deterministic evaluation and generative symbolic verification:</p>
+<section id="track-a-deterministic-4-option-multiple-choice-mcq">
+<h3>Track A: Deterministic 4-Option Multiple Choice (MCQ)<a class="headerlink" href="#track-a-deterministic-4-option-multiple-choice-mcq" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Format:</strong> MMLU / Big-Bench style 4-choice questions (options <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">D</span></code>).</p></li>
+<li><p><strong>Metrological Distractors:</strong> Distractors are deliberately engineered based on common physical pitfalls:
+- <em>Dimensional Sign Errors:</em> Flipping time or length exponent signs (<span class="math notranslate nohighlight">\(T^{-2} \leftrightarrow T^{2}\)</span>).
+- <em>Affine vs. Linear Offsets:</em> Omitting or misapplying the <span class="math notranslate nohighlight">\(+273.15\,\text{K}\)</span> offset on temperature intervals vs. absolute values.
+- <em>SI Redefinition Errors:</em> Presenting pre-2019 experimental uncertainties for the 7 exact defining constants.
+- <em>Prefix Stacking:</em> Presenting invalid compound metric prefixes (e.g., <span class="math notranslate nohighlight">\(\mu\mu\text{F}\)</span> instead of <span class="math notranslate nohighlight">\(\text{pF}\)</span>).</p></li>
+<li><p><strong>Scoring:</strong> Exact matching of the predicted option letter (extracted via robust regex parsing).</p></li>
+</ul>
+</section>
+<section id="track-b-open-ended-generative-symbolic-derivations">
+<h3>Track B: Open-Ended Generative &amp; Symbolic Derivations<a class="headerlink" href="#track-b-open-ended-generative-symbolic-derivations" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Format:</strong> Free-form questions asking models to derive base SI equations, calculate conversions, or compute uncertainty budgets.</p></li>
+<li><p><strong>Verification Engine:</strong>
+- <strong>LaTeX AST Normalization:</strong> Cleans and normalizes LaTeX math expressions.
+- <strong>Pint Algebraic Equivalence:</strong> Converts candidate expressions into base SI dimensions to verify exact equivalence regardless of formatting.
+- <strong>Arbitrary-Precision Decimal Engine:</strong> Verifies exact constant values down to full defining precision without float truncation.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="cli-usage-workflow">
+<h2>3. CLI Usage &amp; Workflow<a class="headerlink" href="#cli-usage-workflow" title="Link to this heading">¶</a></h2>
+<section id="synthesizing-the-benchmark-datasets">
+<h3>Synthesizing the Benchmark Datasets<a class="headerlink" href="#synthesizing-the-benchmark-datasets" title="Link to this heading">¶</a></h3>
+<p>To build the standardized benchmark splits directly from the ingested canonical entities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate 50 samples per task (total 250+ balanced questions)</span>
+drum-ml<span class="w"> </span>build-benchmark<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--entities-file<span class="w"> </span>./data/entities.json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output-dir<span class="w"> </span>./dataset/benchmark<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--samples-per-task<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--seed<span class="w"> </span><span class="m">42</span>
+</pre></div>
+</div>
+<p>This produces three artifacts in <code class="docutils literal notranslate"><span class="pre">./dataset/benchmark/</span></code>:
+- <code class="docutils literal notranslate"><span class="pre">drum_benchmark_mcq.jsonl</span></code>: Track A Multiple-Choice test suite.
+- <code class="docutils literal notranslate"><span class="pre">drum_benchmark_open.jsonl</span></code>: Track B Free-Form Symbolic test suite.
+- <code class="docutils literal notranslate"><span class="pre">drum_benchmark_all.jsonl</span></code>: Complete combined benchmark suite.</p>
+</section>
+<section id="running-benchmark-evaluations">
+<h3>Running Benchmark Evaluations<a class="headerlink" href="#running-benchmark-evaluations" title="Link to this heading">¶</a></h3>
+<p>To evaluate a model against the benchmark:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Evaluate a model endpoint or baseline with live progress</span>
+drum-ml<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--benchmark-file<span class="w"> </span>./dataset/benchmark/drum_benchmark_mcq.jsonl<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-name<span class="w"> </span><span class="s2">"Qwen2.5-7B-Instruct"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-endpoint<span class="w"> </span><span class="s2">"http://localhost:1234/v1"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>./dataset/benchmark/benchmark_report.json
+</pre></div>
+</div>
+</section>
+<section id="terminal-output-scorecard">
+<h3>Terminal Output Scorecard<a class="headerlink" href="#terminal-output-scorecard" title="Link to this heading">¶</a></h3>
+<p>Evaluation renders a formatted Rich table with stratified category scores:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>       DRUM Metrology Benchmark Scorecard: Qwen2.5-7B-Instruct
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┓
+┃ Category / Sub-Discipline              ┃ Samples ┃ Passed ┃ Accuracy ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━┩
+│ 1. Fundamental Constants &amp; SI 2019     │      50 │     48 │    96.0% │
+│ 2. Dimensional Decomposition &amp; Base SI │      50 │     43 │    86.0% │
+│ 3. Unit Conversions &amp; Affine Offsets   │      50 │     47 │    94.0% │
+│ 4. Error Detection &amp; Homogeneity       │      50 │     39 │    78.0% │
+│ 5. SI Typography &amp; Metrological Rules  │      50 │     41 │    82.0% │
+│ 6. Metrological Uncertainty (GUM)      │      50 │     33 │    66.0% │
+├────────────────────────────────────────┼─────────┼────────┼──────────┤
+│ OVERALL DRUM BENCHMARK SCORE           │     300 │    251 │   83.67% │
+└────────────────────────────────────────┴─────────┴────────┴──────────┘
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="programmatic-python-api">
+<h2>4. Programmatic Python API<a class="headerlink" href="#programmatic-python-api" title="Link to this heading">¶</a></h2>
+<section id="synthesizing-benchmark-samples-in-python">
+<h3>Synthesizing Benchmark Samples in Python<a class="headerlink" href="#synthesizing-benchmark-samples-in-python" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">CanonicalEntityStore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.benchmark.generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">DRUMBenchmarkGenerator</span>
+
+<span class="c1"># Load canonical RDF entities</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"./data/entities.json"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">store</span> <span class="o">=</span> <span class="n">CanonicalEntityStore</span><span class="o">.</span><span class="n">model_validate_json</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="c1"># Initialize generator</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">DRUMBenchmarkGenerator</span><span class="p">(</span><span class="n">entities</span><span class="o">=</span><span class="n">store</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Generate full 6-task benchmark</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">generate_all</span><span class="p">(</span><span class="n">samples_per_task</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> benchmark samples."</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="grading-and-computing-scorecards-programmatically">
+<h3>Grading and Computing Scorecards Programmatically<a class="headerlink" href="#grading-and-computing-scorecards-programmatically" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.pipeline.evaluator</span><span class="w"> </span><span class="kn">import</span> <span class="n">MEvalBenchmark</span>
+
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">MEvalBenchmark</span><span class="p">(</span><span class="n">benchmark_file</span><span class="o">=</span><span class="s2">"./dataset/benchmark/drum_benchmark_mcq.jsonl"</span><span class="p">)</span>
+<span class="n">records</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">load_benchmark_records</span><span class="p">()</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+    <span class="c1"># Replace with actual model prediction</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="s2">"The correct answer is (B)"</span>
+    <span class="n">grade</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">grade_response</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">predicted</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s2">"id"</span><span class="p">:</span> <span class="n">record</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span>
+        <span class="s2">"task"</span><span class="p">:</span> <span class="n">record</span><span class="p">[</span><span class="s2">"task"</span><span class="p">],</span>
+        <span class="s2">"format"</span><span class="p">:</span> <span class="n">record</span><span class="p">[</span><span class="s2">"format"</span><span class="p">],</span>
+        <span class="s2">"difficulty"</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"difficulty"</span><span class="p">,</span> <span class="s2">"intermediate"</span><span class="p">),</span>
+        <span class="s2">"grade"</span><span class="p">:</span> <span class="n">grade</span><span class="p">,</span>
+    <span class="p">})</span>
+
+<span class="c1"># Compute full scorecard</span>
+<span class="n">scorecard</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">compute_scorecard</span><span class="p">(</span><span class="s2">"my-model"</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Overall Score: </span><span class="si">{</span><span class="n">scorecard</span><span class="o">.</span><span class="n">overall_accuracy_pct</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+<span class="n">evaluator</span><span class="o">.</span><span class="n">print_scorecard</span><span class="p">(</span><span class="n">scorecard</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="data-schema-specifications">
+<h2>5. Data Schema Specifications<a class="headerlink" href="#data-schema-specifications" title="Link to this heading">¶</a></h2>
+<section id="benchmark-sample-record-schema-jsonl">
+<h3>Benchmark Sample Record Schema (JSONL)<a class="headerlink" href="#benchmark-sample-record-schema-jsonl" title="Link to this heading">¶</a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"drum_bench_const_mcq_001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"task"</span><span class="p">:</span><span class="w"> </span><span class="s2">"constants"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mcq"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"difficulty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"introductory"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Under the 2019 SI redefinition, what is the exact defined numerical value of the Planck constant (h)?"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.62607015e-34 J s (Exact, standard uncertainty u = 0)"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"is_correct"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"distractor_rationale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ground truth"</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"B"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.62606957e-34 J s (Outdated pre-2019 value)"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"is_correct"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"distractor_rationale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Outdated pre-2019 value"</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.62607015e-34 J s (Recommended value with u = 4.5e-9)"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"is_correct"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"distractor_rationale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Incorrect claim of non-zero uncertainty budget"</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"D"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.62607015e-34 J s (Fixed prior to 1983)"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"is_correct"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"distractor_rationale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Incorrect historical date"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"correct_option_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ground_truth_answer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.62607015e-34 J s (Exact, standard uncertainty u = 0)"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"entity_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://qudt.org/vocab/constant/PlanckConstant"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"explanation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"In the 2019 revision of the SI, the Planck constant (h) was given the exact value 6.62607015e-34 J s by definition, fixing its standard uncertainty to exactly zero."</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="nt">"constant_symbol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"h"</span><span class="p">,</span>
+<span class="w">     </span><span class="nt">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exact_si_defining"</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="eleutherai-lm-evaluation-harness-integration">
+<h2>6. EleutherAI <code class="docutils literal notranslate"><span class="pre">lm-evaluation-harness</span></code> Integration<a class="headerlink" href="#eleutherai-lm-evaluation-harness-integration" title="Link to this heading">¶</a></h2>
+<p>The DRUM benchmark provides full native support for <a class="reference external" href="https://github.com/EleutherAI/lm-evaluation-harness">lm-evaluation-harness</a>, allowing automated evaluation of open-weights models and frontier APIs using standardized log-likelihood multi-choice grading.</p>
+<p>The task configurations are organized under <code class="docutils literal notranslate"><span class="pre">tasks/drum_benchmark/</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">drum_benchmark.yaml</span></code>: Master group task aggregating all 6 subtasks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">drum_constants.yaml</span></code>: Task 1 (Constants &amp; SI 2019).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">drum_dimensions.yaml</span></code>: Task 2 (Dimensional Decomposition).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">drum_conversions.yaml</span></code>: Task 3 (Unit Conversions).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">drum_homogeneity.yaml</span></code>: Task 4 (Homogeneity &amp; Error Detection).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">drum_conventions.yaml</span></code>: Task 5 (SI Typography &amp; Rules).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">drum_uncertainty.yaml</span></code>: Task 6 (Uncertainty &amp; GUM).</p></li>
+</ul>
+<section id="running-with-lm-eval-cli">
+<h3>Running with <code class="docutils literal notranslate"><span class="pre">lm_eval</span></code> CLI<a class="headerlink" href="#running-with-lm-eval-cli" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Evaluate an open Hugging Face model across the full DRUM benchmark suite</span>
+lm_eval<span class="w"> </span>--model<span class="w"> </span>hf<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--model_args<span class="w"> </span><span class="nv">pretrained</span><span class="o">=</span>Qwen/Qwen2.5-7B-Instruct<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--include_path<span class="w"> </span>./tasks<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--tasks<span class="w"> </span>drum_benchmark<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--batch_size<span class="w"> </span>auto<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--output_path<span class="w"> </span>./dataset/benchmark/qwen_eval_results
+
+<span class="c1"># Evaluate a single subtask (e.g. Fundamental Physical Constants)</span>
+lm_eval<span class="w"> </span>--model<span class="w"> </span>hf<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--model_args<span class="w"> </span><span class="nv">pretrained</span><span class="o">=</span>meta-llama/Meta-Llama-3.1-8B-Instruct<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--include_path<span class="w"> </span>./tasks<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--tasks<span class="w"> </span>drum_constants<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--batch_size<span class="w"> </span>auto
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="personas.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Scientific Unions &amp; Domain Personas</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="methodology.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Methodology &amp; Metrological Foundations</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, CODATA DRUM Working Group (Lead: Pascal Heus)
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">DRUM Metrology Benchmark (M-Eval) Suite</a><ul>
+<li><a class="reference internal" href="#the-6-core-metrological-tasks">1. The 6 Core Metrological Tasks</a></li>
+<li><a class="reference internal" href="#dual-format-testing-architecture">2. Dual-Format Testing Architecture</a><ul>
+<li><a class="reference internal" href="#track-a-deterministic-4-option-multiple-choice-mcq">Track A: Deterministic 4-Option Multiple Choice (MCQ)</a></li>
+<li><a class="reference internal" href="#track-b-open-ended-generative-symbolic-derivations">Track B: Open-Ended Generative &amp; Symbolic Derivations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cli-usage-workflow">3. CLI Usage &amp; Workflow</a><ul>
+<li><a class="reference internal" href="#synthesizing-the-benchmark-datasets">Synthesizing the Benchmark Datasets</a></li>
+<li><a class="reference internal" href="#running-benchmark-evaluations">Running Benchmark Evaluations</a></li>
+<li><a class="reference internal" href="#terminal-output-scorecard">Terminal Output Scorecard</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#programmatic-python-api">4. Programmatic Python API</a><ul>
+<li><a class="reference internal" href="#synthesizing-benchmark-samples-in-python">Synthesizing Benchmark Samples in Python</a></li>
+<li><a class="reference internal" href="#grading-and-computing-scorecards-programmatically">Grading and Computing Scorecards Programmatically</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-schema-specifications">5. Data Schema Specifications</a><ul>
+<li><a class="reference internal" href="#benchmark-sample-record-schema-jsonl">Benchmark Sample Record Schema (JSONL)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eleutherai-lm-evaluation-harness-integration">6. EleutherAI <code class="docutils literal notranslate"><span class="pre">lm-evaluation-harness</span></code> Integration</a><ul>
+<li><a class="reference internal" href="#running-with-lm-eval-cli">Running with <code class="docutils literal notranslate"><span class="pre">lm_eval</span></code> CLI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=38b66d78"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    </body>
+</html>

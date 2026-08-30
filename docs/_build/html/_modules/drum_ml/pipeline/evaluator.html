@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -231,11 +234,29 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for drum_ml.pipeline.evaluator</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""M-Eval Metrology Benchmark Evaluation Runner."""</span>
+<span></span><span class="sd">"""DRUM Metrology Benchmark (M-Eval) Evaluation &amp; Grading Engine.</span>
+
+<span class="sd">Evaluates local or frontier models against the held-out DRUM benchmark suite,</span>
+<span class="sd">performing dual-track verification (deterministic MCQ extraction + symbolic physics equivalence)</span>
+<span class="sd">and generating stratified metrology scorecards across all 6 sub-disciplines.</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.benchmark.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BenchmarkFormat</span><span class="p">,</span>
+    <span class="n">BenchmarkSample</span><span class="p">,</span>
+    <span class="n">BenchmarkScorecard</span><span class="p">,</span>
+    <span class="n">BenchmarkTask</span><span class="p">,</span>
+    <span class="n">DifficultyTier</span><span class="p">,</span>
+    <span class="n">TaskScore</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.symbolic.latex_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">sanitize_latex_units</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.symbolic.pint_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_unit_conversion_equivalence</span>
 
@@ -243,14 +264,15 @@
 <div class="viewcode-block" id="MEvalBenchmark">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MEvalBenchmark</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Evaluates local or frontier models against the held-out M-Eval metrology test set."""</span>
+<span class="w">    </span><span class="sd">"""Evaluator and grader for the DRUM Metrology Benchmark suite."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">benchmark_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./dataset/test.jsonl"</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">benchmark_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./dataset/drum_benchmark_mcq.jsonl"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">benchmark_file</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MEvalBenchmark.load_benchmark_records">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.load_benchmark_records">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_benchmark_records</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">"""Load benchmark samples from JSONL."""</span>
         <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">records</span>
@@ -261,26 +283,194 @@
         <span class="k">return</span> <span class="n">records</span></div>
 
 
+<div class="viewcode-block" id="MEvalBenchmark.extract_mcq_answer">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.extract_mcq_answer">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_mcq_answer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Extracts the predicted MCQ option letter (A, B, C, D) from an LLM response."""</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">response_text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Pattern 1: Exact standalone letter "A", "B", "C", "D"</span>
+        <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">,</span> <span class="s2">"D"</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+        <span class="c1"># Pattern 2: "Option A", "Option (A)", "(A)", "[A]", "Answer: A", "**A**"</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">r</span><span class="s2">"(?:the\s+correct\s+answer\s+is|correct\s+option\s+is|answer\s*[:=]?)\s*[\*\_]*\(?([A-Da-d])\)?"</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">"[\*\_]*\(([A-Da-d])\)[\*\_]*"</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">"[\*\_]*\[([A-Da-d])\][\*\_]*"</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">"option\s+([A-Da-d])\b"</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">"^\s*([A-Da-d])[\.\:\)]\s*"</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">"\b([A-Da-d])\b"</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
 <div class="viewcode-block" id="MEvalBenchmark.grade_response">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.grade_response">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">grade_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">predicted</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Dual-format grading: deterministic string check + symbolic equivalence check."""</span>
-        <span class="n">gt_clean</span> <span class="o">=</span> <span class="n">sanitize_latex_units</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)</span>
-        <span class="n">pred_clean</span> <span class="o">=</span> <span class="n">sanitize_latex_units</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">grade_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">predicted_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Grades a response against ground truth using MCQ extraction or symbolic equivalence."""</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"format"</span><span class="p">,</span> <span class="n">BenchmarkFormat</span><span class="o">.</span><span class="n">MCQ</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">correct_key</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"correct_option_key"</span><span class="p">)</span>
+        <span class="n">gt_answer</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ground_truth_answer"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
 
-        <span class="c1"># 1. Exact string match</span>
-        <span class="n">exact_match</span> <span class="o">=</span> <span class="p">(</span><span class="n">gt_clean</span> <span class="o">==</span> <span class="n">pred_clean</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ground_truth</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">predicted</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="c1"># Case 1: Standard Chat JSONL compatibility (fallback)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">correct_key</span> <span class="ow">and</span> <span class="s2">"messages"</span> <span class="ow">in</span> <span class="n">record</span><span class="p">:</span>
+            <span class="n">messages</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"messages"</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">gt_answer</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span><span class="p">[</span><span class="s2">"content"</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"role"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"assistant"</span><span class="p">),</span> <span class="s2">""</span><span class="p">)</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">BenchmarkFormat</span><span class="o">.</span><span class="n">FREE_FORM</span><span class="o">.</span><span class="n">value</span>
 
-        <span class="c1"># 2. Symbolic equivalence check (if containing numbers/units)</span>
-        <span class="n">is_sym_eq</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">check_unit_conversion_equivalence</span><span class="p">(</span><span class="n">gt_clean</span><span class="p">,</span> <span class="n">pred_clean</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">exact_match</span> <span class="k">else</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># Track A: MCQ Grading</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">BenchmarkFormat</span><span class="o">.</span><span class="n">MCQ</span><span class="o">.</span><span class="n">value</span> <span class="ow">or</span> <span class="n">correct_key</span><span class="p">:</span>
+            <span class="n">pred_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_mcq_answer</span><span class="p">(</span><span class="n">predicted_text</span><span class="p">)</span>
+            <span class="n">passed</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred_key</span> <span class="o">==</span> <span class="n">correct_key</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">pred_key</span> <span class="ow">and</span> <span class="n">correct_key</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">"passed"</span><span class="p">:</span> <span class="n">passed</span><span class="p">,</span>
+                <span class="s2">"format"</span><span class="p">:</span> <span class="n">BenchmarkFormat</span><span class="o">.</span><span class="n">MCQ</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">"predicted_key"</span><span class="p">:</span> <span class="n">pred_key</span><span class="p">,</span>
+                <span class="s2">"expected_key"</span><span class="p">:</span> <span class="n">correct_key</span><span class="p">,</span>
+                <span class="s2">"predicted_raw"</span><span class="p">:</span> <span class="n">predicted_text</span><span class="p">[:</span><span class="mi">200</span><span class="p">],</span>
+                <span class="s2">"error"</span><span class="p">:</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">passed</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"Expected option </span><span class="si">{</span><span class="n">correct_key</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">pred_key</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="c1"># Track B: Free-Form / Symbolic Physics Equivalence</span>
+        <span class="n">gt_clean</span> <span class="o">=</span> <span class="n">sanitize_latex_units</span><span class="p">(</span><span class="n">gt_answer</span><span class="p">)</span>
+        <span class="n">pred_clean</span> <span class="o">=</span> <span class="n">sanitize_latex_units</span><span class="p">(</span><span class="n">predicted_text</span><span class="p">)</span>
+
+        <span class="n">exact_match</span> <span class="o">=</span> <span class="p">(</span><span class="n">gt_clean</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">pred_clean</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="ow">or</span> <span class="p">(</span><span class="n">gt_answer</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">predicted_text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="n">is_sym_eq</span><span class="p">,</span> <span class="n">sym_err</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exact_match</span><span class="p">:</span>
+            <span class="n">is_sym_eq</span><span class="p">,</span> <span class="n">sym_err</span> <span class="o">=</span> <span class="n">check_unit_conversion_equivalence</span><span class="p">(</span><span class="n">gt_clean</span><span class="p">,</span> <span class="n">pred_clean</span><span class="p">)</span>
 
         <span class="n">passed</span> <span class="o">=</span> <span class="n">exact_match</span> <span class="ow">or</span> <span class="n">is_sym_eq</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">"passed"</span><span class="p">:</span> <span class="n">passed</span><span class="p">,</span>
+            <span class="s2">"format"</span><span class="p">:</span> <span class="n">BenchmarkFormat</span><span class="o">.</span><span class="n">FREE_FORM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
             <span class="s2">"exact_match"</span><span class="p">:</span> <span class="n">exact_match</span><span class="p">,</span>
             <span class="s2">"symbolic_match"</span><span class="p">:</span> <span class="n">is_sym_eq</span><span class="p">,</span>
-            <span class="s2">"error"</span><span class="p">:</span> <span class="n">err</span><span class="p">,</span>
+            <span class="s2">"error"</span><span class="p">:</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">passed</span> <span class="k">else</span> <span class="n">sym_err</span><span class="p">,</span>
         <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="MEvalBenchmark.compute_scorecard">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.compute_scorecard">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_scorecard</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BenchmarkScorecard</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Computes stratified scores across all 6 tasks, formats, and difficulties."""</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">passed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"grade"</span><span class="p">][</span><span class="s2">"passed"</span><span class="p">])</span>
+        <span class="n">overall_pct</span> <span class="o">=</span> <span class="p">(</span><span class="n">passed</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="mf">100.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Sub-breakdowns</span>
+        <span class="n">task_stats</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">fmt_stats</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">diff_stats</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"task"</span><span class="p">,</span> <span class="s2">"unknown"</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"format"</span><span class="p">,</span> <span class="s2">"unknown"</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"difficulty"</span><span class="p">,</span> <span class="s2">"intermediate"</span><span class="p">)</span>
+            <span class="n">is_p</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"grade"</span><span class="p">][</span><span class="s2">"passed"</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span>
+
+            <span class="c1"># Task</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">task_stats</span><span class="p">:</span>
+                <span class="n">task_stats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"total"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"passed"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+            <span class="n">task_stats</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="s2">"total"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">task_stats</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="s2">"passed"</span><span class="p">]</span> <span class="o">+=</span> <span class="n">is_p</span>
+
+            <span class="c1"># Format</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fmt_stats</span><span class="p">:</span>
+                <span class="n">fmt_stats</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"total"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"passed"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+            <span class="n">fmt_stats</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="s2">"total"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">fmt_stats</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="s2">"passed"</span><span class="p">]</span> <span class="o">+=</span> <span class="n">is_p</span>
+
+            <span class="c1"># Difficulty</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">diff_stats</span><span class="p">:</span>
+                <span class="n">diff_stats</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"total"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"passed"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+            <span class="n">diff_stats</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s2">"total"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">diff_stats</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s2">"passed"</span><span class="p">]</span> <span class="o">+=</span> <span class="n">is_p</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_task_score_dict</span><span class="p">(</span><span class="n">d_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TaskScore</span><span class="p">]:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">pct</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s2">"passed"</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="s2">"total"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">100.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">"total"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">TaskScore</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s2">"total"</span><span class="p">],</span> <span class="n">passed</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s2">"passed"</span><span class="p">],</span> <span class="n">accuracy_pct</span><span class="o">=</span><span class="n">pct</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">out</span>
+
+        <span class="k">return</span> <span class="n">BenchmarkScorecard</span><span class="p">(</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+            <span class="n">total_samples</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+            <span class="n">passed_samples</span><span class="o">=</span><span class="n">passed</span><span class="p">,</span>
+            <span class="n">overall_accuracy_pct</span><span class="o">=</span><span class="n">overall_pct</span><span class="p">,</span>
+            <span class="n">task_breakdown</span><span class="o">=</span><span class="n">to_task_score_dict</span><span class="p">(</span><span class="n">task_stats</span><span class="p">),</span>
+            <span class="n">format_breakdown</span><span class="o">=</span><span class="n">to_task_score_dict</span><span class="p">(</span><span class="n">fmt_stats</span><span class="p">),</span>
+            <span class="n">difficulty_breakdown</span><span class="o">=</span><span class="n">to_task_score_dict</span><span class="p">(</span><span class="n">diff_stats</span><span class="p">),</span>
+            <span class="n">detailed_results</span><span class="o">=</span><span class="n">results</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MEvalBenchmark.print_scorecard">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.evaluator.MEvalBenchmark.print_scorecard">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_scorecard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scorecard</span><span class="p">:</span> <span class="n">BenchmarkScorecard</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Console</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Prints a rich, formatted evaluation scorecard to the terminal."""</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="n">console</span> <span class="ow">or</span> <span class="n">Console</span><span class="p">()</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"DRUM Metrology Benchmark Scorecard: </span><span class="si">{</span><span class="n">scorecard</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">title_style</span><span class="o">=</span><span class="s2">"bold magenta"</span><span class="p">,</span>
+            <span class="n">header_style</span><span class="o">=</span><span class="s2">"bold cyan"</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"Category / Sub-Discipline"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"Samples"</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"Passed"</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"Accuracy"</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+
+        <span class="c1"># Task breakdown</span>
+        <span class="n">task_names</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"constants"</span><span class="p">:</span> <span class="s2">"1. Fundamental Constants &amp; SI 2019"</span><span class="p">,</span>
+            <span class="s2">"dimensions"</span><span class="p">:</span> <span class="s2">"2. Dimensional Decomposition &amp; Base SI"</span><span class="p">,</span>
+            <span class="s2">"conversions"</span><span class="p">:</span> <span class="s2">"3. Unit Conversions &amp; Affine Offsets"</span><span class="p">,</span>
+            <span class="s2">"homogeneity"</span><span class="p">:</span> <span class="s2">"4. Error Detection &amp; Homogeneity"</span><span class="p">,</span>
+            <span class="s2">"conventions"</span><span class="p">:</span> <span class="s2">"5. SI Typography &amp; Metrological Rules"</span><span class="p">,</span>
+            <span class="s2">"uncertainty"</span><span class="p">:</span> <span class="s2">"6. Metrological Uncertainty (GUM)"</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">task_key</span><span class="p">,</span> <span class="n">task_label</span> <span class="ow">in</span> <span class="n">task_names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">task_key</span> <span class="ow">in</span> <span class="n">scorecard</span><span class="o">.</span><span class="n">task_breakdown</span><span class="p">:</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">scorecard</span><span class="o">.</span><span class="n">task_breakdown</span><span class="p">[</span><span class="n">task_key</span><span class="p">]</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="s2">"green"</span> <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">accuracy_pct</span> <span class="o">&gt;=</span> <span class="mi">80</span> <span class="k">else</span> <span class="s2">"yellow"</span> <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">accuracy_pct</span> <span class="o">&gt;=</span> <span class="mi">50</span> <span class="k">else</span> <span class="s2">"red"</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
+                    <span class="n">task_label</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">total</span><span class="p">),</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">passed</span><span class="p">),</span>
+                    <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">accuracy_pct</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%[/</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">]"</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="n">table</span><span class="o">.</span><span class="n">add_section</span><span class="p">()</span>
+        <span class="n">ov_color</span> <span class="o">=</span> <span class="s2">"bold green"</span> <span class="k">if</span> <span class="n">scorecard</span><span class="o">.</span><span class="n">overall_accuracy_pct</span> <span class="o">&gt;=</span> <span class="mi">80</span> <span class="k">else</span> <span class="s2">"bold yellow"</span> <span class="k">if</span> <span class="n">scorecard</span><span class="o">.</span><span class="n">overall_accuracy_pct</span> <span class="o">&gt;=</span> <span class="mi">50</span> <span class="k">else</span> <span class="s2">"bold red"</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
+            <span class="s2">"OVERALL DRUM BENCHMARK SCORE"</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">scorecard</span><span class="o">.</span><span class="n">total_samples</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">scorecard</span><span class="o">.</span><span class="n">passed_samples</span><span class="p">),</span>
+            <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">ov_color</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="n">scorecard</span><span class="o">.</span><span class="n">overall_accuracy_pct</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%[/</span><span class="si">{</span><span class="n">ov_color</span><span class="si">}</span><span class="s2">]"</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">con</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">con</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="n">con</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

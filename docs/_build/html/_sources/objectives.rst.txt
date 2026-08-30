@@ -20,8 +20,8 @@ Governance & Leadership
 - **Contact:** ``drum@codata.org``
 - **Primary Deliverables:**
   - **Open-Access Hugging Face Dataset (``drum-ml/metrology-instruct``):** High-quality SFT and DPO splits.
-  - **M-Eval Metrology Benchmark Suite:** Standardized held-out evaluation testbed to measure model metrological precision.
-  - **``drum-ml`` Python Package & CLI:** Autonomous CLI for continuous dataset generation and benchmark evaluation.
+  - **DRUM Metrology Benchmark (M-Eval):** Standardized 6-task evaluation suite with dual MCQ and symbolic tracks, fully integrated with ``lm-evaluation-harness``.
+  - **``drum-ml`` Python Package & CLI:** Autonomous CLI for continuous dataset generation, custom ontology synthesis, and benchmark evaluation.
 
 Master Knowledge Repositories
 -----------------------------

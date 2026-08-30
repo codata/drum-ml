@@ -196,6 +196,9 @@
 <li class="toctree-l1"><a class="reference internal" href="objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
@@ -316,32 +319,55 @@ python<span class="w"> </span>-m<span class="w"> </span>mlx_lm.dpo<span class="w
 </div>
 </section>
 </section>
-<section id="m-eval-benchmark-evaluation">
-<h2>M-Eval Benchmark Evaluation<a class="headerlink" href="#m-eval-benchmark-evaluation" title="Link to this heading">¶</a></h2>
-<p>Evaluate base vs. fine-tuned models on the held-out benchmark:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Evaluate baseline model</span>
-drum-ml<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--benchmark-file<span class="w"> </span>./dataset/test.jsonl<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--model-endpoint<span class="w"> </span>http://localhost:1234/v1<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--model-name<span class="w"> </span>qwen2.5-14b-base<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--output<span class="w"> </span>./dataset/base_eval_report.json
-
-<span class="c1"># Evaluate fine-tuned model</span>
-drum-ml<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--benchmark-file<span class="w"> </span>./dataset/test.jsonl<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--model-endpoint<span class="w"> </span>http://localhost:1234/v1<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--model-name<span class="w"> </span>qwen2.5-14b-drum-finetuned<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--output<span class="w"> </span>./dataset/finetuned_eval_report.json
+<section id="drum-metrology-benchmark-m-eval-evaluation">
+<h2>DRUM Metrology Benchmark (M-Eval) Evaluation<a class="headerlink" href="#drum-metrology-benchmark-m-eval-evaluation" title="Link to this heading">¶</a></h2>
+<p>DRUM-ML includes a dedicated, standardized benchmark suite evaluating LLMs across <strong>6 Core Sub-Disciplines</strong>:
+1. <strong>Fundamental Physical Constants &amp; SI 2019</strong> (<code class="docutils literal notranslate"><span class="pre">constants</span></code>)
+2. <strong>Dimensional Decomposition &amp; Base SI</strong> (<code class="docutils literal notranslate"><span class="pre">dimensions</span></code>)
+3. <strong>Unit Conversions &amp; Affine Transformations</strong> (<code class="docutils literal notranslate"><span class="pre">conversions</span></code>)
+4. <strong>Error Detection &amp; Dimensional Homogeneity</strong> (<code class="docutils literal notranslate"><span class="pre">homogeneity</span></code>)
+5. <strong>SI Typography &amp; Metrological Conventions</strong> (<code class="docutils literal notranslate"><span class="pre">conventions</span></code>)
+6. <strong>Metrological Uncertainty (GUM) &amp; Sig-Figs</strong> (<code class="docutils literal notranslate"><span class="pre">uncertainty</span></code>)</p>
+<section id="synthesize-benchmark-datasets">
+<h3>1. Synthesize Benchmark Datasets<a class="headerlink" href="#synthesize-benchmark-datasets" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate 50 samples per task (total 250+ balanced questions)</span>
+drum-ml<span class="w"> </span>build-benchmark<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--entities-file<span class="w"> </span>./data/entities.json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output-dir<span class="w"> </span>./dataset/benchmark<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--samples-per-task<span class="w"> </span><span class="m">50</span>
 </pre></div>
 </div>
-<section id="evaluation-metrics">
-<h3>Evaluation Metrics<a class="headerlink" href="#evaluation-metrics" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Exact Accuracy Score (EAS):</strong> Percentage of exact constants and symbols reproduced without drift.</p></li>
-<li><p><strong>Dimensional Homogeneity Score (DHS):</strong> Accuracy on detecting invalid equations and dimensional violations via SymPy/Pint.</p></li>
-<li><p><strong>Conversion Error Rate (CER):</strong> Mean relative error on multi-step conversion chains.</p></li>
-<li><p><strong>Code Executability Score (CES):</strong> Percentage of generated Python/SPARQL snippets executing without runtime errors.</p></li>
-</ul>
+</section>
+<section id="evaluate-models-generate-scorecards">
+<h3>2. Evaluate Models &amp; Generate Scorecards<a class="headerlink" href="#evaluate-models-generate-scorecards" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Evaluate baseline model</span>
+drum-ml<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--benchmark-file<span class="w"> </span>./dataset/benchmark/drum_benchmark_mcq.jsonl<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-endpoint<span class="w"> </span>http://localhost:1234/v1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-name<span class="w"> </span>qwen2.5-14b-base<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>./dataset/benchmark/base_eval_report.json
+
+<span class="c1"># Evaluate fine-tuned model (measure metrological gain)</span>
+drum-ml<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--benchmark-file<span class="w"> </span>./dataset/benchmark/drum_benchmark_mcq.jsonl<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-endpoint<span class="w"> </span>http://localhost:1234/v1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model-name<span class="w"> </span>qwen2.5-14b-drum-finetuned<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>./dataset/benchmark/finetuned_eval_report.json
+</pre></div>
+</div>
+</section>
+<section id="standardized-lm-evaluation-harness-execution">
+<h3>3. Standardized <code class="docutils literal notranslate"><span class="pre">lm-evaluation-harness</span></code> Execution<a class="headerlink" href="#standardized-lm-evaluation-harness-execution" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run EleutherAI lm-eval against the complete DRUM benchmark</span>
+lm_eval<span class="w"> </span>--model<span class="w"> </span>hf<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--model_args<span class="w"> </span><span class="nv">pretrained</span><span class="o">=</span>Qwen/Qwen2.5-7B-Instruct<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--include_path<span class="w"> </span>./tasks<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--tasks<span class="w"> </span>drum_benchmark<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--batch_size<span class="w"> </span>auto<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--output_path<span class="w"> </span>./dataset/benchmark/qwen_eval_results
+</pre></div>
+</div>
+<p>For full architectural details, data schemas, and distractor rationales, see <a class="reference internal" href="benchmark.html"><span class="doc">DRUM Metrology Benchmark (M-Eval) Suite</span></a>.</p>
 </section>
 </section>
 <section id="publishing-to-hugging-face-hub">
@@ -426,8 +452,10 @@ huggingface-cli<span class="w"> </span>upload<span class="w"> </span>codata/drum
 <li><a class="reference internal" href="#cloud-fine-tuning-openai-api">3. Cloud Fine-Tuning (OpenAI API)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#m-eval-benchmark-evaluation">M-Eval Benchmark Evaluation</a><ul>
-<li><a class="reference internal" href="#evaluation-metrics">Evaluation Metrics</a></li>
+<li><a class="reference internal" href="#drum-metrology-benchmark-m-eval-evaluation">DRUM Metrology Benchmark (M-Eval) Evaluation</a><ul>
+<li><a class="reference internal" href="#synthesize-benchmark-datasets">1. Synthesize Benchmark Datasets</a></li>
+<li><a class="reference internal" href="#evaluate-models-generate-scorecards">2. Evaluate Models &amp; Generate Scorecards</a></li>
+<li><a class="reference internal" href="#standardized-lm-evaluation-harness-execution">3. Standardized <code class="docutils literal notranslate"><span class="pre">lm-evaluation-harness</span></code> Execution</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#publishing-to-hugging-face-hub">Publishing to Hugging Face Hub</a></li>

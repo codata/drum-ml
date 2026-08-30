@@ -252,11 +252,14 @@ drum-ml scaffold
 # Or generate a quick sample scaffold:
 drum-ml scaffold --sample
 
-# Step 3: Run full pipeline end-to-end (extract -> scaffold -> augment -> validate -> export)
+# Step 3: Synthesize standardized DRUM Benchmark suite across 6 core tasks
+drum-ml build-benchmark --samples-per-task 50
+
+# Step 4: Run full dataset generation pipeline (extract -> scaffold -> augment -> validate -> export)
 drum-ml run
 
-# Step 4: Evaluate local or remote models against the held-out M-Eval benchmark
-drum-ml evaluate
+# Step 5: Evaluate local or remote models against the DRUM benchmark
+drum-ml evaluate --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl
 ```
 
 ### 4. LLM Provider & API Key Configuration
@@ -307,16 +310,23 @@ drum-ml/
 ├── dataset/                           # Final dataset splits & artifacts
 │   ├── train.jsonl                    # Supervised Fine-Tuning (SFT) Train split (85%)
 │   ├── val.jsonl                      # Validation split (10%)
-│   ├── test.jsonl                     # Held-out benchmark test split (5%)
+│   ├── test.jsonl                     # Held-out test split (5%)
 │   ├── dpo_preferences.jsonl          # Mined DPO preference pairs
+│   ├── benchmark/                     # Standardized DRUM Benchmark splits
+│   │   ├── drum_benchmark_mcq.jsonl   # Track A: 4-Option MCQ benchmark
+│   │   ├── drum_benchmark_open.jsonl  # Track B: Free-form symbolic benchmark
+│   │   └── drum_benchmark_all.jsonl   # Full benchmark suite
 │   └── dataset_card.md                # Generated dataset card & distribution stats
+├── tasks/                             # EleutherAI lm-evaluation-harness configs
+│   └── drum_benchmark/                # Master group & 6 subtask YAML definitions
 ├── src/
 │   └── drum_ml/
 │       ├── cli.py                     # Central Typer CLI entrypoint
 │       ├── config.py                  # Pydantic Settings & YAML loader
+│       ├── benchmark/                 # Benchmark Models & Gold Test Set Generator
 │       ├── data_sources/              # Source fetchers (BIPM, CODATA, QUDT)
 │       ├── models/                    # Pydantic Schemas (Entities, Scaffolds, Export)
-│       ├── pipeline/                  # Core Agents (Extractor, Scaffolder, Augmenter, Validator, Exporter)
+│       ├── pipeline/                  # Core Agents (Extractor, Scaffolder, Augmenter, Validator, Exporter, Evaluator)
 │       ├── symbolic/                  # SymPy, Pint, Decimal precision & LaTeX verifiers
 │       └── prompts/                   # Archetype templates & persona definitions
 └── tests/                             # Unit, property-based (Hypothesis), & integration tests
@@ -505,6 +515,19 @@ drum-ml evaluate \
 ├────────────────────────────────────────┼─────────┼────────┼──────────┤
 │ OVERALL DRUM BENCHMARK SCORE           │     300 │    273 │   91.00% │
 └────────────────────────────────────────┴─────────┴────────┴──────────┘
+```
+
+### 4. EleutherAI `lm-evaluation-harness` Support
+
+The benchmark includes standardized task YAML configurations under `tasks/drum_benchmark/`:
+
+```bash
+# Evaluate any Hugging Face model across all 6 DRUM benchmark tasks
+lm_eval --model hf \
+        --model_args pretrained=Qwen/Qwen2.5-7B-Instruct \
+        --include_path ./tasks \
+        --tasks drum_benchmark \
+        --batch_size auto
 ```
 
 ---

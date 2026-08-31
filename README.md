@@ -16,6 +16,14 @@ It is an end-to-end, multi-agent autonomous framework designed to extract, synth
 
 By extracting semantic graphs from official international metrology authorities and verifying candidates through symbolic algebra and arbitrary-precision arithmetic, DRUM-ML eliminates unit-conversion hallucinations, dimensional errors, and constant misquotations in downstream models.
 
+> [!WARNING]
+> **Experimental Research Prototype — Not for Production Use**
+>
+> This software pipeline, the DRUM Metrology Benchmark (M-Eval), and all generated datasets are currently **experimental research prototypes** developed under the CODATA DRUM Working Group.
+>
+> - **Intended Scope:** Strictly for scientific research, AI model evaluation, benchmarking, and pedagogical/educational purposes.
+> - **Production Warning:** This system and its synthesized outputs must **not** be used in production environments, regulatory compliance auditing, safety-critical systems, commercial transactions, clinical/medical dosage calculations, or automated industrial control without independent, accredited human metrological verification.
+
 ---
 
 ## 👥 Governance & Leadership
@@ -143,9 +151,9 @@ Agent 3 generates natural user queries across **35 Scientific Personas** and **6
 |---|---|---|---|---|
 | **Tier 1 (Fast Test/CI)** | `nemotron-3-nano:4b`, `phi-3.5-mini:3.8b` | **1.05 hours ($0.44 total)** | 36 minutes ($1.62 total) | Prototyping & CI/CD |
 | **Tier 2 (Balanced)** | `gemma4:12b`, `qwen2.5:14b` | **2.0 hours ($0.84 total)** | 1.1 hours ($2.97 total) | Balanced local/cloud |
-| **Tier 3 (Publication)** | `qwen3.8:27b`, `qwen2.5:32b` | **3.3 hours ($1.38 total)** *(FP8/AWQ)* | 2.4 hours ($6.48 total) *(BF16)* | **Best value for production** |
+| **Tier 3 (Publication)** | `qwen3.8:27b`, `qwen2.5:32b` | **3.3 hours ($1.38 total)** *(FP8/AWQ)* | 2.4 hours ($6.48 total) *(BF16)* | **Full dataset research corpus** |
 
-*(Note: Local Apple Silicon M-series runs at ~60–80 tok/s, suitable for `--limit 100` tests or deterministic `augmenter.enabled: false` mode in <0.1s).*
+*(Note: Hardware costs reflect typical on-demand cloud spot instances for academic research and evaluation runs. Local Apple Silicon M-series runs at ~60–80 tok/s, suitable for `--limit 100` tests or deterministic `augmenter.enabled: false` mode in <0.1s).*
 
 ### 3. Remote Cloud GPU Deployment (Vast.ai / RunPod)
 

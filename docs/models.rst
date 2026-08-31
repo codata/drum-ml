@@ -201,6 +201,10 @@ At typical Vast.ai on-demand rates (**$0.42/hr for RTX 5090** vs. **$2.70/hr for
 .. tip::
    **Value Verdict:** The **RTX 5090 ($0.42/hr)** is the price-to-performance winner. It completes the entire 301,314 publication-grade dataset across all 35 scientific unions for **under $1.50 in ~3 hours** (saving 75–80% compared to H100). Choose the **H100 NVL ($2.70/hr)** only if you require unquantized native FP16 on a 32B+ model with 100+ parallel batch streams.
 
+.. warning::
+   **Experimental Research & Academic Use Only:**
+   All hardware cost projections and synthesized corpora are intended exclusively for academic research, metrology benchmarking, and educational evaluation. Generated weights and datasets should not be deployed in production or safety-critical domains without independent validation.
+
 ---
 
 5. Remote Cloud Deployment Workflow (Zero File Transfer)

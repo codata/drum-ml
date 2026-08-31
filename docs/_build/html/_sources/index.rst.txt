@@ -20,6 +20,15 @@ It is an end-to-end, multi-agent autonomous framework designed to extract, synth
 
 By extracting semantic graphs from official international metrology authorities (**BIPM SI Digital Framework**, **CODATA DRUM Constants**, and **QUDT 2.1**) and verifying candidates through symbolic algebra and arbitrary-precision arithmetic, DRUM-ML eliminates unit-conversion hallucinations, dimensional errors, and constant misquotations in downstream AI models.
 
+.. warning::
+
+   **Experimental Research Prototype — Not for Production Use**
+
+   This software pipeline, the DRUM Metrology Benchmark (M-Eval), and all generated datasets are currently **experimental research prototypes** developed under the CODATA DRUM Working Group.
+
+   * **Intended Scope:** Strictly for scientific research, AI model evaluation, benchmarking, and pedagogical/educational purposes.
+   * **Production Warning:** This system and its synthesized outputs must **not** be used in production environments, regulatory compliance auditing, safety-critical systems, commercial transactions, clinical/medical dosage calculations, or automated industrial control without independent, accredited human metrological verification.
+
 .. toctree::
    :maxdepth: 2
    :caption: Table of Contents:

@@ -12,6 +12,12 @@ General-purpose Large Language Models (LLMs) frequently suffer from critical hal
 
 **DRUM-ML** directly addresses these systemic vulnerabilities by grounding dataset synthesis in formal Semantic Web ontologies and validating all prompt-response pairs through symbolic computation and exact Decimal arithmetic.
 
+.. warning::
+
+   **Experimental Research Prototype — Not for Production Use**
+
+   This project and its outputs are experimental prototypes intended solely for evaluation, scientific research, and educational purposes. They must not be deployed in production or safety-critical applications without accredited verification.
+
 Governance & Leadership
 -----------------------
 

@@ -1,6 +1,5 @@
 """Tests for DimensionVector arithmetic and LaTeX formatting."""
 
-import pytest
 from drum_ml.models.entities import DimensionVector
 from drum_ml.symbolic.dimensions import parse_qudt_dimension_string
 

@@ -74,6 +74,6 @@ api = HfApi()
 api.upload_folder(
     folder_path="outputs/qwen25_7b_metrology/merged_16bit",
     repo_id="codata-drum/qwen-2.5-7b-metrology",
-    repo_type="model"
+    repo_type="model",
 )
 ```

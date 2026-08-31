@@ -1,6 +1,7 @@
 """Tests for DRUM Benchmark Evaluator and Grading Engine."""
 
 import pytest
+
 from drum_ml.benchmark.models import (
     BenchmarkFormat,
     BenchmarkTask,
@@ -10,11 +11,11 @@ from drum_ml.pipeline.evaluator import MEvalBenchmark
 
 def test_mcq_answer_extraction():
     evaluator = MEvalBenchmark()
-    
+
     # Standalone letter
     assert evaluator.extract_mcq_answer("A") == "A"
     assert evaluator.extract_mcq_answer(" c ") == "C"
-    
+
     # Prefix / Parentheses
     assert evaluator.extract_mcq_answer("(B)") == "B"
     assert evaluator.extract_mcq_answer("[D]") == "D"
@@ -32,7 +33,7 @@ def test_mcq_grading():
         "correct_option_key": "B",
         "ground_truth_answer": "Option B text",
     }
-    
+
     # Correct predictions
     res_correct = evaluator.grade_response(record, "The correct option is (B)")
     assert res_correct["passed"] is True

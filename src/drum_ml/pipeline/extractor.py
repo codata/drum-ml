@@ -1,8 +1,7 @@
 """Agent 1: SPARQL Ingestion and Multi-Graph Canonical Extractor."""
 
-import json
 from pathlib import Path
-from typing import Optional
+
 from drum_ml.data_sources.bipm_client import BIPMClient
 from drum_ml.data_sources.codata_client import CODATAClient
 from drum_ml.data_sources.qudt_fetcher import QUDTFetcher
@@ -29,7 +28,9 @@ class MetrologyExtractor:
         if not any(self.bipm_client.local_dir.glob("*.ttl")):
             self.bipm_client.download_latest_ontology()
 
-        if not any(self.codata_client.local_dir.glob("*.ttl")) and not any(self.codata_client.local_dir.glob("*.json")):
+        if not any(self.codata_client.local_dir.glob("*.ttl")) and not any(
+            self.codata_client.local_dir.glob("*.json")
+        ):
             self.codata_client.download_latest_data()
 
         if not any(self.qudt_fetcher.local_dir.glob("*.ttl")):
@@ -60,7 +61,9 @@ class MetrologyExtractor:
 
         return store
 
-    def save_to_json(self, store: CanonicalEntityStore, output_path: str = "./data/entities.json") -> Path:
+    def save_to_json(
+        self, store: CanonicalEntityStore, output_path: str = "./data/entities.json"
+    ) -> Path:
         """Serializes canonical entity store to JSON with UTF-8 encoding."""
         out = Path(output_path)
         out.parent.mkdir(parents=True, exist_ok=True)

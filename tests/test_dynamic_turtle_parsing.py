@@ -1,7 +1,5 @@
 """Tests for 100% dynamic SPARQL extraction from RDF Turtle graphs with zero hardcoding."""
 
-import rdflib
-import pytest
 from drum_ml.data_sources.bipm_client import BIPMClient
 from drum_ml.data_sources.codata_client import CODATAClient
 from drum_ml.data_sources.qudt_fetcher import QUDTFetcher
@@ -37,7 +35,7 @@ def test_dynamic_bipm_turtle_parsing(tmp_path):
     assert units["https://si-digital-framework.org/SI/units/second"].dimension_vector.T == 1
 
     assert len(constants) == 1
-    c_entry = list(constants.values())[0]
+    c_entry = next(iter(constants.values()))
     assert c_entry.symbol == "c"
     assert c_entry.numeric_value == "299792458"
     assert c_entry.category.value == "exact_si_defining"

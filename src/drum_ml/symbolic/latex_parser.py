@@ -1,7 +1,6 @@
 """LaTeX Tokenizer, Sanitizer & Expression Normalizer for Metrology."""
 
 import re
-from typing import List, Tuple
 
 
 def sanitize_latex_units(latex_str: str) -> str:
@@ -43,7 +42,7 @@ def sanitize_latex_units(latex_str: str) -> str:
     return s
 
 
-def check_latex_math_balance(text: str) -> Tuple[bool, List[str]]:
+def check_latex_math_balance(text: str) -> tuple[bool, list[str]]:
     """Verifies that math delimiters ($ and $$), curly braces, and brackets are properly balanced."""
     errors = []
 
@@ -57,6 +56,8 @@ def check_latex_math_balance(text: str) -> Tuple[bool, List[str]]:
     open_braces = len(re.findall(r"(?<!\\)\{", text))
     close_braces = len(re.findall(r"(?<!\\)\}", text))
     if open_braces != close_braces:
-        errors.append(f"Unbalanced curly braces '{{}}' (open: {open_braces}, close: {close_braces}).")
+        errors.append(
+            f"Unbalanced curly braces '{{}}' (open: {open_braces}, close: {close_braces})."
+        )
 
     return (len(errors) == 0, errors)

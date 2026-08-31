@@ -208,17 +208,20 @@ from enum import Enum
 from typing import Dict, List, Optional
 from pydantic import BaseModel, Field, HttpUrl
 
+
 class BaseDimension(str, Enum):
-    LENGTH = "L"                 # Length (meter, m)
-    MASS = "M"                   # Mass (kilogram, kg)
-    TIME = "T"                   # Time (second, s)
-    ELECTRIC_CURRENT = "I"       # Electric Current (ampere, A)
-    THERMODYNAMIC_TEMP = "Theta" # Thermodynamic Temperature (kelvin, K)
-    AMOUNT_OF_SUBSTANCE = "N"    # Amount of Substance (mole, mol)
-    LUMINOUS_INTENSITY = "J"     # Luminous Intensity (candela, cd)
+    LENGTH = "L"  # Length (meter, m)
+    MASS = "M"  # Mass (kilogram, kg)
+    TIME = "T"  # Time (second, s)
+    ELECTRIC_CURRENT = "I"  # Electric Current (ampere, A)
+    THERMODYNAMIC_TEMP = "Theta"  # Thermodynamic Temperature (kelvin, K)
+    AMOUNT_OF_SUBSTANCE = "N"  # Amount of Substance (mole, mol)
+    LUMINOUS_INTENSITY = "J"  # Luminous Intensity (candela, cd)
+
 
 class DimensionVector(BaseModel):
     """SI base dimensional representation [L, M, T, I, Theta, N, J] with integer/rational powers."""
+
     L: int = 0
     M: int = 0
     T: int = 0
@@ -230,7 +233,15 @@ class DimensionVector(BaseModel):
     def to_latex(self) -> str:
         """Returns LaTeX dimension formula, e.g., \\text{L}\\cdot\\text{M}\\cdot\\text{T}^{-2}"""
         terms = []
-        symbol_map = {"L": "L", "M": "M", "T": "T", "I": "I", "Theta": "\\Theta", "N": "N", "J": "J"}
+        symbol_map = {
+            "L": "L",
+            "M": "M",
+            "T": "T",
+            "I": "I",
+            "Theta": "\\Theta",
+            "N": "N",
+            "J": "J",
+        }
         for dim, power in self.model_dump().items():
             if power == 1:
                 terms.append(f"\\text{{{symbol_map[dim]}}}")
@@ -252,23 +263,28 @@ class DimensionVector(BaseModel):
                 terms.append(f"\\text{{{unit_map[dim]}}}^{{{power}}}")
         return " \\cdot ".join(terms) if terms else "1"
 
+
 class QuantityKindEntity(BaseModel):
     """VIM3 Quantity Kind: An abstract physical property (e.g., Torque, Energy, Absorbed Dose)."""
+
     uri: str
     label: str
     symbol: Optional[str] = None
     description: Optional[str] = None
     dimension_vector: DimensionVector
-    applicable_units: List[str] = Field(default_factory=list) # Unit URIs
+    applicable_units: List[str] = Field(default_factory=list)  # Unit URIs
     broader_quantity_kinds: List[str] = Field(default_factory=list)
     exact_match_uris: List[str] = Field(default_factory=list)
 
+
 class ConversionRelation(BaseModel):
     """Conversion relationship from non-SI / derived unit to SI base unit: SI_val = (val * multiplier) + offset."""
+
     multiplier: float
     offset: float = 0.0
     exact: bool = False
-    conversion_formula: Optional[str] = None # e.g. "T_{K} = (T_{^{\circ}F} - 32) * 5/9 + 273.15"
+    conversion_formula: Optional[str] = None  # e.g. "T_{K} = (T_{^{\circ}F} - 32) * 5/9 + 273.15"
+
 
 class UnitEntity(BaseModel):
     uri: str
@@ -286,9 +302,11 @@ class UnitEntity(BaseModel):
     latex_symbol: Optional[str] = None
     exact_match_uris: List[str] = Field(default_factory=list)
 
+
 class ConstantCategory(str, Enum):
-    EXACT_SI_DEFINING = "exact_si_defining" # e.g., c, h, e, k, N_A, Delta_nu_Cs, K_cd
-    CODATA_RECOMMENDED = "codata_recommended" # e.g., G, alpha, m_e with uncertainty
+    EXACT_SI_DEFINING = "exact_si_defining"  # e.g., c, h, e, k, N_A, Delta_nu_Cs, K_cd
+    CODATA_RECOMMENDED = "codata_recommended"  # e.g., G, alpha, m_e with uncertainty
+
 
 class PhysicalConstantEntity(BaseModel):
     uri: str
@@ -296,8 +314,8 @@ class PhysicalConstantEntity(BaseModel):
     symbol: str
     latex_symbol: str
     category: ConstantCategory
-    numeric_value: str                      # String representation to preserve exact arbitrary precision
-    standard_uncertainty: Optional[str] = None # None for exact defining constants
+    numeric_value: str  # String representation to preserve exact arbitrary precision
+    standard_uncertainty: Optional[str] = None  # None for exact defining constants
     relative_uncertainty: Optional[str] = None
     unit_symbol: str
     unit_uri: Optional[str] = None
@@ -310,12 +328,15 @@ class PhysicalConstantEntity(BaseModel):
 
 ```python
 class ArchetypeType(str, Enum):
-    DIRECT_IDENTIFICATION = "direct_identification"       # Symbol <-> Name, Quantity <-> SI Unit
-    DIMENSIONAL_DECOMPOSITION = "dimensional_decomposition" # Base SI decomposition & derivation
-    CONVERSION_SCALING = "conversion_scaling"             # Multipliers, offsets, compound units
-    DIMENSIONAL_ERROR_DETECTION = "error_detection"        # Homogeneity violation, invalid sum, bad prefix
-    SEMANTIC_TOOL_USE = "semantic_tool_use"               # SPARQL, QUDT queries, Pint code execution
+    DIRECT_IDENTIFICATION = "direct_identification"  # Symbol <-> Name, Quantity <-> SI Unit
+    DIMENSIONAL_DECOMPOSITION = "dimensional_decomposition"  # Base SI decomposition & derivation
+    CONVERSION_SCALING = "conversion_scaling"  # Multipliers, offsets, compound units
+    DIMENSIONAL_ERROR_DETECTION = (
+        "error_detection"  # Homogeneity violation, invalid sum, bad prefix
+    )
+    SEMANTIC_TOOL_USE = "semantic_tool_use"  # SPARQL, QUDT queries, Pint code execution
     METROLOGICAL_UNCERTAINTY = "metrological_uncertainty"  # GUM uncertainty propagation, sig-figs
+
 
 class PersonaType(str, Enum):
     ACADEMIC_METROLOGIST = "academic_metrologist"
@@ -324,10 +345,12 @@ class PersonaType(str, Enum):
     PHYSICS_STUDENT = "physics_student"
     ISO_COMPLIANCE_AUDITOR = "iso_compliance_auditor"
 
+
 class DifficultyTier(str, Enum):
-    INTRODUCTORY = "introductory"   # High school / basic lookup
-    INTERMEDIATE = "intermediate"   # Undergraduate physics / engineering calculation
-    ADVANCED = "advanced"           # Formal metrology / standards lab level
+    INTRODUCTORY = "introductory"  # High school / basic lookup
+    INTERMEDIATE = "intermediate"  # Undergraduate physics / engineering calculation
+    ADVANCED = "advanced"  # Formal metrology / standards lab level
+
 
 class ScaffoldRecord(BaseModel):
     id: str
@@ -340,6 +363,7 @@ class ScaffoldRecord(BaseModel):
     numerical_constants: Dict[str, str] = Field(default_factory=dict)
     difficulty: DifficultyTier = DifficultyTier.INTERMEDIATE
 
+
 class AugmentedRecord(BaseModel):
     id: str
     scaffold_id: str
@@ -350,6 +374,7 @@ class AugmentedRecord(BaseModel):
     entity_uri: str
     temperature: float = 0.7
     llm_generator: str
+
 
 class ValidationResult(BaseModel):
     record_id: str
@@ -366,14 +391,16 @@ class ValidationResult(BaseModel):
 
 ```python
 class OpenAIChatMessage(BaseModel):
-    role: str # "system" | "user" | "assistant"
+    role: str  # "system" | "user" | "assistant"
     content: str
+
 
 class OpenAIChatRecord(BaseModel):
     id: str
     archetype: ArchetypeType
     entity_uri: str
     messages: List[OpenAIChatMessage]
+
 
 class DPOPreferenceRecord(BaseModel):
     id: str
@@ -517,9 +544,10 @@ WHERE {
 - **Example Assistant Code:**
 ```python
 import pint
+
 ureg = pint.UnitRegistry()
 force = 10.0 * ureg.newton
-area = 2.0 * (ureg.meter ** 2)
+area = 2.0 * (ureg.meter**2)
 pressure = (force / area).to(ureg.pascal)
 print(f"Calculated pressure: {pressure}")
 ```

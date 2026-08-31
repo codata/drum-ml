@@ -9,6 +9,7 @@ Supports:
 
 import argparse
 import os
+
 from datasets import load_dataset
 
 
@@ -46,7 +47,9 @@ def parse_args():
     parser.add_argument("--grad_accum", type=int, default=4, help="Gradient accumulation steps")
     parser.add_argument("--epochs", type=int, default=1, help="Number of training epochs")
     parser.add_argument("--learning_rate", type=float, default=2e-4, help="Learning rate")
-    parser.add_argument("--save_merged", action="store_true", help="Merge adapter and save 16-bit model")
+    parser.add_argument(
+        "--save_merged", action="store_true", help="Merge adapter and save 16-bit model"
+    )
     return parser.parse_args()
 
 
@@ -54,16 +57,16 @@ def main():
     args = parse_args()
 
     try:
-        from unsloth import FastLanguageModel
-        from trl import SFTTrainer
-        from transformers import TrainingArguments
         import torch
-    except ImportError:
+        from transformers import TrainingArguments
+        from trl import SFTTrainer
+        from unsloth import FastLanguageModel
+    except ImportError as err:
         raise ImportError(
             "Unsloth and training dependencies not found.\n"
             "Install via: pip install 'unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git'\n"
             "             pip install --no-deps trl peft accelerate bitsandbytes"
-        )
+        ) from err
 
     print(f"🚀 Initializing base model: {args.model_name}")
     model, tokenizer = FastLanguageModel.from_pretrained(
@@ -76,7 +79,15 @@ def main():
     model = FastLanguageModel.get_peft_model(
         model,
         r=args.lora_r,
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        target_modules=[
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj",
+        ],
         lora_alpha=args.lora_alpha,
         lora_dropout=0.05,
         bias="none",

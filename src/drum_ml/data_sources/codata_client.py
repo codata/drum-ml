@@ -2,9 +2,10 @@
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+
 import httpx
 import rdflib
+
 from drum_ml.models.entities import (
     ConstantCategory,
     DimensionVector,
@@ -31,7 +32,7 @@ class CODATAClient:
         self.default_evaluation_year = default_evaluation_year
         self.local_dir.mkdir(parents=True, exist_ok=True)
 
-    def download_latest_data(self) -> List[Path]:
+    def download_latest_data(self) -> list[Path]:
         """Downloads latest CODATA constants Turtle files and JSON history from GitHub."""
         files = [
             ("dist/rdf/codata_constants.ttl", "codata-constants.ttl"),
@@ -62,7 +63,7 @@ class CODATAClient:
                 pass
         return g
 
-    def fetch_from_api(self, year: Optional[int] = None) -> List[Dict]:
+    def fetch_from_api(self, year: int | None = None) -> list[dict]:
         """Fetches constants dynamically from the CODATA DRUM REST API."""
         eval_year = year or self.default_evaluation_year
         try:
@@ -74,14 +75,16 @@ class CODATAClient:
             pass
         return []
 
-    def extract_from_json(self, json_path: Path, year: Optional[int] = None) -> Dict[str, PhysicalConstantEntity]:
+    def extract_from_json(
+        self, json_path: Path, year: int | None = None
+    ) -> dict[str, PhysicalConstantEntity]:
         """Parses constants dynamically from codata-history.json or versioned JSON files."""
-        constants: Dict[str, PhysicalConstantEntity] = {}
+        constants: dict[str, PhysicalConstantEntity] = {}
         if not json_path.exists():
             return constants
 
         target_year = str(year or self.default_evaluation_year)
-        with open(json_path, "r", encoding="utf-8") as f:
+        with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
         # Handle list of constants or history dictionary
@@ -103,7 +106,9 @@ class CODATAClient:
                 name=name,
                 symbol=sym,
                 latex_symbol=lsym,
-                category=ConstantCategory.EXACT_SI_DEFINING if is_exact else ConstantCategory.CODATA_RECOMMENDED,
+                category=ConstantCategory.EXACT_SI_DEFINING
+                if is_exact
+                else ConstantCategory.CODATA_RECOMMENDED,
                 numeric_value=val,
                 standard_uncertainty=std_u if not is_exact else "0",
                 relative_uncertainty=rel_u if not is_exact else "0",
@@ -115,9 +120,11 @@ class CODATAClient:
 
         return constants
 
-    def extract_from_graph(self, graph: rdflib.Graph, year: Optional[int] = None) -> Dict[str, PhysicalConstantEntity]:
+    def extract_from_graph(
+        self, graph: rdflib.Graph, year: int | None = None
+    ) -> dict[str, PhysicalConstantEntity]:
         """Parses constants from an RDF graph using SPARQL."""
-        constants: Dict[str, PhysicalConstantEntity] = {}
+        constants: dict[str, PhysicalConstantEntity] = {}
         eval_year = year or self.default_evaluation_year
 
         query = """
@@ -163,7 +170,9 @@ class CODATAClient:
                     name=name,
                     symbol=sym,
                     latex_symbol=lsym,
-                    category=ConstantCategory.EXACT_SI_DEFINING if is_exact else ConstantCategory.CODATA_RECOMMENDED,
+                    category=ConstantCategory.EXACT_SI_DEFINING
+                    if is_exact
+                    else ConstantCategory.CODATA_RECOMMENDED,
                     numeric_value=val,
                     standard_uncertainty=std_u if not is_exact else "0",
                     relative_uncertainty=rel_u if not is_exact else "0",
@@ -179,14 +188,14 @@ class CODATAClient:
 
     def extract_canonical_constants(
         self,
-        graph: Optional[rdflib.Graph] = None,
-        year: Optional[int] = None,
-    ) -> Dict[str, PhysicalConstantEntity]:
+        graph: rdflib.Graph | None = None,
+        year: int | None = None,
+    ) -> dict[str, PhysicalConstantEntity]:
         """Extracts canonical physical constants dynamically, prioritizing exact SI 2019 defining constants
         and CODATA recommended values for the requested evaluation year (default: 2022).
         """
         eval_year = year or self.default_evaluation_year
-        constants: Dict[str, PhysicalConstantEntity] = {}
+        constants: dict[str, PhysicalConstantEntity] = {}
 
         # 1. First check if RDF graph is provided or available locally
         if graph and len(graph) > 0:

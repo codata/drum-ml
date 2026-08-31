@@ -1,12 +1,12 @@
 """BIPM SI Digital Framework Dynamic Downloader and SPARQL Parser."""
 
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+
 import httpx
 import rdflib
+
 from drum_ml.models.entities import (
     ConstantCategory,
-    DimensionVector,
     PhysicalConstantEntity,
     UnitEntity,
 )
@@ -27,7 +27,7 @@ class BIPMClient:
         self.base_api_url = base_api_url
         self.local_dir.mkdir(parents=True, exist_ok=True)
 
-    def download_latest_ontology(self) -> List[Path]:
+    def download_latest_ontology(self) -> list[Path]:
         """Downloads the latest official BIPM SI Digital Framework TTL files from GitHub."""
         files = ["si.ttl", "units.ttl", "constants.ttl", "prefixes.ttl"]
         downloaded = []
@@ -55,9 +55,9 @@ class BIPMClient:
                 pass
         return g
 
-    def extract_base_units_from_graph(self, graph: rdflib.Graph) -> Dict[str, UnitEntity]:
+    def extract_base_units_from_graph(self, graph: rdflib.Graph) -> dict[str, UnitEntity]:
         """Dynamically extracts SI base units from BIPM SI ontology using SPARQL."""
-        units: Dict[str, UnitEntity] = {}
+        units: dict[str, UnitEntity] = {}
         query = """
         PREFIX si: <https://si-digital-framework.org/SI/ontology/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -90,9 +90,11 @@ class BIPMClient:
 
         return units
 
-    def extract_defining_constants_from_graph(self, graph: rdflib.Graph) -> Dict[str, PhysicalConstantEntity]:
+    def extract_defining_constants_from_graph(
+        self, graph: rdflib.Graph
+    ) -> dict[str, PhysicalConstantEntity]:
         """Dynamically extracts SI defining constants from BIPM SI ontology using SPARQL."""
-        constants: Dict[str, PhysicalConstantEntity] = {}
+        constants: dict[str, PhysicalConstantEntity] = {}
         query = """
         PREFIX si: <https://si-digital-framework.org/SI/ontology/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -133,7 +135,9 @@ class BIPMClient:
 
         return constants
 
-    def extract_all(self, graph: Optional[rdflib.Graph] = None) -> Tuple[Dict[str, UnitEntity], Dict[str, PhysicalConstantEntity]]:
+    def extract_all(
+        self, graph: rdflib.Graph | None = None
+    ) -> tuple[dict[str, UnitEntity], dict[str, PhysicalConstantEntity]]:
         """Extracts SI base units and defining constants dynamically from local or provided graph."""
         target_graph = graph if (graph is not None and len(graph) > 0) else self.load_local_graph()
         units = self.extract_base_units_from_graph(target_graph)

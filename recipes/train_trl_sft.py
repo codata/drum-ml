@@ -5,6 +5,7 @@ Standard PyTorch / Hugging Face training script supporting multi-GPU via Acceler
 
 import argparse
 import os
+
 from datasets import load_dataset
 
 
@@ -28,8 +29,13 @@ def main():
     args = parse_args()
 
     import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, BitsAndBytesConfig
     from peft import LoraConfig, get_peft_model
+    from transformers import (
+        AutoModelForCausalLM,
+        AutoTokenizer,
+        BitsAndBytesConfig,
+        TrainingArguments,
+    )
     from trl import SFTTrainer
 
     print(f"🚀 Loading tokenizer & model: {args.model_name}")
@@ -55,7 +61,15 @@ def main():
         r=args.lora_r,
         lora_alpha=args.lora_alpha,
         lora_dropout=0.05,
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        target_modules=[
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj",
+        ],
         bias="none",
         task_type="CAUSAL_LM",
     )

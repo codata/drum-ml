@@ -1,6 +1,5 @@
 """Tests for arbitrary precision and CODATA string parsing."""
 
-import pytest
 from drum_ml.symbolic.precision import (
     parse_codata_value_uncertainty,
     verify_exact_numeric_precision,
@@ -27,4 +26,3 @@ def test_verify_exact_numeric_precision():
     # Planck constant exact decimal precision
     assert verify_exact_numeric_precision("6.62607015e-34", "6.62607015e-34")
     assert not verify_exact_numeric_precision("6.62607015e-34", "6.626070e-34")
-

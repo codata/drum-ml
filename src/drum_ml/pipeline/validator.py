@@ -1,18 +1,10 @@
 """Agent 4: Multi-Tier Metrology Validation Gate."""
 
-import ast
-from pathlib import Path
-from typing import List, Optional, Tuple
 from drum_ml.models.scaffolds import AugmentedRecord
 from drum_ml.models.validation import (
-    Tier1SyntaxReport,
-    Tier2SymbolicReport,
-    Tier3PrecisionReport,
-    Tier4CodeReport,
     ValidationResult,
 )
 from drum_ml.symbolic.latex_parser import check_latex_math_balance
-from drum_ml.symbolic.pint_engine import check_unit_conversion_equivalence
 
 
 class MetrologyValidator:
@@ -57,10 +49,12 @@ class MetrologyValidator:
 
         return result
 
-    def validate_all(self, records: List[AugmentedRecord]) -> Tuple[List[AugmentedRecord], List[ValidationResult]]:
+    def validate_all(
+        self, records: list[AugmentedRecord]
+    ) -> tuple[list[AugmentedRecord], list[ValidationResult]]:
         """Validates all records, separating approved records from audit results."""
-        approved: List[AugmentedRecord] = []
-        reports: List[ValidationResult] = []
+        approved: list[AugmentedRecord] = []
+        reports: list[ValidationResult] = []
 
         for r in records:
             report = self.validate_record(r)

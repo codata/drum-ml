@@ -1,15 +1,15 @@
 """Pedagogical Metrology Archetype Reporting and Analytics."""
 
 import json
-import math
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from rich.console import Console
 from rich.table import Table
-from drum_ml.models.scaffolds import ArchetypeType, AugmentedRecord
 
+from drum_ml.models.scaffolds import ArchetypeType, AugmentedRecord
 
 ARCHETYPE_METADATA = {
     ArchetypeType.DIRECT_IDENTIFICATION: {
@@ -56,7 +56,7 @@ class ArchetypeReporter:
         return max(1, int(len(tokens) * 1.1))
 
     @staticmethod
-    def _calc_stats(values: List[int]) -> Dict[str, Any]:
+    def _calc_stats(values: list[int]) -> dict[str, Any]:
         if not values:
             return {"min": 0, "mean": 0.0, "median": 0, "p95": 0, "max": 0}
         sorted_vals = sorted(values)
@@ -70,27 +70,34 @@ class ArchetypeReporter:
         }
 
     @classmethod
-    def analyze_records(cls, records: List[AugmentedRecord]) -> Dict[str, Any]:
+    def analyze_records(cls, records: list[AugmentedRecord]) -> dict[str, Any]:
         """Calculates token geometry, math complexity, and persona spread per Archetype."""
         total_samples = len(records)
         archetype_groups = defaultdict(list)
 
         for rec in records:
-            arch_key = rec.archetype.value if hasattr(rec.archetype, "value") else str(rec.archetype)
+            arch_key = (
+                rec.archetype.value if hasattr(rec.archetype, "value") else str(rec.archetype)
+            )
             archetype_groups[arch_key].append(rec)
 
         archetypes_summary = []
-        for arch_key, group in sorted(archetype_groups.items(), key=lambda x: len(x[1]), reverse=True):
+        for arch_key, group in sorted(
+            archetype_groups.items(), key=lambda x: len(x[1]), reverse=True
+        ):
             enum_val = None
             try:
                 enum_val = ArchetypeType(arch_key)
             except ValueError:
                 pass
-            meta = ARCHETYPE_METADATA.get(enum_val, {
-                "title": arch_key.replace("_", " ").title(),
-                "description": "Pedagogical task archetype",
-                "eval_objective": "Metrological instruction evaluation",
-            })
+            meta = ARCHETYPE_METADATA.get(
+                enum_val,
+                {
+                    "title": arch_key.replace("_", " ").title(),
+                    "description": "Pedagogical task archetype",
+                    "eval_objective": "Metrological instruction evaluation",
+                },
+            )
 
             prompt_toks = []
             response_toks = []
@@ -118,27 +125,33 @@ class ArchetypeReporter:
             sample_previews = []
             for rec in group[:2]:
                 p_val = rec.persona.value if hasattr(rec.persona, "value") else str(rec.persona)
-                sample_previews.append({
-                    "persona": p_val,
-                    "query": rec.user_query,
-                    "answer": (rec.ground_truth_answer[:160] + "...") if len(rec.ground_truth_answer) > 160 else rec.ground_truth_answer,
-                })
+                sample_previews.append(
+                    {
+                        "persona": p_val,
+                        "query": rec.user_query,
+                        "answer": (rec.ground_truth_answer[:160] + "...")
+                        if len(rec.ground_truth_answer) > 160
+                        else rec.ground_truth_answer,
+                    }
+                )
 
-            archetypes_summary.append({
-                "archetype_key": arch_key,
-                "title": meta["title"],
-                "description": meta["description"],
-                "eval_objective": meta["eval_objective"],
-                "sample_count": n,
-                "percentage": (n / max(1, total_samples)) * 100,
-                "unique_personas": len(personas),
-                "prompt_tokens": cls._calc_stats(prompt_toks),
-                "response_tokens": cls._calc_stats(response_toks),
-                "total_tokens": cls._calc_stats(total_toks),
-                "math_inline_pct": round((latex_inline / n) * 100, 1),
-                "math_display_pct": round((latex_display / n) * 100, 1),
-                "sample_previews": sample_previews,
-            })
+            archetypes_summary.append(
+                {
+                    "archetype_key": arch_key,
+                    "title": meta["title"],
+                    "description": meta["description"],
+                    "eval_objective": meta["eval_objective"],
+                    "sample_count": n,
+                    "percentage": (n / max(1, total_samples)) * 100,
+                    "unique_personas": len(personas),
+                    "prompt_tokens": cls._calc_stats(prompt_toks),
+                    "response_tokens": cls._calc_stats(response_toks),
+                    "total_tokens": cls._calc_stats(total_toks),
+                    "math_inline_pct": round((latex_inline / n) * 100, 1),
+                    "math_display_pct": round((latex_display / n) * 100, 1),
+                    "sample_previews": sample_previews,
+                }
+            )
 
         return {
             "total_samples": total_samples,
@@ -148,7 +161,7 @@ class ArchetypeReporter:
 
     @classmethod
     def save_markdown_report(
-        cls, report_data: Dict[str, Any], output_path: str = "./dataset/archetype_report.md"
+        cls, report_data: dict[str, Any], output_path: str = "./dataset/archetype_report.md"
     ) -> Path:
         """Saves a publication-ready Markdown Archetype Report."""
         out = Path(output_path)
@@ -175,31 +188,37 @@ class ArchetypeReporter:
                 f"**{a['total_tokens']['mean']} tok** | {a['math_inline_pct']}% | {a['title']} |"
             )
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 🔬 In-Depth Archetype Profiles & Showcases",
-            "",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 🔬 In-Depth Archetype Profiles & Showcases",
+                "",
+            ]
+        )
 
         for a in report_data["archetypes"]:
-            lines.extend([
-                f"### Archetype: {a['title']} (`{a['archetype_key']}`)",
-                f"- **Pedagogical Purpose:** {a['description']}",
-                f"- **Evaluation Objective:** {a['eval_objective']}",
-                f"- **Volume:** {a['sample_count']:,} samples ({a['percentage']:.1f}% of corpus across {a['unique_personas']} personas)",
-                f"- **Token Profile:** Prompt: {a['prompt_tokens']['mean']} tok (p95: {a['prompt_tokens']['p95']}) | Response: {a['response_tokens']['mean']} tok (p95: {a['response_tokens']['p95']})",
-                "",
-                "#### Showcase Samples:",
-            ])
-            for idx, s in enumerate(a["sample_previews"], 1):
-                lines.extend([
-                    f"**Sample {idx} (Persona: `{s['persona']}`):**",
-                    f"> **User Query:** *\"{s['query']}\"*  ",
-                    f"> **Assistant Answer:** {s['answer']}",
+            lines.extend(
+                [
+                    f"### Archetype: {a['title']} (`{a['archetype_key']}`)",
+                    f"- **Pedagogical Purpose:** {a['description']}",
+                    f"- **Evaluation Objective:** {a['eval_objective']}",
+                    f"- **Volume:** {a['sample_count']:,} samples ({a['percentage']:.1f}% of corpus across {a['unique_personas']} personas)",
+                    f"- **Token Profile:** Prompt: {a['prompt_tokens']['mean']} tok (p95: {a['prompt_tokens']['p95']}) | Response: {a['response_tokens']['mean']} tok (p95: {a['response_tokens']['p95']})",
                     "",
-                ])
+                    "#### Showcase Samples:",
+                ]
+            )
+            for idx, s in enumerate(a["sample_previews"], 1):
+                lines.extend(
+                    [
+                        f"**Sample {idx} (Persona: `{s['persona']}`):**",
+                        f'> **User Query:** *"{s["query"]}"*  ',
+                        f"> **Assistant Answer:** {s['answer']}",
+                        "",
+                    ]
+                )
             lines.append("---")
             lines.append("")
 
@@ -209,7 +228,7 @@ class ArchetypeReporter:
 
     @classmethod
     def save_json_report(
-        cls, report_data: Dict[str, Any], output_path: str = "./dataset/archetype_report.json"
+        cls, report_data: dict[str, Any], output_path: str = "./dataset/archetype_report.json"
     ) -> Path:
         """Saves structured archetype JSON analytics."""
         out = Path(output_path)
@@ -219,7 +238,7 @@ class ArchetypeReporter:
         return out
 
     @classmethod
-    def print_rich_table(cls, report_data: Dict[str, Any], console: Optional[Console] = None) -> None:
+    def print_rich_table(cls, report_data: dict[str, Any], console: Console | None = None) -> None:
         """Renders an interactive Rich Archetype table to the terminal."""
         con = console or Console()
         table = Table(

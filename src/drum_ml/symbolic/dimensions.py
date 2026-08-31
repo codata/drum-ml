@@ -9,7 +9,7 @@ def parse_qudt_dimension_string(dim_str: str) -> DimensionVector:
     """
     # Standard QUDT vector encoding: A (Angle), E (Current I), L (Length), I (Luminous J / Current), M (Mass), H (Theta), T (Time), D (Amount N)
     import re
-    
+
     vec = DimensionVector()
     if not dim_str:
         return vec
@@ -26,14 +26,12 @@ def parse_qudt_dimension_string(dim_str: str) -> DimensionVector:
         (r"J([+-]?\d+)", "J"),
     ]
 
-    found_any = False
     for pat, dim_name in patterns:
         m = re.search(pat, dim_str)
         if m:
             val_str = m.group(1) if m.group(1) is not None else "1"
             try:
                 setattr(vec, dim_name, int(val_str))
-                found_any = True
             except ValueError:
                 pass
 

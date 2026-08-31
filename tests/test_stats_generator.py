@@ -1,6 +1,7 @@
 """Unit tests for DatasetStatsGenerator."""
 
 import json
+
 from drum_ml.pipeline.stats_generator import DatasetStatsGenerator
 
 
@@ -19,7 +20,10 @@ def test_dataset_stats_generator(tmp_path):
             "archetype": "conversion_scaling",
             "messages": [
                 {"role": "user", "content": "How many meters in a parsec?"},
-                {"role": "assistant", "content": "$$1\\text{ pc} = 3.085677581\\times 10^{16}\\text{ m}$$"},
+                {
+                    "role": "assistant",
+                    "content": "$$1\\text{ pc} = 3.085677581\\times 10^{16}\\text{ m}$$",
+                },
             ],
         },
     ]

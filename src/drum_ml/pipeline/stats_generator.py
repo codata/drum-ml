@@ -3,11 +3,11 @@
 import json
 import math
 import re
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from rich.console import Console
-from rich.panel import Panel
 from rich.table import Table
 
 
@@ -24,7 +24,7 @@ class DatasetStatsGenerator:
         return max(1, int(len(tokens) * 1.1))
 
     @staticmethod
-    def _calc_stats(values: List[int]) -> Dict[str, Any]:
+    def _calc_stats(values: list[int]) -> dict[str, Any]:
         """Computes descriptive statistics (min, mean, median, p95, max, std)."""
         if not values:
             return {"min": 0, "mean": 0.0, "median": 0, "p95": 0, "p99": 0, "max": 0, "std": 0.0}
@@ -48,7 +48,7 @@ class DatasetStatsGenerator:
         }
 
     @classmethod
-    def analyze_dataset(cls, dataset_dir: str = "./dataset") -> Dict[str, Any]:
+    def analyze_dataset(cls, dataset_dir: str = "./dataset") -> dict[str, Any]:
         """Performs deep scan across train/val/test splits and augmented cache."""
         d_path = Path(dataset_dir)
         splits_data = {"train": [], "val": [], "test": []}
@@ -57,14 +57,14 @@ class DatasetStatsGenerator:
         for split_name in ["train", "val", "test"]:
             file_path = d_path / f"{split_name}.jsonl"
             if file_path.exists():
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     for line in f:
                         if line.strip():
                             splits_data[split_name].append(json.loads(line))
 
         dpo_path = d_path / "dpo_preferences.jsonl"
         if dpo_path.exists():
-            with open(dpo_path, "r", encoding="utf-8") as f:
+            with open(dpo_path, encoding="utf-8") as f:
                 for line in f:
                     if line.strip():
                         dpo_records.append(json.loads(line))
@@ -111,7 +111,9 @@ class DatasetStatsGenerator:
 
             msgs = item.get("messages", [])
             user_text = next((m.get("content", "") for m in msgs if m.get("role") == "user"), "")
-            asst_text = next((m.get("content", "") for m in msgs if m.get("role") == "assistant"), "")
+            asst_text = next(
+                (m.get("content", "") for m in msgs if m.get("role") == "assistant"), ""
+            )
 
             # Tokens
             p_tok = cls._approx_tokens(user_text)
@@ -127,7 +129,17 @@ class DatasetStatsGenerator:
                 latex_display_count += 1
 
             # Math macros
-            for macro in ["\\text", "\\cdot", "\\frac", "\\Theta", "\\Omega", "\\mu", "\\circ", "\\Delta", "\\pi"]:
+            for macro in [
+                "\\text",
+                "\\cdot",
+                "\\frac",
+                "\\Theta",
+                "\\Omega",
+                "\\mu",
+                "\\circ",
+                "\\Delta",
+                "\\pi",
+            ]:
                 if macro in asst_text or macro in user_text:
                     macro_counts[macro] += 1
 
@@ -182,8 +194,12 @@ class DatasetStatsGenerator:
                 "total_sequence_tokens": cls._calc_stats(total_seq_tokens),
             },
             "math_and_latex": {
-                "inline_math_samples_pct": round((latex_inline_count / max(1, total_samples)) * 100, 1),
-                "display_math_samples_pct": round((latex_display_count / max(1, total_samples)) * 100, 1),
+                "inline_math_samples_pct": round(
+                    (latex_inline_count / max(1, total_samples)) * 100, 1
+                ),
+                "display_math_samples_pct": round(
+                    (latex_display_count / max(1, total_samples)) * 100, 1
+                ),
                 "macro_frequencies": dict(macro_counts.most_common(10)),
             },
             "metrology_dimensions": {
@@ -203,7 +219,7 @@ class DatasetStatsGenerator:
 
     @classmethod
     def generate_huggingface_dataset_card(
-        cls, stats: Dict[str, Any], output_path: str = "./dataset/dataset_card.md"
+        cls, stats: dict[str, Any], output_path: str = "./dataset/dataset_card.md"
     ) -> Path:
         """Generates an official, publication-ready Hugging Face Dataset Card."""
         out = Path(output_path)
@@ -260,13 +276,13 @@ dataset_info:
   splits:
     - name: train
       num_bytes: null
-      num_examples: {summary['train_records']}
+      num_examples: {summary["train_records"]}
     - name: validation
       num_bytes: null
-      num_examples: {summary['val_records']}
+      num_examples: {summary["val_records"]}
     - name: test
       num_bytes: null
-      num_examples: {summary['test_records']}
+      num_examples: {summary["test_records"]}
 ---
 
 # 🌐 DRUM-ML: Metrology & Physical Units Instruction Dataset
@@ -281,23 +297,23 @@ It bridges formal semantic web ontologies (**BIPM SI Digital Framework**, **CODA
 
 | Split | Records | % Share | Format |
 |---|---:|---:|---|
-| **Train** | `{summary['train_records']:,}` | 85.0% | Multi-turn Chat JSONL |
-| **Validation** | `{summary['val_records']:,}` | 10.0% | Multi-turn Chat JSONL |
-| **Held-Out Test (M-Eval)** | `{summary['test_records']:,}` | 5.0% | Deterministic & Symbolic Evaluation |
-| **DPO Preference Pairs** | `{summary['dpo_records']:,}` | — | Hard-Negative Direct Preference Pairs |
-| **Total SFT Samples** | **`{summary['total_records']:,}`** | **100.0%** | Standardized Chat Format |
+| **Train** | `{summary["train_records"]:,}` | 85.0% | Multi-turn Chat JSONL |
+| **Validation** | `{summary["val_records"]:,}` | 10.0% | Multi-turn Chat JSONL |
+| **Held-Out Test (M-Eval)** | `{summary["test_records"]:,}` | 5.0% | Deterministic & Symbolic Evaluation |
+| **DPO Preference Pairs** | `{summary["dpo_records"]:,}` | — | Hard-Negative Direct Preference Pairs |
+| **Total SFT Samples** | **`{summary["total_records"]:,}`** | **100.0%** | Standardized Chat Format |
 
 ---
 
 ## 📐 Token Geometry & Training Budget
 
-Token metrics computed across all splits (recommended context window: **`max_seq_length = {summary['recommended_max_seq_length']}`**):
+Token metrics computed across all splits (recommended context window: **`max_seq_length = {summary["recommended_max_seq_length"]}`**):
 
 | Feature | Min | Mean | Median | p95 | p99 | Max | Std Dev |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| **User Prompt Tokens** | `{tok['prompt_tokens']['min']}` | `{tok['prompt_tokens']['mean']}` | `{tok['prompt_tokens']['median']}` | `{tok['prompt_tokens']['p95']}` | `{tok['prompt_tokens']['p99']}` | `{tok['prompt_tokens']['max']}` | `{tok['prompt_tokens']['std']}` |
-| **Assistant Response Tokens** | `{tok['response_tokens']['min']}` | `{tok['response_tokens']['mean']}` | `{tok['response_tokens']['median']}` | `{tok['response_tokens']['p95']}` | `{tok['response_tokens']['p99']}` | `{tok['response_tokens']['max']}` | `{tok['response_tokens']['std']}` |
-| **Total Sequence Length** | `{tok['total_sequence_tokens']['min']}` | **`{tok['total_sequence_tokens']['mean']}`** | `{tok['total_sequence_tokens']['median']}` | `{tok['total_sequence_tokens']['p95']}` | `{tok['total_sequence_tokens']['p99']}` | `{tok['total_sequence_tokens']['max']}` | `{tok['total_sequence_tokens']['std']}` |
+| **User Prompt Tokens** | `{tok["prompt_tokens"]["min"]}` | `{tok["prompt_tokens"]["mean"]}` | `{tok["prompt_tokens"]["median"]}` | `{tok["prompt_tokens"]["p95"]}` | `{tok["prompt_tokens"]["p99"]}` | `{tok["prompt_tokens"]["max"]}` | `{tok["prompt_tokens"]["std"]}` |
+| **Assistant Response Tokens** | `{tok["response_tokens"]["min"]}` | `{tok["response_tokens"]["mean"]}` | `{tok["response_tokens"]["median"]}` | `{tok["response_tokens"]["p95"]}` | `{tok["response_tokens"]["p99"]}` | `{tok["response_tokens"]["max"]}` | `{tok["response_tokens"]["std"]}` |
+| **Total Sequence Length** | `{tok["total_sequence_tokens"]["min"]}` | **`{tok["total_sequence_tokens"]["mean"]}`** | `{tok["total_sequence_tokens"]["median"]}` | `{tok["total_sequence_tokens"]["p95"]}` | `{tok["total_sequence_tokens"]["p99"]}` | `{tok["total_sequence_tokens"]["max"]}` | `{tok["total_sequence_tokens"]["std"]}` |
 
 ---
 
@@ -307,23 +323,23 @@ Distribution of physical units and quantities across the **7 SI Base Dimensions*
 
 | SI Base Dimension | Symbol | Occurrences in Dataset |
 |---|:---:|---:|
-| **Length** | $\\text{{m}} / L$ | `{stats['metrology_dimensions']['si_base_occurrences']['L (Length)']:,}` |
-| **Mass** | $\\text{{kg}} / M$ | `{stats['metrology_dimensions']['si_base_occurrences']['M (Mass)']:,}` |
-| **Time** | $\\text{{s}} / T$ | `{stats['metrology_dimensions']['si_base_occurrences']['T (Time)']:,}` |
-| **Electric Current** | $\\text{{A}} / I$ | `{stats['metrology_dimensions']['si_base_occurrences']['I (Electric Current)']:,}` |
-| **Thermodynamic Temperature** | $\\text{{K}} / \\Theta$ | `{stats['metrology_dimensions']['si_base_occurrences']['Theta (Temperature)']:,}` |
-| **Amount of Substance** | $\\text{{mol}} / N$ | `{stats['metrology_dimensions']['si_base_occurrences']['N (Amount of Substance)']:,}` |
-| **Luminous Intensity** | $\\text{{cd}} / J$ | `{stats['metrology_dimensions']['si_base_occurrences']['J (Luminous Intensity)']:,}` |
-| **Dimensionless & Logarithmic Units** | $1 / \\text{{rad}}, \\text{{dB}}, \\text{{Np}}$ | `{stats['metrology_dimensions']['dimensionless_occurrences']:,}` |
+| **Length** | $\\text{{m}} / L$ | `{stats["metrology_dimensions"]["si_base_occurrences"]["L (Length)"]:,}` |
+| **Mass** | $\\text{{kg}} / M$ | `{stats["metrology_dimensions"]["si_base_occurrences"]["M (Mass)"]:,}` |
+| **Time** | $\\text{{s}} / T$ | `{stats["metrology_dimensions"]["si_base_occurrences"]["T (Time)"]:,}` |
+| **Electric Current** | $\\text{{A}} / I$ | `{stats["metrology_dimensions"]["si_base_occurrences"]["I (Electric Current)"]:,}` |
+| **Thermodynamic Temperature** | $\\text{{K}} / \\Theta$ | `{stats["metrology_dimensions"]["si_base_occurrences"]["Theta (Temperature)"]:,}` |
+| **Amount of Substance** | $\\text{{mol}} / N$ | `{stats["metrology_dimensions"]["si_base_occurrences"]["N (Amount of Substance)"]:,}` |
+| **Luminous Intensity** | $\\text{{cd}} / J$ | `{stats["metrology_dimensions"]["si_base_occurrences"]["J (Luminous Intensity)"]:,}` |
+| **Dimensionless & Logarithmic Units** | $1 / \\text{{rad}}, \\text{{dB}}, \\text{{Np}}$ | `{stats["metrology_dimensions"]["dimensionless_occurrences"]:,}` |
 
 ---
 
 ## 🧮 Math, LaTeX & Lexical Richness
 
-- **Inline LaTeX Math Density:** `{math_s['inline_math_samples_pct']}%` of samples contain formal math delimiters (`$...$`).
-- **Display Equation Density:** `{math_s['display_math_samples_pct']}%` contain standalone derivation blocks (`$$...$$`).
-- **Prompt Vocabulary Size:** `{lex['prompt_vocabulary_size']:,}` unique words across `{lex['prompt_total_words']:,}` total words.
-- **Type-Token Ratio (TTR):** `{lex['type_token_ratio']}` (Distinct-1: `{lex['distinct_1']}`, Distinct-2: `{lex['distinct_2']}`).
+- **Inline LaTeX Math Density:** `{math_s["inline_math_samples_pct"]}%` of samples contain formal math delimiters (`$...$`).
+- **Display Equation Density:** `{math_s["display_math_samples_pct"]}%` contain standalone derivation blocks (`$$...$$`).
+- **Prompt Vocabulary Size:** `{lex["prompt_vocabulary_size"]:,}` unique words across `{lex["prompt_total_words"]:,}` total words.
+- **Type-Token Ratio (TTR):** `{lex["type_token_ratio"]}` (Distinct-1: `{lex["distinct_1"]}`, Distinct-2: `{lex["distinct_2"]}`).
 
 ---
 
@@ -376,7 +392,7 @@ print(dataset["train"][0])
         return out
 
     @classmethod
-    def print_rich_dashboard(cls, stats: Dict[str, Any], console: Optional[Console] = None) -> None:
+    def print_rich_dashboard(cls, stats: dict[str, Any], console: Console | None = None) -> None:
         """Renders an interactive, aesthetic CLI terminal dashboard."""
         con = console or Console()
         sum_data = stats["summary"]
@@ -389,13 +405,25 @@ print(dataset["train"][0])
         t_sum.add_column("Value", style="green", justify="right")
         t_sum.add_column("Notes", style="dim")
 
-        t_sum.add_row("Total SFT Records", f"{sum_data['total_records']:,}", "All verified instruction pairs")
+        t_sum.add_row(
+            "Total SFT Records", f"{sum_data['total_records']:,}", "All verified instruction pairs"
+        )
         t_sum.add_row("Train Split (85%)", f"{sum_data['train_records']:,}", "train.jsonl")
         t_sum.add_row("Validation Split (10%)", f"{sum_data['val_records']:,}", "val.jsonl")
-        t_sum.add_row("Held-out Test (5%)", f"{sum_data['test_records']:,}", "test.jsonl (M-Eval benchmark)")
+        t_sum.add_row(
+            "Held-out Test (5%)", f"{sum_data['test_records']:,}", "test.jsonl (M-Eval benchmark)"
+        )
         t_sum.add_row("DPO Hard-Negatives", f"{sum_data['dpo_records']:,}", "dpo_preferences.jsonl")
-        t_sum.add_row("Active Scientific Personas", f"{sum_data['unique_personas_count']}", "CODATA DRUM Scientific Unions")
-        t_sum.add_row("Recommended max_seq_length", f"{sum_data['recommended_max_seq_length']}", "Based on p99 token length")
+        t_sum.add_row(
+            "Active Scientific Personas",
+            f"{sum_data['unique_personas_count']}",
+            "CODATA DRUM Scientific Unions",
+        )
+        t_sum.add_row(
+            "Recommended max_seq_length",
+            f"{sum_data['recommended_max_seq_length']}",
+            "Based on p99 token length",
+        )
 
         con.print(t_sum)
 
@@ -409,14 +437,29 @@ print(dataset["train"][0])
         t_tok.add_column("Max", justify="right", style="red")
         t_tok.add_column("Std Dev", justify="right", style="dim")
 
-        for name, key in [("Prompt Tokens", "prompt_tokens"), ("Response Tokens", "response_tokens"), ("Total Sequence", "total_sequence_tokens")]:
+        for name, key in [
+            ("Prompt Tokens", "prompt_tokens"),
+            ("Response Tokens", "response_tokens"),
+            ("Total Sequence", "total_sequence_tokens"),
+        ]:
             d = tok[key]
-            t_tok.add_row(name, str(d["min"]), f"{d['mean']:.1f}", str(d["median"]), str(d["p95"]), str(d["max"]), f"{d['std']:.1f}")
+            t_tok.add_row(
+                name,
+                str(d["min"]),
+                f"{d['mean']:.1f}",
+                str(d["median"]),
+                str(d["p95"]),
+                str(d["max"]),
+                f"{d['std']:.1f}",
+            )
 
         con.print(t_tok)
 
         # SI Dimension Breakdown Table
-        t_dim = Table(title="🔬 Physical Dimension Coverage (7 SI Base Realizations)", header_style="bold magenta")
+        t_dim = Table(
+            title="🔬 Physical Dimension Coverage (7 SI Base Realizations)",
+            header_style="bold magenta",
+        )
         t_dim.add_column("SI Base Dimension", style="bold white")
         t_dim.add_column("Occurrences in Dataset", justify="right", style="cyan")
 

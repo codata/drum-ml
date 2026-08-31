@@ -1,37 +1,40 @@
 """Data Models for the DRUM Metrology Benchmark (M-Eval) Suite."""
 
-from enum import Enum
-from typing import Any, Dict, List, Optional
+from enum import StrEnum
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
-class BenchmarkTask(str, Enum):
+class BenchmarkTask(StrEnum):
     """The 6 Core Metrology Benchmark Tasks."""
-    CONSTANTS = "constants"               # Task 1: Fundamental Physical Constants & SI 2019
-    DIMENSIONS = "dimensions"             # Task 2: Dimensional Decomposition & Base SI
-    CONVERSIONS = "conversions"           # Task 3: Unit Conversions & Affine Transformations
-    HOMOGENEITY = "homogeneity"           # Task 4: Error Detection & Dimensional Homogeneity
-    CONVENTIONS = "conventions"           # Task 5: SI Typography & Metrological Conventions
-    UNCERTAINTY = "uncertainty"           # Task 6: Metrological Uncertainty (GUM) & Sig-Figs
+
+    CONSTANTS = "constants"  # Task 1: Fundamental Physical Constants & SI 2019
+    DIMENSIONS = "dimensions"  # Task 2: Dimensional Decomposition & Base SI
+    CONVERSIONS = "conversions"  # Task 3: Unit Conversions & Affine Transformations
+    HOMOGENEITY = "homogeneity"  # Task 4: Error Detection & Dimensional Homogeneity
+    CONVENTIONS = "conventions"  # Task 5: SI Typography & Metrological Conventions
+    UNCERTAINTY = "uncertainty"  # Task 6: Metrological Uncertainty (GUM) & Sig-Figs
 
 
-class BenchmarkFormat(str, Enum):
+class BenchmarkFormat(StrEnum):
     """Evaluation formats."""
-    MCQ = "mcq"                           # 4-option multiple choice (A, B, C, D)
-    FREE_FORM = "free_form"               # Open-ended reasoning and exact symbolic calculation
+
+    MCQ = "mcq"  # 4-option multiple choice (A, B, C, D)
+    FREE_FORM = "free_form"  # Open-ended reasoning and exact symbolic calculation
 
 
-class DifficultyTier(str, Enum):
-    INTRODUCTORY = "introductory"         # High school / basic scientific lookup
-    INTERMEDIATE = "intermediate"         # Undergraduate STEM / applied engineering
-    ADVANCED = "advanced"                 # Metrology lab / standards / GUM level
+class DifficultyTier(StrEnum):
+    INTRODUCTORY = "introductory"  # High school / basic scientific lookup
+    INTERMEDIATE = "intermediate"  # Undergraduate STEM / applied engineering
+    ADVANCED = "advanced"  # Metrology lab / standards / GUM level
 
 
 class MCQOption(BaseModel):
-    key: str                              # "A", "B", "C", "D"
-    text: str                             # Option description / formula
+    key: str  # "A", "B", "C", "D"
+    text: str  # Option description / formula
     is_correct: bool = False
-    distractor_rationale: Optional[str] = None # Why this distractor was crafted
+    distractor_rationale: str | None = None  # Why this distractor was crafted
 
 
 class BenchmarkSample(BaseModel):
@@ -40,13 +43,13 @@ class BenchmarkSample(BaseModel):
     format: BenchmarkFormat
     difficulty: DifficultyTier = DifficultyTier.INTERMEDIATE
     question: str
-    context: Optional[str] = None
-    options: Optional[List[MCQOption]] = None # For MCQ
-    correct_option_key: Optional[str] = None  # "A", "B", "C", "D"
-    ground_truth_answer: str                  # Canonical target string or formula
-    entity_uri: Optional[str] = None          # Provenance URI (BIPM, CODATA, QUDT)
-    explanation: Optional[str] = None         # Complete derivation / metrological explanation
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    context: str | None = None
+    options: list[MCQOption] | None = None  # For MCQ
+    correct_option_key: str | None = None  # "A", "B", "C", "D"
+    ground_truth_answer: str  # Canonical target string or formula
+    entity_uri: str | None = None  # Provenance URI (BIPM, CODATA, QUDT)
+    explanation: str | None = None  # Complete derivation / metrological explanation
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class TaskScore(BaseModel):
@@ -61,7 +64,7 @@ class BenchmarkScorecard(BaseModel):
     total_samples: int = 0
     passed_samples: int = 0
     overall_accuracy_pct: float = 0.0
-    task_breakdown: Dict[str, TaskScore] = Field(default_factory=dict)
-    format_breakdown: Dict[str, TaskScore] = Field(default_factory=dict)
-    difficulty_breakdown: Dict[str, TaskScore] = Field(default_factory=dict)
-    detailed_results: List[Dict[str, Any]] = Field(default_factory=list)
+    task_breakdown: dict[str, TaskScore] = Field(default_factory=dict)
+    format_breakdown: dict[str, TaskScore] = Field(default_factory=dict)
+    difficulty_breakdown: dict[str, TaskScore] = Field(default_factory=dict)
+    detailed_results: list[dict[str, Any]] = Field(default_factory=list)

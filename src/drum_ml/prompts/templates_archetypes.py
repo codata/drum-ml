@@ -1,11 +1,12 @@
 """Templates and Generators for the 6 Metrological Archetypes."""
 
-from typing import Dict, List
-from drum_ml.models.entities import CanonicalEntityStore, PhysicalConstantEntity, QuantityKindEntity, UnitEntity
+from drum_ml.models.entities import CanonicalEntityStore, PhysicalConstantEntity, UnitEntity
 from drum_ml.models.scaffolds import ArchetypeType, ScaffoldRecord
 
 
-def generate_scaffolds_for_unit(unit: UnitEntity, store: CanonicalEntityStore) -> List[ScaffoldRecord]:
+def generate_scaffolds_for_unit(
+    unit: UnitEntity, store: CanonicalEntityStore
+) -> list[ScaffoldRecord]:
     """Generates pedagogical scaffolds for a unit across archetypes."""
     scaffolds = []
 
@@ -74,7 +75,7 @@ def generate_scaffolds_for_unit(unit: UnitEntity, store: CanonicalEntityStore) -
     return scaffolds
 
 
-def generate_scaffolds_for_constant(constant: PhysicalConstantEntity) -> List[ScaffoldRecord]:
+def generate_scaffolds_for_constant(constant: PhysicalConstantEntity) -> list[ScaffoldRecord]:
     """Generates pedagogical scaffolds for a fundamental physical constant."""
     q = f"What is the value, standard uncertainty, and SI unit of the physical constant '{constant.name}' (${constant.latex_symbol}$)?"
     unc_text = (

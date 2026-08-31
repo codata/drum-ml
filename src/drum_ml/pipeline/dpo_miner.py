@@ -1,6 +1,5 @@
 """High-Fidelity DPO Negative Sample Mining with Quality Guards."""
 
-from typing import List, Optional
 from drum_ml.models.export import DPOPreferenceRecord
 from drum_ml.models.scaffolds import AugmentedRecord
 from drum_ml.models.validation import ValidationResult
@@ -13,11 +12,11 @@ class DPOMiner:
 
     def mine_pairs(
         self,
-        records: List[AugmentedRecord],
-        reports: List[ValidationResult],
-    ) -> List[DPOPreferenceRecord]:
+        records: list[AugmentedRecord],
+        reports: list[ValidationResult],
+    ) -> list[DPOPreferenceRecord]:
         """Harvests verified DPO pairs where the prompt is high-quality and chosen answer is ground truth."""
-        dpo_pairs: List[DPOPreferenceRecord] = []
+        dpo_pairs: list[DPOPreferenceRecord] = []
         report_map = {rep.record_id: rep for rep in reports}
 
         for rec in records:

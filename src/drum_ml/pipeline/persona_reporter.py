@@ -3,11 +3,12 @@
 import json
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from rich.console import Console
 from rich.table import Table
-from drum_ml.models.scaffolds import AugmentedRecord, PersonaType
 
+from drum_ml.models.scaffolds import AugmentedRecord, PersonaType
 
 PERSONA_METADATA = {
     PersonaType.GENERAL_USER: {
@@ -173,7 +174,7 @@ class PersonaReporter:
     """Generates detailed reports and analytics on generated dataset personas."""
 
     @staticmethod
-    def analyze_records(records: List[AugmentedRecord]) -> Dict[str, Any]:
+    def analyze_records(records: list[AugmentedRecord]) -> dict[str, Any]:
         """Calculates comprehensive distribution metrics across personas and archetypes."""
         total_samples = len(records)
         persona_counts = defaultdict(int)
@@ -184,7 +185,9 @@ class PersonaReporter:
 
         for rec in records:
             p_key = rec.persona.value if hasattr(rec.persona, "value") else str(rec.persona)
-            arch_key = rec.archetype.value if hasattr(rec.archetype, "value") else str(rec.archetype)
+            arch_key = (
+                rec.archetype.value if hasattr(rec.archetype, "value") else str(rec.archetype)
+            )
 
             persona_counts[p_key] += 1
             archetype_counts[arch_key] += 1
@@ -192,12 +195,16 @@ class PersonaReporter:
             generators[rec.llm_generator] += 1
 
             if len(persona_samples[p_key]) < 2:
-                persona_samples[p_key].append({
-                    "query": rec.user_query,
-                    "archetype": arch_key,
-                    "entity_uri": rec.entity_uri,
-                    "answer_preview": (rec.ground_truth_answer[:120] + "...") if len(rec.ground_truth_answer) > 120 else rec.ground_truth_answer,
-                })
+                persona_samples[p_key].append(
+                    {
+                        "query": rec.user_query,
+                        "archetype": arch_key,
+                        "entity_uri": rec.entity_uri,
+                        "answer_preview": (rec.ground_truth_answer[:120] + "...")
+                        if len(rec.ground_truth_answer) > 120
+                        else rec.ground_truth_answer,
+                    }
+                )
 
         # Build persona breakdown list
         personas_summary = []
@@ -207,20 +214,25 @@ class PersonaReporter:
                 enum_val = PersonaType(p_key)
             except ValueError:
                 pass
-            meta = PERSONA_METADATA.get(enum_val, {
-                "organization": p_key.replace("_", " ").title(),
-                "domain": "Domain-specific metrology",
-            })
+            meta = PERSONA_METADATA.get(
+                enum_val,
+                {
+                    "organization": p_key.replace("_", " ").title(),
+                    "domain": "Domain-specific metrology",
+                },
+            )
 
-            personas_summary.append({
-                "persona_key": p_key,
-                "organization": meta["organization"],
-                "domain": meta["domain"],
-                "sample_count": count,
-                "percentage": (count / max(1, total_samples)) * 100,
-                "archetype_breakdown": dict(persona_archetype_matrix[p_key]),
-                "sample_previews": persona_samples[p_key],
-            })
+            personas_summary.append(
+                {
+                    "persona_key": p_key,
+                    "organization": meta["organization"],
+                    "domain": meta["domain"],
+                    "sample_count": count,
+                    "percentage": (count / max(1, total_samples)) * 100,
+                    "archetype_breakdown": dict(persona_archetype_matrix[p_key]),
+                    "sample_previews": persona_samples[p_key],
+                }
+            )
 
         return {
             "total_samples": total_samples,
@@ -232,7 +244,7 @@ class PersonaReporter:
 
     @classmethod
     def save_markdown_report(
-        cls, report_data: Dict[str, Any], output_path: str = "./dataset/persona_report.md"
+        cls, report_data: dict[str, Any], output_path: str = "./dataset/persona_report.md"
     ) -> Path:
         """Saves a comprehensive markdown report."""
         out = Path(output_path)
@@ -258,33 +270,37 @@ class PersonaReporter:
                 f"| `{p['persona_key']}` | **{p['organization']}** | {p['sample_count']:,} | {p['percentage']:.1f}% | {p['domain']} |"
             )
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 🎯 Pedagogical Archetype Distribution",
-            "",
-            "| Archetype | Count | % Share |",
-            "|---|---:|---:|",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 🎯 Pedagogical Archetype Distribution",
+                "",
+                "| Archetype | Count | % Share |",
+                "|---|---:|---:|",
+            ]
+        )
 
         total = max(1, report_data["total_samples"])
         for arch, count in report_data["archetype_distribution"].items():
-            lines.append(f"| `{arch}` | {count:,} | {(count/total)*100:.1f}% |")
+            lines.append(f"| `{arch}` | {count:,} | {(count / total) * 100:.1f}% |")
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 🔍 Representative Sample Queries by Scientific Union",
-            "",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 🔍 Representative Sample Queries by Scientific Union",
+                "",
+            ]
+        )
 
         for p in report_data["personas"]:
             lines.append(f"### `{p['persona_key']}` ({p['organization']})")
             lines.append(f"- **Domain Focus:** {p['domain']}")
             for idx, s in enumerate(p["sample_previews"], 1):
-                lines.append(f"  {idx}. *\"{s['query']}\"* (Archetype: `{s['archetype']}`)")
+                lines.append(f'  {idx}. *"{s["query"]}"* (Archetype: `{s["archetype"]}`)')
             lines.append("")
 
         with open(out, "w", encoding="utf-8") as f:
@@ -294,7 +310,7 @@ class PersonaReporter:
 
     @classmethod
     def save_json_report(
-        cls, report_data: Dict[str, Any], output_path: str = "./dataset/persona_report.json"
+        cls, report_data: dict[str, Any], output_path: str = "./dataset/persona_report.json"
     ) -> Path:
         """Saves machine-readable JSON analytics."""
         out = Path(output_path)
@@ -304,7 +320,7 @@ class PersonaReporter:
         return out
 
     @classmethod
-    def print_rich_table(cls, report_data: Dict[str, Any], console: Optional[Console] = None) -> None:
+    def print_rich_table(cls, report_data: dict[str, Any], console: Console | None = None) -> None:
         """Renders an interactive Rich summary table to the terminal."""
         con = console or Console()
         table = Table(

@@ -1,12 +1,13 @@
 """QUDT 2.1 Dynamic Vocabulary Downloader and SPARQL Ingestion Client."""
 
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import ClassVar
+
 import httpx
 import rdflib
+
 from drum_ml.models.entities import (
     ConversionRelation,
-    DimensionVector,
     QuantityKindEntity,
     UnitEntity,
 )
@@ -16,7 +17,7 @@ from drum_ml.symbolic.dimensions import parse_qudt_dimension_string
 class QUDTFetcher:
     """Client for downloading latest QUDT releases and querying units/quantity kinds via SPARQL."""
 
-    QUDT_VOCAB_URLS = {
+    QUDT_VOCAB_URLS: ClassVar[dict[str, str]] = {
         "VOCAB_QUDT-UNITS-ALL.ttl": "https://qudt.org/2.1/vocab/unit",
         "VOCAB_QUDT-QUANTITY-KINDS-ALL.ttl": "https://qudt.org/2.1/vocab/quantitykind",
         "VOCAB_QUDT-DIMENSION-VECTORS-ALL.ttl": "https://qudt.org/2.1/vocab/dimensionvector",
@@ -28,7 +29,7 @@ class QUDTFetcher:
         self.release_tag = release_tag
         self.local_dir.mkdir(parents=True, exist_ok=True)
 
-    def download_latest_vocabularies(self, tag: Optional[str] = None) -> List[Path]:
+    def download_latest_vocabularies(self, tag: str | None = None) -> list[Path]:
         """Downloads official QUDT TTL vocabularies from official endpoints."""
         downloaded = []
         headers = {"Accept": "text/turtle, application/x-turtle;q=0.9, text/plain;q=0.5"}
@@ -55,9 +56,11 @@ class QUDTFetcher:
                 pass
         return g
 
-    def extract_quantity_kinds_from_graph(self, graph: rdflib.Graph) -> Dict[str, QuantityKindEntity]:
+    def extract_quantity_kinds_from_graph(
+        self, graph: rdflib.Graph
+    ) -> dict[str, QuantityKindEntity]:
         """Extracts QuantityKinds dynamically via SPARQL."""
-        kinds: Dict[str, QuantityKindEntity] = {}
+        kinds: dict[str, QuantityKindEntity] = {}
         query = """
         PREFIX qudt: <http://qudt.org/schema/qudt/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -93,9 +96,9 @@ class QUDTFetcher:
 
         return kinds
 
-    def extract_units_from_graph(self, graph: rdflib.Graph) -> Dict[str, UnitEntity]:
+    def extract_units_from_graph(self, graph: rdflib.Graph) -> dict[str, UnitEntity]:
         """Extracts Units dynamically via SPARQL from the QUDT RDF Graph."""
-        units: Dict[str, UnitEntity] = {}
+        units: dict[str, UnitEntity] = {}
         query = """
         PREFIX qudt: <http://qudt.org/schema/qudt/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -147,7 +150,9 @@ class QUDTFetcher:
 
         return units
 
-    def extract_all(self, graph: Optional[rdflib.Graph] = None) -> Tuple[Dict[str, UnitEntity], Dict[str, QuantityKindEntity]]:
+    def extract_all(
+        self, graph: rdflib.Graph | None = None
+    ) -> tuple[dict[str, UnitEntity], dict[str, QuantityKindEntity]]:
         """Loads local graph or provided graph and executes dynamic SPARQL extraction."""
         target_graph = graph if (graph is not None and len(graph) > 0) else self.load_local_graph()
         units = self.extract_units_from_graph(target_graph)

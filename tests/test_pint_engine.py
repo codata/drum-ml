@@ -1,8 +1,7 @@
 """Tests for Pint / SymPy symbolic unit equivalence and LaTeX balance."""
 
-import pytest
-from drum_ml.symbolic.pint_engine import check_unit_conversion_equivalence
 from drum_ml.symbolic.latex_parser import check_latex_math_balance, sanitize_latex_units
+from drum_ml.symbolic.pint_engine import check_unit_conversion_equivalence
 
 
 def test_pint_basic_equivalence():

@@ -1,18 +1,16 @@
 """Agent 5: Deduplication, Stratified Partitioning, and Dataset Packaging."""
 
 import hashlib
-import json
 import os
 import random
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+
 from datasketch import MinHash, MinHashLSH
+
 from drum_ml.models.export import (
     DPOPreferenceRecord,
     OpenAIChatMessage,
     OpenAIChatRecord,
-    ShareGPTRecord,
-    ShareGPTTurn,
 )
 from drum_ml.models.scaffolds import AugmentedRecord
 
@@ -27,22 +25,23 @@ class MetrologyExporter:
         val_ratio: float = 0.10,
         test_ratio: float = 0.05,
         jaccard_threshold: float = 0.85,
-        dedup_threshold: Optional[float] = None,
+        dedup_threshold: float | None = None,
     ):
         self.output_dir = Path(output_dir).resolve()
         self.train_ratio = train_ratio
         self.val_ratio = val_ratio
         self.test_ratio = test_ratio
-        self.jaccard_threshold = dedup_threshold if dedup_threshold is not None else jaccard_threshold
+        self.jaccard_threshold = (
+            dedup_threshold if dedup_threshold is not None else jaccard_threshold
+        )
         os.makedirs(str(self.output_dir), exist_ok=True)
 
-    def deduplicate(self, records: List[AugmentedRecord]) -> List[AugmentedRecord]:
+    def deduplicate(self, records: list[AugmentedRecord]) -> list[AugmentedRecord]:
         """Performs MinHash LSH near-duplicate and exact-hash deduplication."""
-        unique_records: List[AugmentedRecord] = []
+        unique_records: list[AugmentedRecord] = []
         seen_hashes = set()
         lsh = MinHashLSH(threshold=self.jaccard_threshold, num_perm=64)
 
-        seen_ids = set()
         for idx, rec in enumerate(records):
             exact_hash = hashlib.sha256(rec.user_query.strip().lower().encode()).hexdigest()
             if exact_hash in seen_hashes:
@@ -63,8 +62,8 @@ class MetrologyExporter:
         return unique_records
 
     def stratified_split(
-        self, records: List[AugmentedRecord], seed: int = 42
-    ) -> Tuple[List[AugmentedRecord], List[AugmentedRecord], List[AugmentedRecord]]:
+        self, records: list[AugmentedRecord], seed: int = 42
+    ) -> tuple[list[AugmentedRecord], list[AugmentedRecord], list[AugmentedRecord]]:
         """Partitions dataset with entity isolation to prevent train-to-test data leakage."""
         random.seed(seed)
         shuffled = list(records)
@@ -98,9 +97,9 @@ class MetrologyExporter:
 
     def export_all(
         self,
-        records: List[AugmentedRecord],
-        dpo_pairs: List[DPOPreferenceRecord],
-    ) -> Dict[str, Path]:
+        records: list[AugmentedRecord],
+        dpo_pairs: list[DPOPreferenceRecord],
+    ) -> dict[str, Path]:
         """Deduplicates, splits, and writes dataset splits to disk."""
         os.makedirs(str(self.output_dir), exist_ok=True)
         deduped = self.deduplicate(records)

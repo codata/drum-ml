@@ -2,10 +2,9 @@
 
 import re
 from decimal import Decimal, InvalidOperation
-from typing import Optional, Tuple
 
 
-def parse_codata_value_uncertainty(val_str: str) -> Tuple[str, Optional[str]]:
+def parse_codata_value_uncertainty(val_str: str) -> tuple[str, str | None]:
     """Parses standard CODATA string representation with concise parenthetical uncertainty,
     e.g. '6.67430(15)e-11' -> ('6.67430e-11', '0.00015e-11') or ('6.67430e-11', '1.5e-15').
 
@@ -13,7 +12,7 @@ def parse_codata_value_uncertainty(val_str: str) -> Tuple[str, Optional[str]]:
         (clean_value_string, standard_uncertainty_string)
     """
     cleaned = val_str.strip().replace(" ", "")
-    
+
     # Check for concise form: e.g. 6.67430(15)e-11 or 0.0072973525693(11)
     m = re.match(r"^([+-]?\d+)(\.?\d*)\((\d+)\)(?:[eE]([+-]?\d+))?$", cleaned)
     if not m:
@@ -29,10 +28,10 @@ def parse_codata_value_uncertainty(val_str: str) -> Tuple[str, Optional[str]]:
     int_part, frac_part, unc_digits, exp_part = m.groups()
     frac_len = len(frac_part) - 1 if frac_part and frac_part.startswith(".") else 0
     main_val = f"{int_part}{frac_part}"
-    
+
     # Construct uncertainty value
     if frac_len > 0:
-        unc_val = f"{int(unc_digits) * (10 ** -frac_len):.{frac_len}f}"
+        unc_val = f"{int(unc_digits) * (10**-frac_len):.{frac_len}f}"
     else:
         unc_val = unc_digits
 

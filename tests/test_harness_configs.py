@@ -2,8 +2,8 @@
 
 import sys
 from pathlib import Path
+
 import yaml
-import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -29,7 +29,7 @@ def test_harness_yaml_files_exist_and_valid():
     for yml_name in expected_yamls:
         yml_path = tasks_dir / yml_name
         assert yml_path.exists(), f"Missing YAML: {yml_name}"
-        
+
         # Read content and parse YAML
         content = yml_path.read_text(encoding="utf-8")
         # Replace !function tags for basic yaml parsing test

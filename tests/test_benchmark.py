@@ -1,11 +1,11 @@
 """Tests for DRUM Benchmark Generator."""
 
 import pytest
+
 from drum_ml.benchmark.generator import DRUMBenchmarkGenerator
 from drum_ml.benchmark.models import (
     BenchmarkFormat,
     BenchmarkTask,
-    DifficultyTier,
 )
 from drum_ml.models.entities import (
     CanonicalEntityStore,
@@ -20,7 +20,7 @@ from drum_ml.models.entities import (
 @pytest.fixture
 def mock_entity_store():
     store = CanonicalEntityStore()
-    
+
     # 1. Exact Defining Constant: Planck constant
     store.constants["c_h"] = PhysicalConstantEntity(
         uri="http://qudt.org/vocab/constant/PlanckConstant",
@@ -32,7 +32,7 @@ def mock_entity_store():
         unit_symbol="J s",
         dimension_vector=DimensionVector(L=2, M=1, T=-1),
     )
-    
+
     # 2. Recommended Constant: Newtonian gravitation
     store.constants["c_G"] = PhysicalConstantEntity(
         uri="http://qudt.org/vocab/constant/NewtonianConstantOfGravitation",
@@ -69,9 +69,9 @@ def mock_entity_store():
 def test_benchmark_generator_all_tasks(mock_entity_store):
     generator = DRUMBenchmarkGenerator(entities=mock_entity_store, seed=42)
     samples = generator.generate_all(samples_per_task=5)
-    
+
     assert len(samples) > 0
-    
+
     tasks_found = set(s.task for s in samples)
     assert BenchmarkTask.CONSTANTS in tasks_found
     assert BenchmarkTask.DIMENSIONS in tasks_found
@@ -84,10 +84,10 @@ def test_benchmark_generator_all_tasks(mock_entity_store):
 def test_benchmark_mcq_options_integrity(mock_entity_store):
     generator = DRUMBenchmarkGenerator(entities=mock_entity_store, seed=42)
     c_samples = generator.generate_constants_task(count=4)
-    
+
     mcq_samples = [s for s in c_samples if s.format == BenchmarkFormat.MCQ]
     assert len(mcq_samples) > 0
-    
+
     for s in mcq_samples:
         assert s.options is not None
         assert len(s.options) == 4

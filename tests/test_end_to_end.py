@@ -1,12 +1,11 @@
 """End-to-end and pipeline tests across all 5 agents using dynamic RDF Turtle ingestion."""
 
-import pytest
-from drum_ml.pipeline.extractor import MetrologyExtractor
-from drum_ml.pipeline.scaffolder import MetrologyScaffolder
 from drum_ml.pipeline.augmenter import MetrologyAugmenter
-from drum_ml.pipeline.validator import MetrologyValidator
 from drum_ml.pipeline.dpo_miner import DPOMiner
 from drum_ml.pipeline.exporter import MetrologyExporter
+from drum_ml.pipeline.extractor import MetrologyExtractor
+from drum_ml.pipeline.scaffolder import MetrologyScaffolder
+from drum_ml.pipeline.validator import MetrologyValidator
 
 
 def test_full_pipeline_flow(tmp_path):
@@ -101,7 +100,7 @@ def test_full_pipeline_flow(tmp_path):
     miner = DPOMiner()
     dpo_pairs = miner.mine_pairs(augmented, reports)
     exporter = MetrologyExporter(output_dir=str(tmp_path / "dataset"))
-    paths = exporter.export_all(approved, dpo_pairs)
+    exporter.export_all(approved, dpo_pairs)
 
     assert (tmp_path / "dataset" / "train.jsonl").exists()
     assert (tmp_path / "dataset" / "val.jsonl").exists()

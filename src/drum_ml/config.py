@@ -1,7 +1,7 @@
 """Configuration loader and Pydantic Settings for DRUM-ML."""
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+
 import yaml
 from pydantic import BaseModel, Field
 
@@ -10,14 +10,14 @@ class AugmenterConfig(BaseModel):
     enabled: bool = True
     provider: str = "ollama"
     model: str = "qwen3.8:27b-mlx"
-    api_base: Optional[str] = None
-    api_key: Optional[str] = None
+    api_base: str | None = None
+    api_key: str | None = None
     temperature: float = 0.7
     variations_per_archetype: int = 2
     concurrency_limit: int = 5
     timeout_seconds: int = 60
     max_retries: int = 3
-    personas: List[str] = Field(default_factory=lambda: ["general_user"])
+    personas: list[str] = Field(default_factory=lambda: ["general_user"])
 
 
 class ValidatorConfig(BaseModel):
@@ -35,12 +35,12 @@ class ExporterConfig(BaseModel):
     val_ratio: float = 0.10
     test_ratio: float = 0.05
     dedup_jaccard_threshold: float = 0.85
-    formats: List[str] = Field(default_factory=lambda: ["openai", "sharegpt", "dpo"])
+    formats: list[str] = Field(default_factory=lambda: ["openai", "sharegpt", "dpo"])
 
 
 class HuggingFaceConfig(BaseModel):
     repo_id: str = "codata/drum-metrology-instruct"
-    token: Optional[str] = None
+    token: str | None = None
     private: bool = False
 
 
@@ -57,7 +57,7 @@ class PipelineConfig(BaseModel):
         p = Path(path)
         if not p.exists():
             return cls()
-        with open(p, "r", encoding="utf-8") as f:
+        with open(p, encoding="utf-8") as f:
             data = yaml.safe_load(f) or {}
 
         aug_data = data.get("augmenter", {})

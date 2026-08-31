@@ -8,17 +8,14 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from rich.console import Console
 from rich.table import Table
 
 from drum_ml.benchmark.models import (
     BenchmarkFormat,
-    BenchmarkSample,
     BenchmarkScorecard,
-    BenchmarkTask,
-    DifficultyTier,
     TaskScore,
 )
 from drum_ml.symbolic.latex_parser import sanitize_latex_units
@@ -31,18 +28,18 @@ class MEvalBenchmark:
     def __init__(self, benchmark_file: str = "./dataset/drum_benchmark_mcq.jsonl"):
         self.benchmark_file = Path(benchmark_file)
 
-    def load_benchmark_records(self) -> List[Dict[str, Any]]:
+    def load_benchmark_records(self) -> list[dict[str, Any]]:
         """Load benchmark samples from JSONL."""
         records = []
         if not self.benchmark_file.exists():
             return records
-        with open(self.benchmark_file, "r", encoding="utf-8") as f:
+        with open(self.benchmark_file, encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     records.append(json.loads(line))
         return records
 
-    def extract_mcq_answer(self, response_text: str) -> Optional[str]:
+    def extract_mcq_answer(self, response_text: str) -> str | None:
         """Extracts the predicted MCQ option letter (A, B, C, D) from an LLM response."""
         text = response_text.strip()
         if not text:
@@ -70,9 +67,9 @@ class MEvalBenchmark:
 
     def grade_response(
         self,
-        record: Dict[str, Any],
+        record: dict[str, Any],
         predicted_text: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Grades a response against ground truth using MCQ extraction or symbolic equivalence."""
         fmt = record.get("format", BenchmarkFormat.MCQ.value)
         correct_key = record.get("correct_option_key")
@@ -101,7 +98,9 @@ class MEvalBenchmark:
         gt_clean = sanitize_latex_units(gt_answer)
         pred_clean = sanitize_latex_units(predicted_text)
 
-        exact_match = (gt_clean.lower() == pred_clean.lower()) or (gt_answer.strip().lower() == predicted_text.strip().lower())
+        exact_match = (gt_clean.lower() == pred_clean.lower()) or (
+            gt_answer.strip().lower() == predicted_text.strip().lower()
+        )
         is_sym_eq, sym_err = False, None
 
         if not exact_match:
@@ -119,7 +118,7 @@ class MEvalBenchmark:
     def compute_scorecard(
         self,
         model_name: str,
-        results: List[Dict[str, Any]],
+        results: list[dict[str, Any]],
     ) -> BenchmarkScorecard:
         """Computes stratified scores across all 6 tasks, formats, and difficulties."""
         total = len(results)
@@ -127,9 +126,9 @@ class MEvalBenchmark:
         overall_pct = (passed / total * 100.0) if total > 0 else 0.0
 
         # Sub-breakdowns
-        task_stats: Dict[str, Dict[str, int]] = {}
-        fmt_stats: Dict[str, Dict[str, int]] = {}
-        diff_stats: Dict[str, Dict[str, int]] = {}
+        task_stats: dict[str, dict[str, int]] = {}
+        fmt_stats: dict[str, dict[str, int]] = {}
+        diff_stats: dict[str, dict[str, int]] = {}
 
         for r in results:
             t = r.get("task", "unknown")
@@ -155,7 +154,7 @@ class MEvalBenchmark:
             diff_stats[d]["total"] += 1
             diff_stats[d]["passed"] += is_p
 
-        def to_task_score_dict(d_dict: Dict[str, Dict[str, int]]) -> Dict[str, TaskScore]:
+        def to_task_score_dict(d_dict: dict[str, dict[str, int]]) -> dict[str, TaskScore]:
             out = {}
             for k, v in d_dict.items():
                 pct = (v["passed"] / v["total"] * 100.0) if v["total"] > 0 else 0.0
@@ -173,7 +172,9 @@ class MEvalBenchmark:
             detailed_results=results,
         )
 
-    def print_scorecard(self, scorecard: BenchmarkScorecard, console: Optional[Console] = None) -> None:
+    def print_scorecard(
+        self, scorecard: BenchmarkScorecard, console: Console | None = None
+    ) -> None:
         """Prints a rich, formatted evaluation scorecard to the terminal."""
         con = console or Console()
         table = Table(
@@ -199,7 +200,13 @@ class MEvalBenchmark:
         for task_key, task_label in task_names.items():
             if task_key in scorecard.task_breakdown:
                 ts = scorecard.task_breakdown[task_key]
-                color = "green" if ts.accuracy_pct >= 80 else "yellow" if ts.accuracy_pct >= 50 else "red"
+                color = (
+                    "green"
+                    if ts.accuracy_pct >= 80
+                    else "yellow"
+                    if ts.accuracy_pct >= 50
+                    else "red"
+                )
                 table.add_row(
                     task_label,
                     str(ts.total),
@@ -208,7 +215,13 @@ class MEvalBenchmark:
                 )
 
         table.add_section()
-        ov_color = "bold green" if scorecard.overall_accuracy_pct >= 80 else "bold yellow" if scorecard.overall_accuracy_pct >= 50 else "bold red"
+        ov_color = (
+            "bold green"
+            if scorecard.overall_accuracy_pct >= 80
+            else "bold yellow"
+            if scorecard.overall_accuracy_pct >= 50
+            else "bold red"
+        )
         table.add_row(
             "OVERALL DRUM BENCHMARK SCORE",
             str(scorecard.total_samples),

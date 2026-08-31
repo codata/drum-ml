@@ -434,7 +434,9 @@ from trl import SFTTrainer, DPOTrainer
 from transformers import TrainingArguments
 
 # Load the local DRUM-ML splits
-train_ds = load_dataset("json", data_files={"train": "./dataset/train.jsonl", "validation": "./dataset/val.jsonl"})
+train_ds = load_dataset(
+    "json", data_files={"train": "./dataset/train.jsonl", "validation": "./dataset/val.jsonl"}
+)
 
 # Run SFT LoRA fine-tuning
 trainer = SFTTrainer(
@@ -443,7 +445,9 @@ trainer = SFTTrainer(
     eval_dataset=train_ds["validation"],
     dataset_text_field="messages",
     max_seq_length=2048,
-    args=TrainingArguments(output_dir="./drum-llama3-sft", per_device_train_batch_size=4, num_train_epochs=3),
+    args=TrainingArguments(
+        output_dir="./drum-llama3-sft", per_device_train_batch_size=4, num_train_epochs=3
+    ),
 )
 trainer.train()
 

@@ -1,6 +1,5 @@
 """Sphinx documentation configuration for DRUM-ML."""
 
-import os
 import sys
 from pathlib import Path
 

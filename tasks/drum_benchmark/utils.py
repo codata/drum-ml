@@ -1,6 +1,6 @@
 """Document processing utilities and filters for lm-evaluation-harness DRUM tasks."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 
 def filter_by_task(dataset: Any, task_name: str) -> Any:
@@ -32,16 +32,16 @@ def filter_uncertainty(dataset: Any) -> Any:
     return filter_by_task(dataset, "uncertainty")
 
 
-def format_mcq_doc(doc: Dict[str, Any]) -> str:
+def format_mcq_doc(doc: dict[str, Any]) -> str:
     """Formats a BenchmarkSample document into standard multiple-choice prompt text."""
     question = doc.get("question", "").strip()
     options = doc.get("options", [])
-    
+
     formatted_opts = []
     for opt in options:
         k = opt.get("key", "")
         t = opt.get("text", "").strip()
         formatted_opts.append(f"{k}. {t}")
-    
+
     opts_str = "\n".join(formatted_opts)
     return f"Question: {question}\n{opts_str}\nAnswer:"

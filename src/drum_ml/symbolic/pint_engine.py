@@ -1,11 +1,8 @@
 """Pint and SymPy Symbolic Equivalence and Unit Verification Engine."""
 
-from typing import Optional, Tuple
 import pint
-import sympy as sp
-from sympy.physics import units as sp_units
-from drum_ml.symbolic.latex_parser import sanitize_latex_units
 
+from drum_ml.symbolic.latex_parser import sanitize_latex_units
 
 # Initialize global Pint UnitRegistry
 ureg = pint.UnitRegistry()
@@ -18,7 +15,7 @@ def check_unit_conversion_equivalence(
     expr_right_str: str,
     is_temperature_delta: bool = False,
     rel_tol: float = 1e-4,
-) -> Tuple[bool, Optional[str]]:
+) -> tuple[bool, str | None]:
     """Checks whether two unit expressions (e.g. '1 N' and '1 kg * m / s**2', or '100 degC' and '373.15 K')
     are physically and numerically equivalent.
 
@@ -45,7 +42,10 @@ def check_unit_conversion_equivalence(
 
         # Check dimensional compatibility
         if not q_left.check(q_right.dimensionality):
-            return False, f"Dimensional incompatibility: [{q_left.dimensionality}] != [{q_right.dimensionality}]"
+            return (
+                False,
+                f"Dimensional incompatibility: [{q_left.dimensionality}] != [{q_right.dimensionality}]",
+            )
 
         # Check numerical equality after conversion to base SI
         q_left_base = q_left.to_base_units()
@@ -60,4 +60,4 @@ def check_unit_conversion_equivalence(
         return True, None
 
     except Exception as e:
-        return False, f"Pint evaluation error: {str(e)}"
+        return False, f"Pint evaluation error: {e!s}"

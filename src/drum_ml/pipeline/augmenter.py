@@ -1,13 +1,14 @@
 import concurrent.futures
 import hashlib
 import json
-import os
 import sqlite3
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
+
 import litellm
-from tenacity import retry, stop_after_attempt, wait_exponential
+
 from drum_ml.models.scaffolds import AugmentedRecord, PersonaType, ScaffoldRecord
 from drum_ml.prompts.templates_personas import PERSONA_SYSTEM_PROMPTS
 
@@ -21,15 +22,15 @@ class MetrologyAugmenter:
         self,
         provider: str = "google",
         model: str = "gemini/gemini-2.5-flash",
-        api_base: Optional[str] = None,
-        api_key: Optional[str] = None,
+        api_base: str | None = None,
+        api_key: str | None = None,
         cache_db_path: str = "./data/cache/llm_cache.sqlite",
         temperature: float = 0.7,
         concurrency_limit: int = 5,
     ):
         self.provider = provider.lower()
         self.concurrency_limit = concurrency_limit
-        
+
         # Normalize model identifier for LiteLLM providers
         if self.provider in ("google", "gemini") and not model.startswith("gemini/"):
             self.model = f"gemini/{model}"
@@ -58,7 +59,7 @@ class MetrologyAugmenter:
         self.api_key = api_key
         self.temperature = temperature
         self.cache_db_path = Path(cache_db_path)
-        self.last_error: Optional[str] = None
+        self.last_error: str | None = None
         self.interrupted: bool = False
         self.stats = {
             "live_llm": 0,
@@ -90,7 +91,7 @@ class MetrologyAugmenter:
             )
             conn.commit()
 
-    def _get_cache(self, key: str) -> Optional[str]:
+    def _get_cache(self, key: str) -> str | None:
         with sqlite3.connect(str(self.cache_db_path)) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT response FROM prompt_cache WHERE cache_key = ?", (key,))
@@ -118,13 +119,13 @@ class MetrologyAugmenter:
         # Default clean single-line error
         return msg.strip().split("\n")[0]
 
-    def _call_llm_api(self, system_prompt: str, user_prompt: str) -> Optional[str]:
+    def _call_llm_api(self, system_prompt: str, user_prompt: str) -> str | None:
         """Calls configured LLM (Gemini, Claude, GPT, or local) via LiteLLM."""
         t0 = time.perf_counter()
         try:
             litellm.suppress_debug_info = True
-            
-            kwargs: Dict[str, Any] = {
+
+            kwargs: dict[str, Any] = {
                 "model": self.model,
                 "messages": [
                     {"role": "system", "content": system_prompt},
@@ -164,11 +165,13 @@ class MetrologyAugmenter:
         scaffold: ScaffoldRecord,
         persona: Any,
         variations_count: int = 1,
-    ) -> List[AugmentedRecord]:
+    ) -> list[AugmentedRecord]:
         """Synchronously augments a scaffold for a specific persona."""
         results = []
         p_type = PersonaType(persona) if isinstance(persona, str) else persona
-        cache_key = hashlib.sha256(f"{scaffold.id}_{p_type.value}_{self.model}".encode("utf-8")).hexdigest()
+        cache_key = hashlib.sha256(
+            f"{scaffold.id}_{p_type.value}_{self.model}".encode()
+        ).hexdigest()
 
         # Check cache
         cached_resp = self._get_cache(cache_key)
@@ -180,12 +183,13 @@ class MetrologyAugmenter:
                 augmented_queries = [cached_resp]
         else:
             system_prompt = PERSONA_SYSTEM_PROMPTS.get(
-                p_type, "You are a domain expert asking precise questions about units of measurement."
+                p_type,
+                "You are a domain expert asking precise questions about units of measurement.",
             )
             user_prompt = (
                 f"Paraphrase the following metrological question into {variations_count} distinct, realistic questions "
-                f"from your persona's perspective:\n\n\"{scaffold.canonical_query}\"\n\n"
-                f"Output only a JSON array of strings: [\"variation 1\", ...]"
+                f'from your persona\'s perspective:\n\n"{scaffold.canonical_query}"\n\n'
+                f'Output only a JSON array of strings: ["variation 1", ...]'
             )
 
             llm_output = self._call_llm_api(system_prompt, user_prompt)
@@ -233,26 +237,32 @@ class MetrologyAugmenter:
 
     def augment_all(
         self,
-        scaffolds: List[ScaffoldRecord],
-        personas: Optional[List[PersonaType]] = None,
+        scaffolds: list[ScaffoldRecord],
+        personas: list[PersonaType] | None = None,
         variations_per_archetype: int = 2,
-        progress_callback: Optional[Callable[[int], None]] = None,
-    ) -> List[AugmentedRecord]:
+        progress_callback: Callable[[int], None] | None = None,
+    ) -> list[AugmentedRecord]:
         """Augments a collection of scaffolds concurrently across all designated personas."""
-        if personas is None or personas == "all" or (isinstance(personas, list) and "all" in personas):
+        if (
+            personas is None
+            or personas == "all"
+            or (isinstance(personas, list) and "all" in personas)
+        ):
             personas = list(PersonaType)
         else:
             personas = [PersonaType(p) if isinstance(p, str) else p for p in personas]
 
         t_start = time.perf_counter()
         work_items = [(scaffold, persona) for scaffold in scaffolds for persona in personas]
-        augmented_records: List[AugmentedRecord] = []
+        augmented_records: list[AugmentedRecord] = []
 
         max_workers = min(self.concurrency_limit, max(1, len(work_items)))
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=max_workers)
         try:
             futures = [
-                executor.submit(self.augment_scaffold_sync, scaffold, persona, variations_per_archetype)
+                executor.submit(
+                    self.augment_scaffold_sync, scaffold, persona, variations_per_archetype
+                )
                 for scaffold, persona in work_items
             ]
             for future in concurrent.futures.as_completed(futures):
@@ -261,7 +271,9 @@ class MetrologyAugmenter:
                     augmented_records.extend(res)
                     for r in res:
                         p_val = r.persona.value if hasattr(r.persona, "value") else str(r.persona)
-                        self.stats["persona_counts"][p_val] = self.stats["persona_counts"].get(p_val, 0) + 1
+                        self.stats["persona_counts"][p_val] = (
+                            self.stats["persona_counts"].get(p_val, 0) + 1
+                        )
                 except Exception:
                     pass
                 if progress_callback:
@@ -277,7 +289,9 @@ class MetrologyAugmenter:
         self.stats["total_duration_seconds"] = time.perf_counter() - t_start
         return augmented_records
 
-    def save_to_json(self, records: List[AugmentedRecord], output_path: str = "./data/augmented.json") -> Path:
+    def save_to_json(
+        self, records: list[AugmentedRecord], output_path: str = "./data/augmented.json"
+    ) -> Path:
         """Serializes augmented records to JSON with UTF-8 encoding for cross-platform compatibility."""
         out = Path(output_path)
         out.parent.mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,5 @@
 """Tests for QuantityKind vs Unit separation and disambiguation."""
 
-import pytest
 from drum_ml.symbolic.quantity_kinds import is_unit_compatible_with_quantity_kind
 
 

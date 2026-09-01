@@ -27,9 +27,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: |
-          uv venv
-          uv pip install -e ".[dev]"
+        run: uv sync --group dev
 
       - name: Run Ruff Lint Check
         run: uv run ruff check .

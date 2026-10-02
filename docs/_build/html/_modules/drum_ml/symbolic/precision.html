@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -235,12 +238,11 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span><span class="p">,</span> <span class="n">InvalidOperation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
 <div class="viewcode-block" id="parse_codata_value_uncertainty">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.symbolic.precision.parse_codata_value_uncertainty">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_codata_value_uncertainty</span><span class="p">(</span><span class="n">val_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_codata_value_uncertainty</span><span class="p">(</span><span class="n">val_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Parses standard CODATA string representation with concise parenthetical uncertainty,</span>
 <span class="sd">    e.g. '6.67430(15)e-11' -&gt; ('6.67430e-11', '0.00015e-11') or ('6.67430e-11', '1.5e-15').</span>
 
@@ -248,7 +250,7 @@
 <span class="sd">        (clean_value_string, standard_uncertainty_string)</span>
 <span class="sd">    """</span>
     <span class="n">cleaned</span> <span class="o">=</span> <span class="n">val_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-    
+
     <span class="c1"># Check for concise form: e.g. 6.67430(15)e-11 or 0.0072973525693(11)</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^([+-]?\d+)(\.?\d*)\((\d+)\)(?:[eE]([+-]?\d+))?$"</span><span class="p">,</span> <span class="n">cleaned</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
@@ -264,10 +266,10 @@
     <span class="n">int_part</span><span class="p">,</span> <span class="n">frac_part</span><span class="p">,</span> <span class="n">unc_digits</span><span class="p">,</span> <span class="n">exp_part</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
     <span class="n">frac_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frac_part</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">frac_part</span> <span class="ow">and</span> <span class="n">frac_part</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
     <span class="n">main_val</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">int_part</span><span class="si">}{</span><span class="n">frac_part</span><span class="si">}</span><span class="s2">"</span>
-    
+
     <span class="c1"># Construct uncertainty value</span>
     <span class="k">if</span> <span class="n">frac_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">unc_val</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">unc_digits</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="o">-</span><span class="n">frac_len</span><span class="p">)</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">frac_len</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">unc_val</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">unc_digits</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="n">frac_len</span><span class="p">)</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">frac_len</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">"</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">unc_val</span> <span class="o">=</span> <span class="n">unc_digits</span>
 

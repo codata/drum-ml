@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -237,12 +240,12 @@
 <span class="sd">that share identical DimensionVectors (e.g., Torque vs. Energy, Frequency vs. Activity).</span>
 <span class="sd">"""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">DimensionVector</span><span class="p">,</span> <span class="n">QuantityKindEntity</span><span class="p">,</span> <span class="n">UnitEntity</span>
 
-
 <span class="c1"># Well-known pairs of QuantityKinds that share dimension vectors but must NOT be conflated</span>
-<span class="n">DIMENSIONALLY_DEGENERATE_FAMILIES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">DIMENSIONALLY_DEGENERATE_FAMILIES</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"L2_M1_T-2"</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Energy / Work vs Torque / Moment of Force"</span><span class="p">,</span>
         <span class="s2">"dimension"</span><span class="p">:</span> <span class="n">DimensionVector</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="o">=-</span><span class="mi">2</span><span class="p">),</span>
@@ -254,8 +257,16 @@
         <span class="p">},</span>
         <span class="s2">"invalid_assignments"</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">(</span><span class="s2">"Torque"</span><span class="p">,</span> <span class="s2">"J"</span><span class="p">,</span> <span class="s2">"Torque must be expressed in newton metres (N·m), not joules (J)."</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">"MomentOfForce"</span><span class="p">,</span> <span class="s2">"J"</span><span class="p">,</span> <span class="s2">"Moment of force must be expressed in newton metres (N·m), not joules (J)."</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">"Energy"</span><span class="p">,</span> <span class="s2">"N·m"</span><span class="p">,</span> <span class="s2">"Energy is customarily expressed in joules (J), not newton metres (N·m)."</span><span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">"MomentOfForce"</span><span class="p">,</span>
+                <span class="s2">"J"</span><span class="p">,</span>
+                <span class="s2">"Moment of force must be expressed in newton metres (N·m), not joules (J)."</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">"Energy"</span><span class="p">,</span>
+                <span class="s2">"N·m"</span><span class="p">,</span>
+                <span class="s2">"Energy is customarily expressed in joules (J), not newton metres (N·m)."</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">],</span>
     <span class="p">},</span>
     <span class="s2">"T-1"</span><span class="p">:</span> <span class="p">{</span>
@@ -267,9 +278,21 @@
             <span class="s2">"AngularVelocity"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"rad/s"</span><span class="p">,</span> <span class="s2">"deg/s"</span><span class="p">,</span> <span class="s2">"rpm"</span><span class="p">],</span>
         <span class="p">},</span>
         <span class="s2">"invalid_assignments"</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s2">"Activity"</span><span class="p">,</span> <span class="s2">"Hz"</span><span class="p">,</span> <span class="s2">"Radioactive decay rate must be expressed in becquerels (Bq), not hertz (Hz)."</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">"Frequency"</span><span class="p">,</span> <span class="s2">"Bq"</span><span class="p">,</span> <span class="s2">"Periodic frequency must be expressed in hertz (Hz), not becquerels (Bq)."</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">"AngularVelocity"</span><span class="p">,</span> <span class="s2">"Hz"</span><span class="p">,</span> <span class="s2">"Angular velocity is expressed in radians per second (rad/s), not hertz (Hz)."</span><span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">"Activity"</span><span class="p">,</span>
+                <span class="s2">"Hz"</span><span class="p">,</span>
+                <span class="s2">"Radioactive decay rate must be expressed in becquerels (Bq), not hertz (Hz)."</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">"Frequency"</span><span class="p">,</span>
+                <span class="s2">"Bq"</span><span class="p">,</span>
+                <span class="s2">"Periodic frequency must be expressed in hertz (Hz), not becquerels (Bq)."</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">"AngularVelocity"</span><span class="p">,</span>
+                <span class="s2">"Hz"</span><span class="p">,</span>
+                <span class="s2">"Angular velocity is expressed in radians per second (rad/s), not hertz (Hz)."</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">],</span>
     <span class="p">},</span>
     <span class="s2">"L2_T-2"</span><span class="p">:</span> <span class="p">{</span>
@@ -280,8 +303,16 @@
             <span class="s2">"DoseEquivalent"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Sv"</span><span class="p">,</span> <span class="s2">"mSv"</span><span class="p">,</span> <span class="s2">"rem"</span><span class="p">],</span>
         <span class="p">},</span>
         <span class="s2">"invalid_assignments"</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s2">"AbsorbedDose"</span><span class="p">,</span> <span class="s2">"Sv"</span><span class="p">,</span> <span class="s2">"Absorbed radiation dose is expressed in grays (Gy), not sieverts (Sv)."</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">"DoseEquivalent"</span><span class="p">,</span> <span class="s2">"Gy"</span><span class="p">,</span> <span class="s2">"Dose equivalent (biological risk) is expressed in sieverts (Sv), not grays (Gy)."</span><span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">"AbsorbedDose"</span><span class="p">,</span>
+                <span class="s2">"Sv"</span><span class="p">,</span>
+                <span class="s2">"Absorbed radiation dose is expressed in grays (Gy), not sieverts (Sv)."</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">"DoseEquivalent"</span><span class="p">,</span>
+                <span class="s2">"Gy"</span><span class="p">,</span>
+                <span class="s2">"Dose equivalent (biological risk) is expressed in sieverts (Sv), not grays (Gy)."</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">],</span>
     <span class="p">},</span>
 <span class="p">}</span>
@@ -292,9 +323,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">is_unit_compatible_with_quantity_kind</span><span class="p">(</span>
     <span class="n">unit_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">quantity_kind_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">unit_entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitEntity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">quantity_kind_entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QuantityKindEntity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="n">unit_entity</span><span class="p">:</span> <span class="n">UnitEntity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">quantity_kind_entity</span><span class="p">:</span> <span class="n">QuantityKindEntity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Checks whether a given unit symbol is metrologically valid for a quantity kind.</span>
 
 <span class="sd">    Returns:</span>
@@ -304,7 +335,7 @@
     <span class="n">clean_kind</span> <span class="o">=</span> <span class="n">quantity_kind_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="c1"># Check known degenerative families</span>
-    <span class="k">for</span> <span class="n">fam_key</span><span class="p">,</span> <span class="n">fam_data</span> <span class="ow">in</span> <span class="n">DIMENSIONALLY_DEGENERATE_FAMILIES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">fam_data</span> <span class="ow">in</span> <span class="n">DIMENSIONALLY_DEGENERATE_FAMILIES</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">invalid_kind</span><span class="p">,</span> <span class="n">invalid_unit</span><span class="p">,</span> <span class="n">reason</span> <span class="ow">in</span> <span class="n">fam_data</span><span class="p">[</span><span class="s2">"invalid_assignments"</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">invalid_kind</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">clean_kind</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">and</span> <span class="n">clean_sym</span> <span class="o">==</span> <span class="n">invalid_unit</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">reason</span>

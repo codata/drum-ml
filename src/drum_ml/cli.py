@@ -19,10 +19,12 @@ from rich.progress import (
 )
 
 from drum_ml.benchmark.generator import DRUMBenchmarkGenerator
+from drum_ml.benchmark.viewer import save_benchmark_viewer
 from drum_ml.config import PipelineConfig
 from drum_ml.data_sources.bipm_client import BIPMClient
 from drum_ml.data_sources.codata_client import CODATAClient
 from drum_ml.data_sources.qudt_fetcher import QUDTFetcher
+from drum_ml.dataset_viewer import save_dataset_viewer
 from drum_ml.models.entities import CanonicalEntityStore
 from drum_ml.models.scaffolds import AugmentedRecord, PersonaType
 from drum_ml.pipeline.archetype_reporter import ArchetypeReporter
@@ -139,7 +141,13 @@ def scaffold(
         "./data/scaffolds.json", "--output", "-o", help="Output path for scaffolds JSON."
     ),
     limit: int | None = typer.Option(
-        None, "--limit", "-l", help="Limit number of units and constants to scaffold."
+        None, "--limit", "-l", help="Limit number of entities to scaffold."
+    ),
+    category: str = typer.Option(
+        "all",
+        "--category",
+        "-t",
+        help="Entity category to scaffold: 'all', 'constants', or 'units'.",
     ),
     sample: bool = typer.Option(
         False,
@@ -157,12 +165,14 @@ def scaffold(
     with Progress(
         SpinnerColumn(), TextColumn("[bold cyan]{task.description}"), console=console
     ) as progress:
-        progress.add_task("Synthesizing pedagogical scaffolds across 6 archetypes...", total=None)
-        scaffolds = scaffolder.generate_all(store, limit_per_category=limit_val)
+        progress.add_task(
+            f"Synthesizing pedagogical scaffolds (category: {category})...", total=None
+        )
+        scaffolds = scaffolder.generate_all(store, limit_per_category=limit_val, category=category)
         out_path = scaffolder.save_to_json(scaffolds, output)
 
     console.print(
-        f"[bold blue]✓ Generated {len(scaffolds)} pedagogical scaffolds -> {out_path}[/bold blue]"
+        f"[bold blue]✓ Generated {len(scaffolds)} pedagogical scaffolds ({category}) -> {out_path}[/bold blue]"
     )
 
 
@@ -173,6 +183,12 @@ def run(
     ),
     api_key: str | None = typer.Option(
         None, "--api-key", "-k", help="API key for the configured LLM provider (or use env var)."
+    ),
+    category: str = typer.Option(
+        "all",
+        "--category",
+        "-t",
+        help="Entity category to process: 'all', 'constants', or 'units'.",
     ),
     sample: bool = typer.Option(
         False, "--sample", "-s", help="Quick sample mode: limits entities to 5 and variations to 1."
@@ -191,7 +207,7 @@ def run(
     """Executes the full 5-agent pipeline with real-time progress bars: extract -> scaffold -> augment -> validate -> export."""
     mode_str = "[yellow]SAMPLE MODE[/yellow]" if sample else "[green]FULL DATASET MODE[/green]"
     console.print(
-        f"[bold magenta]Starting DRUM-ML Pipeline ({mode_str}) with config: {config}[/bold magenta]"
+        f"[bold magenta]Starting DRUM-ML Pipeline ({mode_str}, category: {category}) with config: {config}[/bold magenta]"
     )
     cfg = PipelineConfig.load_from_yaml(config)
 
@@ -223,12 +239,10 @@ def run(
     with Progress(
         SpinnerColumn(), TextColumn("[bold cyan]{task.description}"), console=console
     ) as progress:
-        progress.add_task(
-            "Agent 2: Generating pedagogical scaffolds across 6 archetypes...", total=None
-        )
-        scaffolds = scaffolder.generate_all(store, limit_per_category=limit_val)
+        progress.add_task(f"Agent 2: Generating pedagogical scaffolds ({category})...", total=None)
+        scaffolds = scaffolder.generate_all(store, limit_per_category=limit_val, category=category)
         scaffolder.save_to_json(scaffolds, "./data/scaffolds.json")
-    console.print(f"✓ Agent 2: Generated {len(scaffolds)} ground-truth scaffolds.")
+    console.print(f"✓ Agent 2: Generated {len(scaffolds)} ground-truth scaffolds ({category}).")
 
     # 3. Augmentation / Canonical Instruction Generation (Agent 3)
     if not cfg.augmenter.enabled:
@@ -360,6 +374,11 @@ def run(
             val_ratio=cfg.exporter.val_ratio,
             test_ratio=cfg.exporter.test_ratio,
             dedup_threshold=cfg.exporter.dedup_jaccard_threshold,
+            export_by_persona=cfg.exporter.export_by_persona,
+            export_by_archetype=cfg.exporter.export_by_archetype,
+            export_by_category=cfg.exporter.export_by_category,
+            generate_viewer=cfg.exporter.generate_viewer,
+            formats=cfg.exporter.formats,
         )
         exporter.export_all(approved, dpo_pairs)
 
@@ -384,6 +403,13 @@ def run(
     console.print(
         f"[bold green]✓ Pipeline completed successfully! Outputs packaged in {cfg.output_dir}[/bold green]"
     )
+    console.print(
+        f"  └─ Generated Interactive Dataset Browser: [bold green]{cfg.output_dir}/dataset_viewer.html[/bold green]"
+    )
+    console.print(f"  └─ Generated Dataset Manifest: [cyan]{cfg.output_dir}/manifest.json[/cyan]")
+    console.print(f"  └─ Partitioned Personas: [cyan]{cfg.output_dir}/by_persona/[/cyan]")
+    console.print(f"  └─ Partitioned Archetypes: [cyan]{cfg.output_dir}/by_archetype/[/cyan]")
+    console.print(f"  └─ Partitioned Categories: [cyan]{cfg.output_dir}/by_category/[/cyan]")
     console.print(f"  └─ Generated Persona Report: [cyan]{cfg.output_dir}/persona_report.md[/cyan]")
     console.print(
         f"  └─ Generated Archetype Report: [cyan]{cfg.output_dir}/archetype_report.md[/cyan]"
@@ -649,6 +675,16 @@ def build_benchmark(
     generator.save_jsonl(open_samples, open_file)
     generator.save_jsonl(all_samples, all_file)
 
+    # Generate standalone interactive viewer HTML
+    viewer_file = out_p / "benchmark_viewer.html"
+    report_file = out_p / "benchmark_report.json"
+    save_benchmark_viewer(
+        output_html_path=viewer_file,
+        benchmark_file=all_file,
+        scorecard_file=report_file if report_file.exists() else None,
+        open_browser=False,
+    )
+
     console.print("[bold blue]✓ Benchmark Generated Successfully![/bold blue]")
     console.print(f"  - Total Samples: [bold cyan]{len(all_samples)}[/bold cyan]")
     console.print(f"  - MCQ (Track A): [bold cyan]{len(mcq_samples)}[/bold cyan] -> {mcq_file}")
@@ -656,6 +692,225 @@ def build_benchmark(
         f"  - Free-Form (Track B): [bold cyan]{len(open_samples)}[/bold cyan] -> {open_file}"
     )
     console.print(f"  - Full Suite: [bold cyan]{len(all_samples)}[/bold cyan] -> {all_file}")
+    console.print(f"  - Interactive Explorer: [bold green]{viewer_file}[/bold green]")
+
+
+@app.command()
+def view_benchmark(
+    benchmark_file: str = typer.Option(
+        "./dataset/benchmark/drum_benchmark_all.jsonl",
+        "--benchmark-file",
+        "-b",
+        help="Path to benchmark JSONL or JSON dataset.",
+    ),
+    report_file: str | None = typer.Option(
+        "./dataset/benchmark/benchmark_report.json",
+        "--report-file",
+        "-r",
+        help="Path to evaluation report JSON (optional).",
+    ),
+    output_html: str = typer.Option(
+        "./dataset/benchmark/benchmark_viewer.html",
+        "--output-html",
+        "-o",
+        help="Path for generated standalone HTML file.",
+    ),
+    no_open: bool = typer.Option(
+        False, "--no-open", help="Do not open browser automatically after generation."
+    ),
+):
+    """Generate and launch the interactive DRUM Metrology Benchmark (M-Eval) review dashboard."""
+    console.print(
+        f"[bold green]Generating interactive benchmark review dashboard from '{benchmark_file}'...[/bold green]"
+    )
+    b_path = Path(benchmark_file)
+    if not b_path.exists():
+        console.print(f"[bold red]Benchmark file '{benchmark_file}' does not exist.[/bold red]")
+        raise typer.Exit(1)
+
+    r_path = Path(report_file) if report_file and Path(report_file).exists() else None
+
+    out_p = save_benchmark_viewer(
+        output_html_path=output_html,
+        benchmark_file=b_path,
+        scorecard_file=r_path,
+        open_browser=not no_open,
+    )
+    console.print(
+        f"[bold green]✓ Interactive benchmark viewer generated at [cyan]{out_p.resolve()}[/cyan][/bold green]"
+    )
+    if not no_open:
+        console.print("[bold blue]✓ Opened in default web browser.[/bold blue]")
+
+
+@app.command()
+def view_dataset(
+    dataset_dir: str = typer.Option(
+        "./dataset",
+        "--dataset-dir",
+        "-d",
+        help="Path to dataset directory (containing train.jsonl, val.jsonl, etc.) or a specific JSONL file.",
+    ),
+    output_html: str = typer.Option(
+        "./dataset/dataset_viewer.html",
+        "--output-html",
+        "-o",
+        help="Path for generated standalone HTML file.",
+    ),
+    max_samples: int = typer.Option(
+        5000,
+        "--max-samples",
+        "-n",
+        help="Maximum stratified samples to embed for instant browser responsiveness (0 for all).",
+    ),
+    no_open: bool = typer.Option(
+        False, "--no-open", help="Do not open browser automatically after generation."
+    ),
+):
+    """Generate and launch the interactive DRUM-ML Training, Validation & Test Dataset Browser."""
+    console.print(
+        f"[bold green]Generating interactive dataset browser from '{dataset_dir}'...[/bold green]"
+    )
+    d_path = Path(dataset_dir)
+    if not d_path.exists():
+        console.print(
+            f"[bold red]Dataset directory or file '{dataset_dir}' does not exist.[/bold red]"
+        )
+        raise typer.Exit(1)
+
+    limit_val = None if max_samples <= 0 else max_samples
+    out_p = save_dataset_viewer(
+        output_html_path=output_html,
+        dataset_dir_or_file=d_path,
+        max_samples=limit_val,
+        open_browser=not no_open,
+    )
+    console.print(
+        f"[bold green]✓ Interactive dataset browser generated at [cyan]{out_p.resolve()}[/cyan][/bold green]"
+    )
+    if not no_open:
+        console.print("[bold blue]✓ Opened in default web browser.[/bold blue]")
+
+
+@app.command()
+def view(
+    dataset_dir: str = typer.Option(
+        "./dataset",
+        "--dataset-dir",
+        "-d",
+        help="Path to dataset directory or JSONL file.",
+    ),
+    output_html: str = typer.Option(
+        "./dataset/dataset_viewer.html",
+        "--output-html",
+        "-o",
+        help="Path for generated standalone HTML file.",
+    ),
+    max_samples: int = typer.Option(
+        5000,
+        "--max-samples",
+        "-n",
+        help="Maximum stratified samples to embed (0 for all).",
+    ),
+    no_open: bool = typer.Option(False, "--no-open", help="Do not open browser automatically."),
+):
+    """Alias for view-dataset: Launch the interactive dataset browser."""
+    view_dataset(
+        dataset_dir=dataset_dir, output_html=output_html, max_samples=max_samples, no_open=no_open
+    )
+
+
+@app.command()
+def partition(
+    dataset_dir: str = typer.Option(
+        "./dataset",
+        "--dataset-dir",
+        "-d",
+        help="Path to dataset directory containing train.jsonl, val.jsonl, test.jsonl.",
+    ),
+    output_dir: str | None = typer.Option(
+        None,
+        "--output-dir",
+        "-o",
+        help="Target output directory (defaults to dataset-dir).",
+    ),
+    generate_viewer: bool = typer.Option(
+        True,
+        "--viewer/--no-viewer",
+        help="Generate standalone interactive HTML dataset viewer.",
+    ),
+):
+    """Partition existing large dataset splits into per-persona, per-archetype, and per-category files with manifest."""
+    console.print(
+        f"[bold green]Partitioning dataset at '{dataset_dir}' into grouped subset files...[/bold green]"
+    )
+    d_path = Path(dataset_dir)
+    if not d_path.exists():
+        console.print(f"[bold red]Dataset directory '{dataset_dir}' does not exist.[/bold red]")
+        raise typer.Exit(1)
+
+    with get_progress_bar() as progress:
+        task = progress.add_task(
+            "Partitioning dataset by Persona, Archetype & Category", total=None
+        )
+        manifest = MetrologyExporter.partition_existing_dataset(
+            dataset_dir=d_path,
+            output_dir=output_dir,
+            generate_viewer=generate_viewer,
+        )
+        progress.remove_task(task)
+
+    target_out = output_dir or dataset_dir
+    console.print(
+        f"[bold green]✓ Partitioning complete! Processed {manifest['total_records']:,} records.[/bold green]"
+    )
+    console.print(
+        f"  └─ Grouped Personas: [cyan]{target_out}/by_persona/[/cyan] ({len(manifest['persona_counts'])} personas)"
+    )
+    console.print(
+        f"  └─ Grouped Archetypes: [cyan]{target_out}/by_archetype/[/cyan] ({len(manifest['archetype_counts'])} archetypes)"
+    )
+    console.print(
+        f"  └─ Grouped Categories: [cyan]{target_out}/by_category/[/cyan] ({len(manifest['category_counts'])} categories)"
+    )
+    console.print(f"  └─ Dataset Manifest: [cyan]{target_out}/manifest.json[/cyan]")
+    if generate_viewer:
+        console.print(
+            f"  └─ Interactive Browser: [bold green]{target_out}/dataset_viewer.html[/bold green]"
+        )
+
+
+@app.command()
+def view_scorecard(
+    report_file: str = typer.Option(
+        "./dataset/benchmark/benchmark_report.json",
+        "--report-file",
+        "-r",
+        help="Path to evaluation report JSON.",
+    ),
+    benchmark_file: str = typer.Option(
+        "./dataset/benchmark/drum_benchmark_all.jsonl",
+        "--benchmark-file",
+        "-b",
+        help="Path to benchmark JSONL or JSON dataset.",
+    ),
+    output_html: str = typer.Option(
+        "./dataset/benchmark/benchmark_viewer.html",
+        "--output-html",
+        "-o",
+        help="Path for generated standalone HTML file.",
+    ),
+    no_open: bool = typer.Option(
+        False, "--no-open", help="Do not open browser automatically after generation."
+    ),
+):
+    """Generate and launch the interactive Model Evaluation Scorecard & Benchmark Analytics Explorer."""
+    view_benchmark(
+        benchmark_file=benchmark_file,
+        report_file=report_file,
+        output_html=output_html,
+        no_open=no_open,
+    )
 
 
 @app.command()
@@ -670,16 +925,22 @@ def evaluate(
         "http://localhost:1234/v1",
         "--model-endpoint",
         "-e",
-        help="OpenAI-compatible model endpoint URI.",
+        help="OpenAI-compatible model endpoint URI (e.g. http://localhost:11434/v1 for Ollama, http://localhost:8000/v1 for vLLM).",
     ),
     model_name: str = typer.Option(
-        "ground_truth_baseline", "--model-name", "-m", help="Target model identifier."
+        "ground_truth_baseline", "--model-name", "-m", help="Target model identifier (or 'ground_truth_baseline' for gold verification)."
+    ),
+    api_key: str | None = typer.Option(
+        None, "--api-key", "-k", help="API key for authentication if querying a remote or secured endpoint."
     ),
     output: str = typer.Option(
         "./dataset/benchmark/benchmark_report.json",
         "--output",
         "-o",
         help="Output path for evaluation report.",
+    ),
+    viewer: bool = typer.Option(
+        False, "--viewer", "-v", help="Automatically generate and open the interactive scorecard HTML browser."
     ),
 ):
     """Evaluate a local or remote model against the DRUM Metrology Benchmark with live progress and category scorecards."""
@@ -695,15 +956,23 @@ def evaluate(
     console.print(f"Loaded {len(records)} benchmark test records from {benchmark_file}")
 
     results = []
+    is_baseline = model_name in ["ground_truth_baseline", "baseline", "gold"]
+
     with get_progress_bar() as progress:
         task = progress.add_task(f"Evaluating {model_name}", total=len(records))
         for rec in records:
-            # Determine prompt & reference
-            correct_key = rec.get("correct_option_key")
-            gt_ans = rec.get("ground_truth_answer", "")
-
-            # If running baseline evaluation against ground truth:
-            predicted = correct_key if correct_key else gt_ans
+            if is_baseline:
+                correct_key = rec.get("correct_option_key")
+                gt_ans = rec.get("ground_truth_answer", "")
+                predicted = correct_key if correct_key else gt_ans
+            else:
+                prompt = evaluator.format_prompt(rec)
+                predicted = evaluator.query_model_api(
+                    endpoint=model_endpoint,
+                    model_name=model_name,
+                    prompt=prompt,
+                    api_key=api_key or os.environ.get("OPENAI_API_KEY"),
+                )
 
             grade = evaluator.grade_response(rec, predicted)
             results.append(
@@ -726,6 +995,16 @@ def evaluate(
         json.dump(scorecard.model_dump(), f, indent=2)
 
     console.print(f"[bold green]✓ Benchmark Report saved to [cyan]{out_path}[/cyan][/bold green]")
+
+    if viewer:
+        viewer_html = out_path.parent / "benchmark_viewer.html"
+        save_benchmark_viewer(
+            output_html_path=viewer_html,
+            benchmark_file=benchmark_file,
+            scorecard_file=out_path,
+            open_browser=True,
+        )
+        console.print(f"[bold green]✓ Interactive Scorecard Browser launched at [cyan]{viewer_html}[/cyan][/bold green]")
 
 
 @app.command()

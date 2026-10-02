@@ -36,6 +36,11 @@ class ExporterConfig(BaseModel):
     test_ratio: float = 0.05
     dedup_jaccard_threshold: float = 0.85
     formats: list[str] = Field(default_factory=lambda: ["openai", "sharegpt", "dpo"])
+    export_by_persona: bool = True
+    export_by_archetype: bool = True
+    export_by_category: bool = True
+    generate_viewer: bool = True
+    viewer_sample_limit: int = 5000
 
 
 class HuggingFaceConfig(BaseModel):

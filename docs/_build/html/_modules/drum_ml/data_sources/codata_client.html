@@ -195,7 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -236,9 +238,10 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rdflib</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.entities</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ConstantCategory</span><span class="p">,</span>
     <span class="n">DimensionVector</span><span class="p">,</span>
@@ -269,7 +272,7 @@
 
 <div class="viewcode-block" id="CODATAClient.download_latest_data">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.download_latest_data">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">download_latest_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download_latest_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Downloads latest CODATA constants Turtle files and JSON history from GitHub."""</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="s2">"dist/rdf/codata_constants.ttl"</span><span class="p">,</span> <span class="s2">"codata-constants.ttl"</span><span class="p">),</span>
@@ -306,7 +309,7 @@
 
 <div class="viewcode-block" id="CODATAClient.fetch_from_api">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.fetch_from_api">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fetch_from_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch_from_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Fetches constants dynamically from the CODATA DRUM REST API."""</span>
         <span class="n">eval_year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_evaluation_year</span>
         <span class="k">try</span><span class="p">:</span>
@@ -321,36 +324,75 @@
 
 <div class="viewcode-block" id="CODATAClient.extract_from_json">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.extract_from_json">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract_from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_from_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">json_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Parses constants dynamically from codata-history.json or versioned JSON files."""</span>
-        <span class="n">constants</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">constants</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">json_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">constants</span>
 
-        <span class="n">target_year</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_evaluation_year</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">target_year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_evaluation_year</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
         <span class="c1"># Handle list of constants or history dictionary</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"constants"</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target_year</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">data</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"constants"</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">target_year</span><span class="p">),</span> <span class="p">[]))</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"label"</span><span class="p">,</span> <span class="s2">"Unknown"</span><span class="p">))</span>
-            <span class="n">sym</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-            <span class="n">lsym</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"latex_symbol"</span><span class="p">,</span> <span class="n">sym</span><span class="p">)</span>
-            <span class="n">raw_val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"numeric_value"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)))</span>
-            <span class="n">val</span><span class="p">,</span> <span class="n">std_u</span> <span class="o">=</span> <span class="n">parse_codata_value_uncertainty</span><span class="p">(</span><span class="n">raw_val</span><span class="p">)</span>
-            <span class="n">rel_u</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"relative_uncertainty"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"rel_uncertainty"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)))</span>
-            <span class="n">u_sym</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"unit"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"unit_symbol"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">))</span>
             <span class="n">eval_year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"year"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"defining_year"</span><span class="p">,</span> <span class="n">target_year</span><span class="p">)))</span>
-            <span class="n">is_exact</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"is_exact"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">std_u</span> <span class="o">==</span> <span class="s2">"0"</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">std_u</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">target_year</span> <span class="ow">and</span> <span class="n">eval_year</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_year</span><span class="p">):</span>
+                <span class="k">continue</span>
 
-            <span class="n">uri</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"uri"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"https://codata.org/constants/</span><span class="si">{</span><span class="n">eval_year</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">sym</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"label"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"quantity"</span><span class="p">,</span> <span class="s2">"Unknown"</span><span class="p">)))</span>
+            <span class="n">sym</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nist_id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+            <span class="n">lsym</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"latex_symbol"</span><span class="p">,</span> <span class="n">sym</span><span class="p">)</span>
+            <span class="n">raw_val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"str_value"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"numeric_value"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">))))</span>
+            <span class="n">raw_u</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="s2">"str_uncertainty"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"uncertainty"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"numeric_uncertainty"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">val</span><span class="p">,</span> <span class="n">parsed_u</span> <span class="o">=</span> <span class="n">parse_codata_value_uncertainty</span><span class="p">(</span><span class="n">raw_val</span><span class="p">)</span>
+
+            <span class="n">is_exact</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">bool</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"is_exact"</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+                <span class="ow">or</span> <span class="n">raw_u</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"(exact)"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"None"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">raw_u</span>
+            <span class="p">)</span>
+            <span class="n">std_u</span> <span class="o">=</span> <span class="s2">"0"</span> <span class="k">if</span> <span class="n">is_exact</span> <span class="k">else</span> <span class="p">(</span><span class="n">raw_u</span> <span class="k">if</span> <span class="n">raw_u</span> <span class="ow">and</span> <span class="n">raw_u</span> <span class="o">!=</span> <span class="s2">"(exact)"</span> <span class="k">else</span> <span class="n">parsed_u</span><span class="p">)</span>
+            <span class="n">rel_u</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"relative_uncertainty"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"rel_uncertainty"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)))</span>
+            <span class="n">u_sym</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"unit"</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"unit_symbol"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+
+            <span class="c1"># Map known standard SI 7 defining constants</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="s2">"planck constant"</span><span class="p">,</span>
+                <span class="s2">"speed of light in vacuum"</span><span class="p">,</span>
+                <span class="s2">"elementary charge"</span><span class="p">,</span>
+                <span class="s2">"boltzmann constant"</span><span class="p">,</span>
+                <span class="s2">"avogadro constant"</span><span class="p">,</span>
+                <span class="s2">"hyperfine transition frequency of cs-133"</span><span class="p">,</span>
+                <span class="s2">"luminous efficacy"</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">is_exact</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">category</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ConstantCategory</span><span class="o">.</span><span class="n">EXACT_SI_DEFINING</span>
+                <span class="k">if</span> <span class="n">is_exact</span>
+                <span class="k">else</span> <span class="n">ConstantCategory</span><span class="o">.</span><span class="n">CODATA_RECOMMENDED</span>
+            <span class="p">)</span>
+
+            <span class="n">slug</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nist_id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">sym</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">)</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"uri"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"https://codata.org/constants/</span><span class="si">{</span><span class="n">eval_year</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">slug</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">constants</span><span class="p">[</span><span class="n">uri</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhysicalConstantEntity</span><span class="p">(</span>
                 <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">symbol</span><span class="o">=</span><span class="n">sym</span><span class="p">,</span>
                 <span class="n">latex_symbol</span><span class="o">=</span><span class="n">lsym</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="n">ConstantCategory</span><span class="o">.</span><span class="n">EXACT_SI_DEFINING</span> <span class="k">if</span> <span class="n">is_exact</span> <span class="k">else</span> <span class="n">ConstantCategory</span><span class="o">.</span><span class="n">CODATA_RECOMMENDED</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
                 <span class="n">numeric_value</span><span class="o">=</span><span class="n">val</span><span class="p">,</span>
                 <span class="n">standard_uncertainty</span><span class="o">=</span><span class="n">std_u</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_exact</span> <span class="k">else</span> <span class="s2">"0"</span><span class="p">,</span>
                 <span class="n">relative_uncertainty</span><span class="o">=</span><span class="n">rel_u</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_exact</span> <span class="k">else</span> <span class="s2">"0"</span><span class="p">,</span>
@@ -365,9 +407,11 @@
 
 <div class="viewcode-block" id="CODATAClient.extract_from_graph">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.extract_from_graph">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract_from_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_from_graph</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Parses constants from an RDF graph using SPARQL."""</span>
-        <span class="n">constants</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">constants</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">eval_year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_evaluation_year</span>
 
         <span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
@@ -413,7 +457,9 @@
                     <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                     <span class="n">symbol</span><span class="o">=</span><span class="n">sym</span><span class="p">,</span>
                     <span class="n">latex_symbol</span><span class="o">=</span><span class="n">lsym</span><span class="p">,</span>
-                    <span class="n">category</span><span class="o">=</span><span class="n">ConstantCategory</span><span class="o">.</span><span class="n">EXACT_SI_DEFINING</span> <span class="k">if</span> <span class="n">is_exact</span> <span class="k">else</span> <span class="n">ConstantCategory</span><span class="o">.</span><span class="n">CODATA_RECOMMENDED</span><span class="p">,</span>
+                    <span class="n">category</span><span class="o">=</span><span class="n">ConstantCategory</span><span class="o">.</span><span class="n">EXACT_SI_DEFINING</span>
+                    <span class="k">if</span> <span class="n">is_exact</span>
+                    <span class="k">else</span> <span class="n">ConstantCategory</span><span class="o">.</span><span class="n">CODATA_RECOMMENDED</span><span class="p">,</span>
                     <span class="n">numeric_value</span><span class="o">=</span><span class="n">val</span><span class="p">,</span>
                     <span class="n">standard_uncertainty</span><span class="o">=</span><span class="n">std_u</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_exact</span> <span class="k">else</span> <span class="s2">"0"</span><span class="p">,</span>
                     <span class="n">relative_uncertainty</span><span class="o">=</span><span class="n">rel_u</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_exact</span> <span class="k">else</span> <span class="s2">"0"</span><span class="p">,</span>
@@ -432,14 +478,14 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.codata_client.CODATAClient.extract_canonical_constants">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">extract_canonical_constants</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">graph</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">year</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
+        <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Extracts canonical physical constants dynamically, prioritizing exact SI 2019 defining constants</span>
 <span class="sd">        and CODATA recommended values for the requested evaluation year (default: 2022).</span>
 <span class="sd">        """</span>
         <span class="n">eval_year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_evaluation_year</span>
-        <span class="n">constants</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">constants</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># 1. First check if RDF graph is provided or available locally</span>
         <span class="k">if</span> <span class="n">graph</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>

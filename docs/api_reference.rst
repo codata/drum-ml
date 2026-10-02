@@ -37,6 +37,19 @@ Benchmark Suite (``drum_ml.benchmark``)
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: drum_ml.benchmark.viewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Interactive Browsers (``drum_ml.dataset_viewer``)
+-------------------------------------------------
+
+.. automodule:: drum_ml.dataset_viewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Symbolic Core (``drum_ml.symbolic``)
 ------------------------------------
 

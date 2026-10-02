@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -233,15 +236,17 @@
           <h1>Source code for drum_ml.models.export</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Export Target Dataset Models (OpenAI, ShareGPT, Anthropic, DPO)."""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArchetypeType</span><span class="p">,</span> <span class="n">PersonaType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">Field</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArchetypeType</span>
 
 
 <div class="viewcode-block" id="OpenAIChatMessage">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.export.OpenAIChatMessage">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OpenAIChatMessage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="c1"># "system" | "user" | "assistant"</span>
+    <span class="n">role</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "system" | "user" | "assistant"</span>
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
@@ -252,15 +257,17 @@
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">archetype</span><span class="p">:</span> <span class="n">ArchetypeType</span>
     <span class="n">entity_uri</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OpenAIChatMessage</span><span class="p">]</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">OpenAIChatMessage</span><span class="p">]</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="ShareGPTTurn">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.export.ShareGPTTurn">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShareGPTTurn</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">from_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">"from"</span><span class="p">)</span> <span class="c1"># "human" | "gpt" | "system"</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">populate_by_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">from_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">"from"</span><span class="p">)</span>  <span class="c1"># "human" | "gpt" | "system"</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
@@ -268,9 +275,11 @@
 <div class="viewcode-block" id="ShareGPTRecord">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.export.ShareGPTRecord">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShareGPTRecord</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">populate_by_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">conversations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ShareGPTTurn</span><span class="p">]</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">conversations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ShareGPTTurn</span><span class="p">]</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
 
@@ -278,6 +287,7 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.export.DPOPreferenceRecord">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DPOPreferenceRecord</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Direct Preference Optimization (DPO) triple with verified prompt, chosen, and rejected answers."""</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">archetype</span><span class="p">:</span> <span class="n">ArchetypeType</span>
     <span class="n">entity_uri</span><span class="p">:</span> <span class="nb">str</span>
@@ -285,7 +295,7 @@
     <span class="n">chosen</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">rejected</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">rejection_reason</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

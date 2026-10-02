@@ -1,6 +1,7 @@
 import concurrent.futures
 import hashlib
 import json
+import re
 import sqlite3
 import time
 from collections.abc import Callable
@@ -11,6 +12,68 @@ import litellm
 
 from drum_ml.models.scaffolds import AugmentedRecord, PersonaType, ScaffoldRecord
 from drum_ml.prompts.templates_personas import PERSONA_SYSTEM_PROMPTS
+
+
+def extract_clean_queries(
+    raw_text: str, fallback_query: str, persona_type: PersonaType
+) -> list[str]:
+    """Extracts pristine user queries from LLM responses, stripping reasoning/think tags and prompt leakage."""
+    text = raw_text.strip()
+    if "</think>" in text:
+        text = text.split("</think>")[-1].strip()
+    elif "<think>" in text:
+        text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+
+    if "```json" in text:
+        match = re.search(r"```json\s*(.*?)\s*```", text, re.DOTALL)
+        if match:
+            text = match.group(1).strip()
+    elif "```" in text:
+        match = re.search(r"```\s*(.*?)\s*```", text, re.DOTALL)
+        if match:
+            text = match.group(1).strip()
+
+    # Try finding JSON array
+    match = re.search(
+        r"\[\s*(?:\"[^\"]*\"|\'[^\']*\'|\"[^\"]*\"|\'[^\']*\')(?:\s*,\s*(?:\"[^\"]*\"|\'[^\']*\'))*\s*\]",
+        text,
+        re.DOTALL,
+    )
+    if match:
+        try:
+            arr = json.loads(match.group(0))
+            if isinstance(arr, list) and len(arr) > 0:
+                valid = []
+                for item in arr:
+                    s = str(item).strip()
+                    if (
+                        s
+                        and "We need to" not in s
+                        and "JSON array" not in s
+                        and "paraphrase" not in s.lower()
+                    ):
+                        valid.append(s)
+                if valid:
+                    return valid
+        except Exception:
+            pass
+
+    # If it is a clean single question or persona prefix
+    if (
+        ("?" in text or len(text.splitlines()) == 1)
+        and "We need to" not in text
+        and "JSON array" not in text
+        and "Paraphrase" not in text
+        and len(text) > 10
+    ):
+        return [text]
+
+    fallback = (
+        fallback_query
+        if persona_type == PersonaType.GENERAL_USER
+        else f"[{persona_type.value.replace('_', ' ').title()}] {fallback_query}"
+    )
+    return [fallback]
 
 
 class MetrologyAugmenter:
@@ -27,9 +90,11 @@ class MetrologyAugmenter:
         cache_db_path: str = "./data/cache/llm_cache.sqlite",
         temperature: float = 0.7,
         concurrency_limit: int = 5,
+        timeout: float = 10.0,
     ):
         self.provider = provider.lower()
         self.concurrency_limit = concurrency_limit
+        self.timeout = timeout
 
         # Normalize model identifier for LiteLLM providers
         if self.provider in ("google", "gemini") and not model.startswith("gemini/"):
@@ -121,6 +186,9 @@ class MetrologyAugmenter:
 
     def _call_llm_api(self, system_prompt: str, user_prompt: str) -> str | None:
         """Calls configured LLM (Gemini, Claude, GPT, or local) via LiteLLM."""
+        if self.provider in ("offline", "mock"):
+            return None
+
         t0 = time.perf_counter()
         try:
             litellm.suppress_debug_info = True
@@ -132,6 +200,8 @@ class MetrologyAugmenter:
                     {"role": "user", "content": user_prompt},
                 ],
                 "temperature": self.temperature,
+                "timeout": self.timeout,
+                "num_retries": 0,
             }
             if self.api_base:
                 kwargs["api_base"] = self.api_base
@@ -177,10 +247,7 @@ class MetrologyAugmenter:
         cached_resp = self._get_cache(cache_key)
         if cached_resp:
             self.stats["cache_hits"] += 1
-            try:
-                augmented_queries = json.loads(cached_resp)
-            except Exception:
-                augmented_queries = [cached_resp]
+            augmented_queries = extract_clean_queries(cached_resp, scaffold.canonical_query, p_type)
         else:
             system_prompt = PERSONA_SYSTEM_PROMPTS.get(
                 p_type,
@@ -195,16 +262,9 @@ class MetrologyAugmenter:
             llm_output = self._call_llm_api(system_prompt, user_prompt)
             if llm_output:
                 self.stats["live_llm"] += 1
-                try:
-                    # Strip markdown code blocks if returned
-                    clean_output = llm_output.strip()
-                    if clean_output.startswith("```json"):
-                        clean_output = clean_output[7:-3].strip()
-                    elif clean_output.startswith("```"):
-                        clean_output = clean_output[3:-3].strip()
-                    augmented_queries = json.loads(clean_output)
-                except Exception:
-                    augmented_queries = [llm_output]
+                augmented_queries = extract_clean_queries(
+                    llm_output, scaffold.canonical_query, p_type
+                )
             else:
                 self.stats["offline_fallbacks"] += 1
                 # Deterministic fallback when no API key or offline

@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -233,7 +236,6 @@
           <h1>Source code for drum_ml.models.validation</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Validation Gate and Audit Result Data Models."""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
 
@@ -241,11 +243,12 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.validation.Tier1SyntaxReport">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Tier1SyntaxReport</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""LaTeX delimiters, bracket balance, JSON escaping check."""</span>
+
     <span class="n">passed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">balanced_delimiters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">valid_latex_syntax</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">clean_json_escaping</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 
 
@@ -253,11 +256,12 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.validation.Tier2SymbolicReport">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Tier2SymbolicReport</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Pint / SymPy algebraic equivalence and dimensional homogeneity check."""</span>
+
     <span class="n">passed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">dimensions_homogeneous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">quantity_kind_compatible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">symbolic_equivalence_verified</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 
 
@@ -265,10 +269,11 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.validation.Tier3PrecisionReport">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Tier3PrecisionReport</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Arbitrary-precision SI constant and conversion multiplier verification."""</span>
+
     <span class="n">passed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">exact_constants_preserved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">zero_rounding_drift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 
 
@@ -276,11 +281,12 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.validation.Tier4CodeReport">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Tier4CodeReport</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""SPARQL and Python unit code syntax &amp; execution test."""</span>
+
     <span class="n">passed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">sparql_syntax_valid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">python_ast_valid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">sandbox_execution_success</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 
 
@@ -288,15 +294,16 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.validation.ValidationResult">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ValidationResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Aggregated validation result across all 4 deterministic audit tiers."""</span>
+
     <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">passed</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">is_dpo_eligible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">rejection_reasons</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">rejection_reasons</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">tier1_syntax</span><span class="p">:</span> <span class="n">Tier1SyntaxReport</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Tier1SyntaxReport</span><span class="p">)</span>
     <span class="n">tier2_symbolic</span><span class="p">:</span> <span class="n">Tier2SymbolicReport</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Tier2SymbolicReport</span><span class="p">)</span>
     <span class="n">tier3_precision</span><span class="p">:</span> <span class="n">Tier3PrecisionReport</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Tier3PrecisionReport</span><span class="p">)</span>
     <span class="n">tier4_code</span><span class="p">:</span> <span class="n">Tier4CodeReport</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Tier4CodeReport</span><span class="p">)</span>
-    <span class="n">corrected_response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">corrected_response</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 </pre></div>
         </article>

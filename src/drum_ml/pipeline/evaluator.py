@@ -28,6 +28,127 @@ class MEvalBenchmark:
     def __init__(self, benchmark_file: str = "./dataset/drum_benchmark_mcq.jsonl"):
         self.benchmark_file = Path(benchmark_file)
 
+    @staticmethod
+    def format_prompt(record: dict[str, Any]) -> str:
+        """Format a benchmark record into prompt text for LLM inference."""
+        question = record.get("question", "").strip()
+        options = record.get("options", [])
+        if options:
+            formatted_opts = []
+            for opt in options:
+                k = opt.get("key", "")
+                t = opt.get("text", "").strip()
+                formatted_opts.append(f"{k}. {t}")
+            opts_str = "\n".join(formatted_opts)
+            return (
+                f"Question: {question}\n\n"
+                f"Options:\n{opts_str}\n\n"
+                f"Instructions: Analyze the options carefully and select the single correct letter (A, B, C, or D).\n"
+                f"Respond in valid JSON format with keys \"answer\" (the single uppercase letter) and \"explanation\" (brief justification).\n\n"
+                f"Example response format:\n"
+                f"```json\n"
+                f'{{\n  "answer": "A",\n  "explanation": "Brief explanation of the metrological rationale."\n}}\n'
+                f"```"
+            )
+        return f"Question: {question}\n\nAnswer:"
+
+    @staticmethod
+    def query_model_api(
+        endpoint: str,
+        model_name: str,
+        prompt: str,
+        api_key: str | None = None,
+        timeout: float = 30.0,
+    ) -> str:
+        """Queries an LLM via LiteLLM or an OpenAI-compatible endpoint."""
+        # 1. Try LiteLLM first for robust multi-provider handling (Ollama, OpenAI, Claude, vLLM)
+        try:
+            import litellm
+
+            litellm.suppress_debug_info = True
+
+            model_target = model_name
+            api_base = endpoint.rstrip("/")
+            if "11434" in endpoint and not model_target.startswith("ollama"):
+                model_target = f"ollama/{model_name}"
+                api_base = "http://localhost:11434"
+
+            resp = litellm.completion(
+                model=model_target,
+                api_base=api_base,
+                api_key=api_key or "sk-local",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an expert metrologist and physicist. Answer with extreme precision.",
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.0,
+                max_tokens=1024,
+                timeout=timeout,
+            )
+            choices = resp.choices if hasattr(resp, "choices") else []
+            if choices:
+                msg = choices[0].message
+                content = getattr(msg, "content", "") or ""
+                reasoning = getattr(msg, "reasoning_content", None) or getattr(msg, "thinking_content", None)
+                if not content and reasoning:
+                    return str(reasoning).strip()
+                if reasoning and reasoning not in content:
+                    return f"<think>\n{reasoning}\n</think>\n{content}".strip()
+                return str(content).strip()
+        except Exception:
+            pass
+
+        # 2. Fallback to direct HTTP request
+        import urllib.error
+        import urllib.request
+
+        url = endpoint.rstrip("/")
+        if not url.endswith("/chat/completions") and not url.endswith("/completions"):
+            url = f"{url}/chat/completions"
+
+        headers = {"Content-Type": "application/json"}
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
+
+        payload = {
+            "model": model_name,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are an expert metrologist and physicist. Answer metrological questions with extreme precision.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": 0.0,
+            "max_tokens": 1024,
+        }
+
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers=headers,
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                choices = data.get("choices", [])
+                if choices:
+                    msg = choices[0].get("message", {})
+                    content = msg.get("content", "") or ""
+                    reasoning = msg.get("reasoning_content") or msg.get("thinking_content")
+                    if not content and reasoning:
+                        return str(reasoning).strip()
+                    if reasoning and reasoning not in content:
+                        return f"<think>\n{reasoning}\n</think>\n{content}".strip()
+                    return str(content).strip()
+                return ""
+        except Exception as e:
+            return f"ERROR_CALLING_MODEL: {e}"
+
     def load_benchmark_records(self) -> list[dict[str, Any]]:
         """Load benchmark samples from JSONL."""
         records = []
@@ -39,19 +160,100 @@ class MEvalBenchmark:
                     records.append(json.loads(line))
         return records
 
-    def extract_mcq_answer(self, response_text: str) -> str | None:
-        """Extracts the predicted MCQ option letter (A, B, C, D) from an LLM response."""
+    @staticmethod
+    def parse_mcq_response(response_text: str) -> tuple[str | None, str | None]:
+        """Extracts (predicted_key, explanation) from an LLM response.
+
+        Attempts multi-tier parsing:
+        1. JSON parsing (fenced ```json ... ``` blocks and raw JSON objects).
+        2. Thought-tag stripping (<think>...</think>).
+        3. Heuristic regex pattern matching for non-compliant models.
+        """
         text = response_text.strip()
         if not text:
+            return None, None
+
+        # Strip reasoning tags if present
+        cleaned_text = text
+        if "</think>" in cleaned_text:
+            cleaned_text = cleaned_text.split("</think>")[-1].strip()
+        elif "<think>" in cleaned_text:
+            cleaned_text = re.sub(r"<think>[\s\S]*?</think>", "", cleaned_text).strip()
+
+        # Helper to extract letter from value
+        def extract_letter_from_val(val: Any) -> str | None:
+            if not isinstance(val, str):
+                return None
+            v = val.strip()
+            if v.upper() in ["A", "B", "C", "D"]:
+                return v.upper()
+            m = re.search(r"\b([A-Da-d])\b", v)
+            if m:
+                return m.group(1).upper()
             return None
 
-        # Pattern 1: Exact standalone letter "A", "B", "C", "D"
-        if text.upper() in ["A", "B", "C", "D"]:
-            return text.upper()
+        # Tier 1: Try JSON extraction
+        # 1a. Markdown fenced blocks
+        json_candidates = re.findall(
+            r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", cleaned_text, flags=re.IGNORECASE
+        )
+        # 1b. Outermost/balanced JSON objects
+        raw_objs = re.findall(r"\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}", cleaned_text)
+        json_candidates.extend(raw_objs)
 
-        # Pattern 2: "Option A", "Option (A)", "(A)", "[A]", "Answer: A", "**A**"
+        if cleaned_text.startswith("{") and cleaned_text.endswith("}"):
+            json_candidates.insert(0, cleaned_text)
+
+        key_aliases = [
+            "answer",
+            "option",
+            "choice",
+            "selected_option",
+            "correct_option",
+            "key",
+            "selected",
+            "response",
+        ]
+        exp_aliases = [
+            "explanation",
+            "reasoning",
+            "rationale",
+            "justification",
+            "details",
+            "notes",
+        ]
+
+        for cand in json_candidates:
+            try:
+                data = json.loads(cand)
+                if isinstance(data, dict):
+                    pred_key = None
+                    for k in key_aliases:
+                        if k in data:
+                            pred_key = extract_letter_from_val(data[k])
+                            if pred_key:
+                                break
+
+                    pred_exp = None
+                    for e in exp_aliases:
+                        if e in data and isinstance(data[e], str):
+                            pred_exp = data[e].strip()
+                            break
+
+                    if pred_key:
+                        return pred_key, pred_exp
+            except Exception:
+                continue
+
+        # Tier 2: Standalone Letter
+        if cleaned_text.upper() in ["A", "B", "C", "D"]:
+            return cleaned_text.upper(), None
+
+        # Tier 3: Regex heuristics
         patterns = [
             r"(?:the\s+correct\s+answer\s+is|correct\s+option\s+is|answer\s*[:=]?)\s*[\*\_]*\(?([A-Da-d])\)?",
+            r'"answer"\s*:\s*"([A-Da-d])"',
+            r'"option"\s*:\s*"([A-Da-d])"',
             r"[\*\_]*\(([A-Da-d])\)[\*\_]*",
             r"[\*\_]*\[([A-Da-d])\][\*\_]*",
             r"option\s+([A-Da-d])\b",
@@ -59,11 +261,16 @@ class MEvalBenchmark:
             r"\b([A-Da-d])\b",
         ]
         for pat in patterns:
-            m = re.search(pat, text, re.IGNORECASE)
+            m = re.search(pat, cleaned_text, re.IGNORECASE)
             if m:
-                return m.group(1).upper()
+                return m.group(1).upper(), None
 
-        return None
+        return None, None
+
+    def extract_mcq_answer(self, response_text: str) -> str | None:
+        """Extracts the predicted MCQ option letter (A, B, C, D) from an LLM response."""
+        pred_key, _ = self.parse_mcq_response(response_text)
+        return pred_key
 
     def grade_response(
         self,
@@ -83,16 +290,19 @@ class MEvalBenchmark:
 
         # Track A: MCQ Grading
         if fmt == BenchmarkFormat.MCQ.value or correct_key:
-            pred_key = self.extract_mcq_answer(predicted_text)
+            pred_key, pred_exp = self.parse_mcq_response(predicted_text)
             passed = (pred_key == correct_key) if (pred_key and correct_key) else False
-            return {
+            grade_dict: dict[str, Any] = {
                 "passed": passed,
                 "format": BenchmarkFormat.MCQ.value,
                 "predicted_key": pred_key,
                 "expected_key": correct_key,
-                "predicted_raw": predicted_text[:200],
+                "predicted_raw": predicted_text,
                 "error": None if passed else f"Expected option {correct_key}, got {pred_key}",
             }
+            if pred_exp:
+                grade_dict["predicted_explanation"] = pred_exp
+            return grade_dict
 
         # Track B: Free-Form / Symbolic Physics Equivalence
         gt_clean = sanitize_latex_units(gt_answer)

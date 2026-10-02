@@ -195,7 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -235,12 +237,12 @@
 <span></span><span class="sd">"""BIPM SI Digital Framework Dynamic Downloader and SPARQL Parser."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rdflib</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.entities</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ConstantCategory</span><span class="p">,</span>
-    <span class="n">DimensionVector</span><span class="p">,</span>
     <span class="n">PhysicalConstantEntity</span><span class="p">,</span>
     <span class="n">UnitEntity</span><span class="p">,</span>
 <span class="p">)</span>
@@ -265,7 +267,7 @@
 
 <div class="viewcode-block" id="BIPMClient.download_latest_ontology">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.bipm_client.BIPMClient.download_latest_ontology">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">download_latest_ontology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download_latest_ontology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Downloads the latest official BIPM SI Digital Framework TTL files from GitHub."""</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"si.ttl"</span><span class="p">,</span> <span class="s2">"units.ttl"</span><span class="p">,</span> <span class="s2">"constants.ttl"</span><span class="p">,</span> <span class="s2">"prefixes.ttl"</span><span class="p">]</span>
         <span class="n">downloaded</span> <span class="o">=</span> <span class="p">[]</span>
@@ -299,9 +301,9 @@
 
 <div class="viewcode-block" id="BIPMClient.extract_base_units_from_graph">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.bipm_client.BIPMClient.extract_base_units_from_graph">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract_base_units_from_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_base_units_from_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Dynamically extracts SI base units from BIPM SI ontology using SPARQL."""</span>
-        <span class="n">units</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">        PREFIX si: &lt;https://si-digital-framework.org/SI/ontology/&gt;</span>
 <span class="s2">        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</span>
@@ -337,45 +339,53 @@
 
 <div class="viewcode-block" id="BIPMClient.extract_defining_constants_from_graph">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.bipm_client.BIPMClient.extract_defining_constants_from_graph">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract_defining_constants_from_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_defining_constants_from_graph</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Dynamically extracts SI defining constants from BIPM SI ontology using SPARQL."""</span>
-        <span class="n">constants</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">constants</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
-<span class="s2">        PREFIX si: &lt;https://si-digital-framework.org/SI/ontology/&gt;</span>
+<span class="s2">        PREFIX si: &lt;https://si-digital-framework.org/SI#&gt;</span>
+<span class="s2">        PREFIX si_ont: &lt;https://si-digital-framework.org/SI/ontology/&gt;</span>
+<span class="s2">        PREFIX skos: &lt;http://www.w3.org/2004/02/skos/core#&gt;</span>
 <span class="s2">        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</span>
 
-<span class="s2">        SELECT DISTINCT ?c ?label ?symbol ?value ?unit ?dim</span>
+<span class="s2">        SELECT DISTINCT ?c ?label ?symbol ?valStr ?value ?dim</span>
 <span class="s2">        WHERE {</span>
-<span class="s2">          ?c a ?type ;</span>
-<span class="s2">             rdfs:label ?label .</span>
-<span class="s2">          FILTER (?type IN (si:DefiningConstant, &lt;https://si-digital-framework.org/SI/ontology/DefiningConstant&gt;))</span>
+<span class="s2">          ?c a ?type .</span>
+<span class="s2">          FILTER (?type IN (si:Constant, si_ont:Constant, si_ont:DefiningConstant, &lt;https://si-digital-framework.org/SI#Constant&gt;, &lt;https://si-digital-framework.org/SI/ontology/DefiningConstant&gt;))</span>
+<span class="s2">          OPTIONAL { ?c skos:prefLabel ?label . FILTER (lang(?label) = 'en' || lang(?label) = '') }</span>
+<span class="s2">          OPTIONAL { ?c rdfs:label ?label }</span>
 <span class="s2">          OPTIONAL { ?c si:hasSymbol ?symbol }</span>
-<span class="s2">          OPTIONAL { ?c si:hasNumericalValue ?value }</span>
-<span class="s2">          OPTIONAL { ?c si:hasUnit ?unit }</span>
+<span class="s2">          OPTIONAL { ?c si_ont:hasSymbol ?symbol }</span>
+<span class="s2">          OPTIONAL { ?c si:hasValueAsString ?valStr }</span>
+<span class="s2">          OPTIONAL { ?c si:hasValue ?value }</span>
+<span class="s2">          OPTIONAL { ?c si_ont:hasNumericalValue ?value }</span>
 <span class="s2">          OPTIONAL { ?c si:hasDimension ?dim }</span>
+<span class="s2">          OPTIONAL { ?c si_ont:hasDimension ?dim }</span>
 <span class="s2">        }</span>
 <span class="s2">        """</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
             <span class="n">uri</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
-            <span class="n">sym</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">symbol</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">value</span> <span class="k">else</span> <span class="s2">"0"</span>
-            <span class="n">u_sym</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">unit</span> <span class="k">else</span> <span class="s2">"1"</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">label</span> <span class="k">else</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">sym</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">symbol</span> <span class="k">else</span> <span class="n">label</span>
+            <span class="n">raw_val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">valStr</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">valStr</span> <span class="k">else</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">value</span> <span class="k">else</span> <span class="s2">"0"</span><span class="p">)</span>
             <span class="n">dim_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">dim</span> <span class="k">else</span> <span class="s2">""</span>
             <span class="n">dim_vec</span> <span class="o">=</span> <span class="n">parse_qudt_dimension_string</span><span class="p">(</span><span class="n">dim_str</span><span class="p">)</span>
 
             <span class="n">constants</span><span class="p">[</span><span class="n">uri</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhysicalConstantEntity</span><span class="p">(</span>
                 <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
-                <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
                 <span class="n">symbol</span><span class="o">=</span><span class="n">sym</span><span class="p">,</span>
                 <span class="n">latex_symbol</span><span class="o">=</span><span class="n">sym</span><span class="p">,</span>
                 <span class="n">category</span><span class="o">=</span><span class="n">ConstantCategory</span><span class="o">.</span><span class="n">EXACT_SI_DEFINING</span><span class="p">,</span>
-                <span class="n">numeric_value</span><span class="o">=</span><span class="n">val</span><span class="p">,</span>
+                <span class="n">numeric_value</span><span class="o">=</span><span class="n">raw_val</span><span class="p">,</span>
                 <span class="n">standard_uncertainty</span><span class="o">=</span><span class="s2">"0"</span><span class="p">,</span>
                 <span class="n">relative_uncertainty</span><span class="o">=</span><span class="s2">"0"</span><span class="p">,</span>
-                <span class="n">unit_symbol</span><span class="o">=</span><span class="n">u_sym</span><span class="p">,</span>
+                <span class="n">unit_symbol</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
                 <span class="n">dimension_vector</span><span class="o">=</span><span class="n">dim_vec</span><span class="p">,</span>
                 <span class="n">defining_year</span><span class="o">=</span><span class="mi">2019</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">"BIPM SI Defining Constant: </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">"BIPM SI Defining Constant: </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">constants</span></div>
@@ -383,7 +393,9 @@
 
 <div class="viewcode-block" id="BIPMClient.extract_all">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.data_sources.bipm_client.BIPMClient.extract_all">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_all</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">"""Extracts SI base units and defining constants dynamically from local or provided graph."""</span>
         <span class="n">target_graph</span> <span class="o">=</span> <span class="n">graph</span> <span class="k">if</span> <span class="p">(</span><span class="n">graph</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_local_graph</span><span class="p">()</span>
         <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_base_units_from_graph</span><span class="p">(</span><span class="n">target_graph</span><span class="p">)</span>

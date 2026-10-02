@@ -87,7 +87,7 @@ def test_full_pipeline_flow(tmp_path):
     assert len(scaffolds) > 0
 
     # 3. Augmentation (Agent 3)
-    augmenter = MetrologyAugmenter(cache_db_path=str(tmp_path / "cache.sqlite"))
+    augmenter = MetrologyAugmenter(provider="offline", cache_db_path=str(tmp_path / "cache.sqlite"))
     augmented = augmenter.augment_all(scaffolds[:5], variations_per_archetype=1)
     assert len(augmented) > 0
 

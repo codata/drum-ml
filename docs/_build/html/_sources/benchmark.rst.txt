@@ -103,6 +103,19 @@ To evaluate a model against the benchmark:
        --model-endpoint "http://localhost:1234/v1" \
        --output ./dataset/benchmark/benchmark_report.json
 
+Interactive Benchmark Browser Dashboard
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DRUM-ML provides a standalone, interactive HTML browser dashboard to visually explore, inspect, filter, and audit benchmark questions across all 6 tasks:
+
+.. code-block:: bash
+
+   # Launch interactive benchmark explorer in default web browser
+   drum-ml view-benchmark --benchmark-file ./dataset/benchmark/drum_benchmark_all.jsonl
+
+   # Or export HTML file to a custom path:
+   drum-ml view-benchmark --benchmark-file ./dataset/benchmark/drum_benchmark_all.jsonl --output-html ./dataset/benchmark/benchmark_viewer.html
+
 Terminal Output Scorecard
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -27,7 +27,13 @@ The DRUM-ML pipeline is organized into five specialized, autonomous agents execu
    [Agent 5: Stratified Split & Packaging (Agent-Exporter)]
                            │
                            ▼
-   [./dataset/ -> train.jsonl, val.jsonl, test.jsonl, dpo_preferences.jsonl]
+   [./dataset/]
+       ├── train.jsonl, val.jsonl, test.jsonl, dpo_preferences.jsonl
+       ├── by_persona/          (35+ scientific union & domain subsets)
+       ├── by_archetype/        (6 pedagogical metrology archetypes)
+       ├── by_category/         (units vs constants vs quantity kinds)
+       ├── manifest.json        (SHA-256 checksums, token geometry, counts)
+       └── dataset_viewer.html  (Standalone Interactive HTML Dataset Browser)
 
 Agent Details
 -------------
@@ -46,14 +52,20 @@ Agent Details
 3. Agent 3: Linguistic Diversity & Persona Augmentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - **Module:** ``drum_ml.pipeline.augmenter``
-- **Function:** Leverages cloud frontier LLMs (Anthropic Claude 3.5 Sonnet, OpenAI GPT-4o via LiteLLM) or local models (MLX, LM Studio, Ollama) with SQLite semantic caching to generate diverse persona-conditioned user queries.
+- **Function:** Leverages cloud frontier LLMs (Anthropic Claude 3.7 Sonnet, OpenAI GPT-4.5/GPT-4o, Google Gemini via LiteLLM) or local models (Nemotron, Qwen, Ollama, LM Studio) with SQLite semantic caching to generate diverse persona-conditioned user queries across 35+ International Scientific Unions.
 
 4. Agent 4: 4-Tier Automated Validation Gate
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - **Module:** ``drum_ml.pipeline.validator`` & ``drum_ml.pipeline.dpo_miner``
-- **Function:** Deterministically verifies LaTeX syntax, Pint/SymPy algebraic equivalence, Decimal precision, and SPARQL/Python code execution. Mines high-quality negative pairs for DPO.
+- **Function:** Deterministically verifies LaTeX syntax, Pint/SymPy algebraic equivalence, Decimal precision, and SPARQL/Python code execution. Mines high-quality negative pairs for Direct Preference Optimization (DPO).
 
-5. Agent 5: Deduplication, Partitioning & Packaging
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- **Module:** ``drum_ml.pipeline.exporter``
-- **Function:** Executes MinHash LSH deduplication, entity-isolated stratified splitting (85% Train / 10% Val / 5% Test), and exports into standard OpenAI, ShareGPT, and DPO JSONL formats.
+5. Agent 5: Deduplication, Grouped Partitioning & Packaging
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- **Module:** ``drum_ml.pipeline.exporter`` & ``drum_ml.dataset_viewer``
+- **Function:** 
+  - Executes MinHash LSH fuzzy deduplication and exact SHA-256 hash pruning.
+  - Applies entity-isolated stratified splitting (85% Train / 10% Val / 5% Test).
+  - Partitions dataset into organized modular files (``by_persona/``, ``by_archetype/``, ``by_category/``).
+  - Exports standard OpenAI Chat, ShareGPT, and DPO JSONL formats.
+  - Generates ``manifest.json`` with file sizes, counts, and SHA-256 integrity checksums.
+  - Compiles the standalone interactive HTML dataset browser (``dataset_viewer.html``).

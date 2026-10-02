@@ -36,12 +36,16 @@ The project produces three core deliverables:
 1. **Open-Access Hugging Face Dataset (`drum-ml/metrology-instruct`):**
    - **Supervised Fine-Tuning (SFT) Split:** Multi-turn conversational JSONL (`OpenAI`, `ShareGPT`, `Anthropic`).
    - **Direct Preference Optimization (DPO) Split:** Mined preference pairs (`prompt`, `chosen`, `rejected`) harvested directly from validation gate audit failures.
+   - **Modular Grouped Partitions:** Granular subsets by persona (`by_persona/` across 35+ scientific unions), by pedagogical archetype (`by_archetype/` across 6 core tasks), and by entity category (`by_category/`).
+   - **Dataset Manifest & Integrity Index:** `manifest.json` capturing file byte sizes, record counts, token distributions, and SHA-256 integrity checksums.
+   - **Interactive HTML Dataset Explorer:** Zero-dependency standalone browser (`dataset_viewer.html`) with KaTeX math rendering, search, multi-format inspection, and DPO comparison arena.
    - **Pre-training Metrological Corpus:** Synthesized JSON-LD, RDF Turtle triples, and metrological reference texts.
 2. **M-Eval Metrology Benchmark Suite:**
    - Standardized held-out evaluation testbed to score frontier and domain-adapted LLMs on metrological precision.
    - **Dual-format grading:** Deterministic MCQ/JSON rule-checks for zero-hallucination verification + symbolic free-form validation (SymPy & Pint).
+   - **Interactive Benchmark Browser:** Standalone visual explorer (`benchmark_viewer.html`) for task filtering, distractor inspection, and distractor rationale review.
 3. **`drum-ml` Python Package & CLI (PyPI & GitHub):**
-   - Autonomous CLI for continuous dataset generation, custom ontology synthesis, and benchmark execution.
+   - Autonomous CLI for continuous dataset generation, custom ontology synthesis, dataset partitioning, interactive browsing, and benchmark execution.
 
 ---
 
@@ -75,7 +79,7 @@ flowchart TD
     end
 
     subgraph Agent3["Agent 3: Linguistic Diversity & Augmentation (Agent-Augmenter)"]
-        PersonaEngine["Persona Injector<br/>(Academic, IoT/Firmware, Student, Regulatory)"]
+        PersonaEngine["Persona Injector<br/>(35+ Scientific Unions & Personas)"]
         AsyncLLM["Async Multi-LLM Dispatcher<br/>(LiteLLM / Local vLLM / Ollama)"]
         CacheDB["SQLite Semantic Cache & Checkpointing"]
         AugmentedPairs["Augmented Dataset Drafts<br/>(augmented.json)"]
@@ -90,9 +94,12 @@ flowchart TD
         ValidatedData["Verified Metrology Corpus<br/>(validated.json)"]
     end
 
-    subgraph Agent5["Agent 5: Stratified Split & Packaging (Agent-Exporter)"]
+    subgraph Agent5["Agent 5: Stratified Split, Partitioning & Packaging (Agent-Exporter)"]
         Dedup["MinHash LSH & Hash Deduplication"]
         StratSplit["Stratified Entity-Aware Splitter<br/>(Train 85% / Val 10% / Test 5%)"]
+        PartitionEngine["Modular Partition Engine<br/>(by_persona / by_archetype / by_category)"]
+        ManifestGen["Manifest & SHA-256 Indexer"]
+        ViewerGen["Interactive HTML Browser Compiler<br/>(dataset_viewer.html)"]
         Exporters["Multi-Format Exporters<br/>(OpenAI, ShareGPT, DPO, HuggingFace)"]
         CardGen["Dataset Card & Metrology Stat Report"]
     end
@@ -119,7 +126,9 @@ flowchart TD
 
     ValidatedData --> Dedup
     Dedup --> StratSplit
-    StratSplit --> Exporters --> CardGen
+    StratSplit --> PartitionEngine & Exporters
+    PartitionEngine --> ManifestGen & ViewerGen
+    ManifestGen --> CardGen
     DPO_Mine --> Exporters
 ```
 
@@ -148,17 +157,47 @@ drum-ml/
 │   │       ├── qudt-dimensions.ttl
 │   │       └── qudt-prefixes.ttl
 │   └── cache/                         # SQLite cache for LLM queries and intermediate artifacts
-├── dataset/                           # Final generated dataset splits
-│   ├── train.jsonl
-│   ├── val.jsonl
-│   ├── test.jsonl
-│   ├── dpo_preferences.jsonl
-│   └── dataset_card.md
+├── dataset/                           # Final generated dataset splits & modular partitions
+│   ├── train.jsonl                    # Supervised Fine-Tuning (SFT) Master Train Split (85%)
+│   ├── val.jsonl                      # Master Validation Split (10%)
+│   ├── test.jsonl                     # Held-out Test Split (5%)
+│   ├── dpo_preferences.jsonl          # Direct Preference Optimization (DPO) pairs
+│   ├── manifest.json                  # Master manifest with byte sizes, counts, and SHA-256 hashes
+│   ├── dataset_viewer.html            # Standalone Interactive HTML Dataset Browser
+│   ├── by_persona/                    # 35+ Individual Scientific Union & Domain subsets
+│   │   ├── academic_metrologist.jsonl
+│   │   ├── academic_metrologist_train.jsonl
+│   │   ├── iupap_physicist_train.jsonl
+│   │   └── ...
+│   ├── by_archetype/                  # 6 Pedagogical Metrology Archetype subsets
+│   │   ├── direct_identification.jsonl
+│   │   ├── dimensional_decomposition.jsonl
+│   │   ├── conversion_scaling.jsonl
+│   │   ├── error_detection.jsonl
+│   │   ├── semantic_tool_use.jsonl
+│   │   └── metrological_uncertainty.jsonl
+│   ├── by_category/                   # Physical Entity Category Subsets
+│   │   ├── units.jsonl                # Units definitions, dimensions, & conversions
+│   │   └── constants.jsonl            # Physical constants & uncertainty budgets
+│   ├── benchmark/                     # Standardized DRUM Benchmark splits
+│   │   ├── drum_benchmark_mcq.jsonl   # Track A: 4-Option MCQ benchmark
+│   │   ├── drum_benchmark_open.jsonl  # Track B: Free-form symbolic benchmark
+│   │   ├── drum_benchmark_all.jsonl   # Full benchmark suite
+│   │   └── benchmark_viewer.html      # Interactive Benchmark Browser Dashboard
+│   └── dataset_card.md                # Generated Hugging Face dataset card & distributions
+├── tasks/                             # EleutherAI lm-evaluation-harness configs
+│   └── drum_benchmark/                # Master group & 6 subtask YAML definitions
 ├── src/
 │   └── drum_ml/
 │       ├── __init__.py
 │       ├── cli.py                     # Central Typer CLI entrypoint
 │       ├── config.py                  # Pydantic Settings and YAML loader
+│       ├── dataset_viewer.py          # Standalone Interactive HTML Dataset Browser generator
+│       ├── benchmark/                 # Benchmark Models, Gold Test Generator & Viewer
+│       │   ├── __init__.py
+│       │   ├── generator.py           # Benchmark question generator
+│       │   ├── models.py              # Benchmark Pydantic schemas
+│       │   └── viewer.py              # Interactive HTML Benchmark Viewer generator
 │       ├── data_sources/              # Source fetchers and sync clients
 │       │   ├── __init__.py
 │       │   ├── bipm_client.py         # BIPM SI API & Git fetcher
@@ -177,7 +216,9 @@ drum-ml/
 │       │   ├── scaffolder.py          # Agent 2: Archetype pedagogical generation
 │       │   ├── augmenter.py           # Agent 3: Linguistic diversity & persona generation
 │       │   ├── validator.py           # Agent 4: Symbolic & deterministic validation gate
-│       │   └── exporter.py            # Agent 5: Deduplication, splitting, and packaging
+│       │   ├── dpo_miner.py           # Agent 4b: DPO Preference pair extractor
+│       │   ├── exporter.py            # Agent 5: Deduplication, partitioning, and packaging
+│       │   └── evaluator.py           # Benchmark evaluator & scorecard generator
 │       ├── symbolic/
 │       │   ├── __init__.py
 │       │   ├── dimensions.py          # SI 7-base dimension vector arithmetic
@@ -194,6 +235,8 @@ drum-ml/
     ├── test_scaffolder.py             # Archetype generation tests
     ├── test_validator.py              # Validation gate rule checks
     ├── test_exporter.py               # Splitting & export formatting tests
+    ├── test_dataset_viewer.py         # Interactive HTML dataset browser tests
+    ├── test_benchmark_viewer.py       # Interactive HTML benchmark browser tests
     └── test_end_to_end.py             # Full pipeline integration tests
 ```
 
@@ -651,21 +694,31 @@ STRICT INVARIANTS:
 
 ---
 
-### 5.5 Agent 5: Split, Deduplication & Packaging Agent (`drum_ml.pipeline.exporter`)
+### 5.5 Agent 5: Split, Partitioning & Packaging Agent (`drum_ml.pipeline.exporter` & `drum_ml.dataset_viewer`)
 
-- **Objective:** Deduplicate samples, balance archetype distributions, apply stratified entity-level partitioning to prevent data leakage, and export into industry-standard LLM dataset formats.
+- **Objective:** Deduplicate samples, balance archetype distributions, apply stratified entity-level partitioning to prevent data leakage, generate granular multi-file subsets, compute integrity manifests, and compile standalone interactive HTML dataset browsers.
 - **Deduplication Strategy:**
   - Exact match: SHA-256 hash of normalized user query.
   - Semantic match: MinHash LSH with Jaccard distance threshold $< 0.85$ or embedding cosine similarity $< 0.92$.
 - **Stratified Partitioning:**
   - Split ratios: **Train: 85%**, **Validation: 10%**, **Test: 5%** (configurable).
   - *Entity-Isolation Guard:* Ensures that all variants of an entity's archetype do not cross the train-test boundary, guaranteeing clean held-out evaluation.
+- **Modular Grouped Subsets:**
+  - `dataset/by_persona/`: 35+ discrete JSONL files partitioned by international scientific union / domain persona (e.g. `iupap_physicist_train.jsonl`, `iupac_chemist_train.jsonl`, `academic_metrologist_train.jsonl`).
+  - `dataset/by_archetype/`: 6 discrete JSONL files partitioned by pedagogical archetype (e.g. `dimensional_decomposition.jsonl`, `conversion_scaling.jsonl`).
+  - `dataset/by_category/`: Physical entity category subsets (`units.jsonl`, `constants.jsonl`).
+- **Integrity Manifest (`manifest.json`):**
+  - Indexes all generated files with exact byte sizes, sample counts, token geometry, and SHA-256 integrity checksums.
+- **Interactive HTML Dataset Explorer (`dataset_viewer.html`):**
+  - Standalone, zero-dependency browser with KaTeX LaTeX math rendering, instant search, multi-format inspection (Rendered, OpenAI, ShareGPT, Raw JSON), DPO preference arena, persona matrix, and local file drag-and-drop.
 - **Export Targets:**
   - `dataset/train.jsonl` (OpenAI format)
   - `dataset/val.jsonl`
   - `dataset/test.jsonl`
-  - `dataset/sharegpt_train.jsonl` (ShareGPT format)
+  - `dataset/formats/sharegpt/train.jsonl` (ShareGPT format)
   - `dataset/dpo_preferences.jsonl` (DPO format)
+  - `dataset/manifest.json`
+  - `dataset/dataset_viewer.html`
   - `dataset/dataset_card.md` (Hugging Face compatible dataset card with distribution histograms, unit coverage metrics, token counts).
 
 ---
@@ -754,6 +807,11 @@ exporter:
   test_ratio: 0.05
   dedup_jaccard_threshold: 0.85
   target_volume_stage: "mvp" # "mvp" (~5k-10k) | "production" (~50k+)
+  export_by_persona: true
+  export_by_archetype: true
+  export_by_category: true
+  generate_viewer: true
+  viewer_sample_limit: 5000
   formats:
     - "openai"
     - "sharegpt"
@@ -802,25 +860,43 @@ drum-ml validate \
     --export-dpo ./data/dpo_raw.json \
     --output ./data/validated.json
 
-# 5. Deduplicate, balance, split, and package datasets
+# 5. Deduplicate, balance, split, partition into grouped files, and compile HTML browser
 drum-ml export \
     --input ./data/validated.json \
     --dpo-input ./data/dpo_raw.json \
     --train-ratio 0.85 \
     --val-ratio 0.10 \
     --test-ratio 0.05 \
+    --by-persona \
+    --by-archetype \
+    --by-category \
+    --viewer \
     --out-dir ./dataset/
 
-# 6. Evaluate an arbitrary local model (e.g. gemma4:12b-mlx) on M-Eval
+# 6. Standalone partitioner (partition existing monolithic dataset files into grouped subsets)
+drum-ml partition \
+    --dataset-dir ./dataset \
+    --viewer
+
+# 7. Launch the Interactive HTML Dataset Explorer
+drum-ml view-dataset \
+    --dataset-dir ./dataset \
+    --max-samples 5000
+
+# 8. Launch the Interactive HTML Benchmark Browser
+drum-ml view-benchmark \
+    --benchmark-file ./dataset/benchmark/drum_benchmark_all.jsonl
+
+# 9. Evaluate an arbitrary model endpoint against M-Eval
 drum-ml evaluate \
-    --benchmark-file ./dataset/test.jsonl \
-    --eval-format dual \
+    --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl \
+    --eval-format mcq \
     --model-endpoint http://localhost:1234/v1 \
     --model-name gemma4:12b-mlx \
-    --output ./dataset/benchmark_report.json
+    --output ./dataset/benchmark/benchmark_report.json
 
 # One-Shot Command: Execute full end-to-end pipeline (fetch -> extract -> scaffold -> augment -> validate -> export)
-drum-ml run --config ./config.yaml --all
+drum-ml run --config ./config.yaml --sample
 ```
 
 ---

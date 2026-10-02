@@ -195,6 +195,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
@@ -233,15 +234,24 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for drum_ml.pipeline.exporter</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""Agent 5: Deduplication, Stratified Partitioning, and Dataset Packaging."""</span>
+<span></span><span class="sd">"""Agent 5: Deduplication, Stratified Partitioning, Grouped Subsets, and Dataset Packaging."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">datasketch</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinHash</span><span class="p">,</span> <span class="n">MinHashLSH</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.dataset_viewer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">parse_category_from_record</span><span class="p">,</span>
+    <span class="n">parse_persona_from_record</span><span class="p">,</span>
+    <span class="n">save_dataset_viewer</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.export</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DPOPreferenceRecord</span><span class="p">,</span>
     <span class="n">OpenAIChatMessage</span><span class="p">,</span>
@@ -252,10 +262,22 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">AugmentedRecord</span>
 
 
+<div class="viewcode-block" id="compute_file_sha256">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.compute_file_sha256">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_file_sha256</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Computes SHA-256 checksum of a file."""</span>
+    <span class="n">sha</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">chunk</span> <span class="o">:=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">65536</span><span class="p">):</span>
+            <span class="n">sha</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+
 <div class="viewcode-block" id="MetrologyExporter">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MetrologyExporter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Agent 5: MinHash deduplication, entity-stratified split, and multi-format dataset exporter."""</span>
+<span class="w">    </span><span class="sd">"""Agent 5: MinHash deduplication, entity-stratified split, and multi-format / multi-group dataset exporter."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -264,24 +286,35 @@
         <span class="n">val_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.10</span><span class="p">,</span>
         <span class="n">test_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
         <span class="n">jaccard_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.85</span><span class="p">,</span>
-        <span class="n">dedup_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dedup_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">export_by_persona</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">export_by_archetype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">export_by_category</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">generate_viewer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">formats</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train_ratio</span> <span class="o">=</span> <span class="n">train_ratio</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">val_ratio</span> <span class="o">=</span> <span class="n">val_ratio</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_ratio</span> <span class="o">=</span> <span class="n">test_ratio</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">jaccard_threshold</span> <span class="o">=</span> <span class="n">dedup_threshold</span> <span class="k">if</span> <span class="n">dedup_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">jaccard_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jaccard_threshold</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">dedup_threshold</span> <span class="k">if</span> <span class="n">dedup_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">jaccard_threshold</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_by_persona</span> <span class="o">=</span> <span class="n">export_by_persona</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_by_archetype</span> <span class="o">=</span> <span class="n">export_by_archetype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_by_category</span> <span class="o">=</span> <span class="n">export_by_category</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_viewer</span> <span class="o">=</span> <span class="n">generate_viewer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formats</span> <span class="o">=</span> <span class="n">formats</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">"openai"</span><span class="p">,</span> <span class="s2">"sharegpt"</span><span class="p">,</span> <span class="s2">"dpo"</span><span class="p">]</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MetrologyExporter.deduplicate">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.deduplicate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">deduplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deduplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Performs MinHash LSH near-duplicate and exact-hash deduplication."""</span>
-        <span class="n">unique_records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">unique_records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">seen_hashes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">lsh</span> <span class="o">=</span> <span class="n">MinHashLSH</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jaccard_threshold</span><span class="p">,</span> <span class="n">num_perm</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
 
-        <span class="n">seen_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">rec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">records</span><span class="p">):</span>
             <span class="n">exact_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">user_query</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">exact_hash</span> <span class="ow">in</span> <span class="n">seen_hashes</span><span class="p">:</span>
@@ -305,8 +338,8 @@
 <div class="viewcode-block" id="MetrologyExporter.stratified_split">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.stratified_split">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stratified_split</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">"""Partitions dataset with entity isolation to prevent train-to-test data leakage."""</span>
         <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="n">shuffled</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
@@ -327,6 +360,12 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.to_openai_format">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_openai_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">AugmentedRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpenAIChatRecord</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Converts augmented record to OpenAI Chat Completion format."""</span>
+        <span class="n">persona_val</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">record</span><span class="o">.</span><span class="n">persona</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">persona</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">persona</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">archetype_val</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">record</span><span class="o">.</span><span class="n">archetype</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">archetype</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">archetype</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">OpenAIChatRecord</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">archetype</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">archetype</span><span class="p">,</span>
@@ -339,6 +378,44 @@
                 <span class="n">OpenAIChatMessage</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"user"</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">user_query</span><span class="p">),</span>
                 <span class="n">OpenAIChatMessage</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"assistant"</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">ground_truth_answer</span><span class="p">),</span>
             <span class="p">],</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"persona"</span><span class="p">:</span> <span class="n">persona_val</span><span class="p">,</span>
+                <span class="s2">"archetype"</span><span class="p">:</span> <span class="n">archetype_val</span><span class="p">,</span>
+                <span class="s2">"scaffold_id"</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">scaffold_id</span><span class="p">,</span>
+                <span class="s2">"quantity_kind_uri"</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">quantity_kind_uri</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">record</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetrologyExporter.to_sharegpt_format">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.to_sharegpt_format">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sharegpt_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">AugmentedRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShareGPTRecord</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Converts augmented record to ShareGPT multi-turn conversation format."""</span>
+        <span class="n">persona_val</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">record</span><span class="o">.</span><span class="n">persona</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">persona</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">persona</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">archetype_val</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">record</span><span class="o">.</span><span class="n">archetype</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">archetype</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">archetype</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ShareGPTRecord</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">conversations</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">ShareGPTTurn</span><span class="p">(</span>
+                    <span class="n">from_</span><span class="o">=</span><span class="s2">"system"</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="s2">"You are an authoritative SI and metrology assistant grounded in the BIPM SI Digital Framework, CODATA fundamental constants, and QUDT ontologies."</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">ShareGPTTurn</span><span class="p">(</span><span class="n">from_</span><span class="o">=</span><span class="s2">"human"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">user_query</span><span class="p">),</span>
+                <span class="n">ShareGPTTurn</span><span class="p">(</span><span class="n">from_</span><span class="o">=</span><span class="s2">"gpt"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">ground_truth_answer</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"persona"</span><span class="p">:</span> <span class="n">persona_val</span><span class="p">,</span>
+                <span class="s2">"archetype"</span><span class="p">:</span> <span class="n">archetype_val</span><span class="p">,</span>
+                <span class="s2">"entity_uri"</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">entity_uri</span><span class="p">,</span>
+                <span class="s2">"scaffold_id"</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">scaffold_id</span><span class="p">,</span>
+                <span class="s2">"quantity_kind_uri"</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">quantity_kind_uri</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">record</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="p">},</span>
         <span class="p">)</span></div>
 
 
@@ -346,18 +423,19 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.export_all">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">export_all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span>
-        <span class="n">dpo_pairs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DPOPreferenceRecord</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Deduplicates, splits, and writes dataset splits to disk."""</span>
+        <span class="n">records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span>
+        <span class="n">dpo_pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">DPOPreferenceRecord</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Deduplicates, splits, partitions into groupings, and writes dataset splits and viewer to disk."""</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">deduped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deduplicate</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
         <span class="n">train</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stratified_split</span><span class="p">(</span><span class="n">deduped</span><span class="p">)</span>
 
-        <span class="n">exported_paths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">exported_paths</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># 1. Export OpenAI JSONL splits</span>
-        <span class="k">for</span> <span class="n">split_name</span><span class="p">,</span> <span class="n">split_data</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"train"</span><span class="p">,</span> <span class="n">train</span><span class="p">),</span> <span class="p">(</span><span class="s2">"val"</span><span class="p">,</span> <span class="n">val</span><span class="p">),</span> <span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">test</span><span class="p">)]:</span>
+        <span class="c1"># 1. Export standard master OpenAI JSONL splits</span>
+        <span class="n">splits</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"train"</span><span class="p">,</span> <span class="n">train</span><span class="p">),</span> <span class="p">(</span><span class="s2">"val"</span><span class="p">,</span> <span class="n">val</span><span class="p">),</span> <span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">test</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">split_name</span><span class="p">,</span> <span class="n">split_data</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">split_name</span><span class="si">}</span><span class="s2">.jsonl"</span>
             <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -374,7 +452,97 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">exported_paths</span><span class="p">[</span><span class="s2">"dpo"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dpo_path</span>
 
-        <span class="c1"># 3. Write Dataset Card</span>
+        <span class="c1"># 3. Export Groupings by Persona</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_by_persona</span><span class="p">:</span>
+            <span class="n">persona_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"by_persona"</span>
+            <span class="n">persona_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Map of persona -&gt; list of records per split</span>
+            <span class="n">persona_splits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">split_name</span><span class="p">,</span> <span class="n">split_data</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">split_data</span><span class="p">:</span>
+                    <span class="n">p_val</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">persona</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">persona</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">persona</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">p_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">persona_splits</span><span class="p">:</span>
+                        <span class="n">persona_splits</span><span class="p">[</span><span class="n">p_val</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"all"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"train"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"val"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"test"</span><span class="p">:</span> <span class="p">[]}</span>
+                    <span class="n">persona_splits</span><span class="p">[</span><span class="n">p_val</span><span class="p">][</span><span class="n">split_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                    <span class="n">persona_splits</span><span class="p">[</span><span class="n">p_val</span><span class="p">][</span><span class="s2">"all"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">p_val</span><span class="p">,</span> <span class="n">p_dict</span> <span class="ow">in</span> <span class="n">persona_splits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Consolidated persona file</span>
+                <span class="n">p_all_path</span> <span class="o">=</span> <span class="n">persona_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">p_val</span><span class="si">}</span><span class="s2">.jsonl"</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p_all_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">p_dict</span><span class="p">[</span><span class="s2">"all"</span><span class="p">]:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_openai_format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">exported_paths</span><span class="p">[</span><span class="sa">f</span><span class="s2">"persona_</span><span class="si">{</span><span class="n">p_val</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_all_path</span>
+
+                <span class="c1"># Persona train split</span>
+                <span class="k">if</span> <span class="n">p_dict</span><span class="p">[</span><span class="s2">"train"</span><span class="p">]:</span>
+                    <span class="n">p_train_path</span> <span class="o">=</span> <span class="n">persona_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">p_val</span><span class="si">}</span><span class="s2">_train.jsonl"</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p_train_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">p_dict</span><span class="p">[</span><span class="s2">"train"</span><span class="p">]:</span>
+                            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_openai_format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="c1"># 4. Export Groupings by Pedagogical Archetype</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_by_archetype</span><span class="p">:</span>
+            <span class="n">arch_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"by_archetype"</span>
+            <span class="n">arch_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">arch_buckets</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">deduped</span><span class="p">:</span>
+                <span class="n">a_val</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">archetype</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">archetype</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">archetype</span><span class="p">)</span>
+                <span class="n">arch_buckets</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">a_val</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">a_val</span><span class="p">,</span> <span class="n">a_records</span> <span class="ow">in</span> <span class="n">arch_buckets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">a_path</span> <span class="o">=</span> <span class="n">arch_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">a_val</span><span class="si">}</span><span class="s2">.jsonl"</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">a_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">a_records</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_openai_format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">exported_paths</span><span class="p">[</span><span class="sa">f</span><span class="s2">"archetype_</span><span class="si">{</span><span class="n">a_val</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">a_path</span>
+
+        <span class="c1"># 5. Export Groupings by Entity Category (units vs constants vs quantity kinds)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_by_category</span><span class="p">:</span>
+            <span class="n">cat_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"by_category"</span>
+            <span class="n">cat_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">cat_buckets</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"units"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"constants"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"quantity_kinds"</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">deduped</span><span class="p">:</span>
+                <span class="n">c_val</span> <span class="o">=</span> <span class="n">parse_category_from_record</span><span class="p">({</span><span class="s2">"entity_uri"</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">entity_uri</span><span class="p">})</span>
+                <span class="n">cat_buckets</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">c_val</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">c_val</span><span class="p">,</span> <span class="n">c_records</span> <span class="ow">in</span> <span class="n">cat_buckets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">c_records</span><span class="p">:</span>
+                    <span class="n">c_path</span> <span class="o">=</span> <span class="n">cat_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c_val</span><span class="si">}</span><span class="s2">.jsonl"</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">c_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">c_records</span><span class="p">:</span>
+                            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_openai_format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="n">exported_paths</span><span class="p">[</span><span class="sa">f</span><span class="s2">"category_</span><span class="si">{</span><span class="n">c_val</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">c_path</span>
+
+        <span class="c1"># 6. Export ShareGPT format if requested</span>
+        <span class="k">if</span> <span class="s2">"sharegpt"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">formats</span><span class="p">:</span>
+            <span class="n">sharegpt_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"formats"</span> <span class="o">/</span> <span class="s2">"sharegpt"</span>
+            <span class="n">sharegpt_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">split_name</span><span class="p">,</span> <span class="n">split_data</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">:</span>
+                <span class="n">sg_path</span> <span class="o">=</span> <span class="n">sharegpt_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">split_name</span><span class="si">}</span><span class="s2">.jsonl"</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sg_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">split_data</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_sharegpt_format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">exported_paths</span><span class="p">[</span><span class="sa">f</span><span class="s2">"sharegpt_</span><span class="si">{</span><span class="n">split_name</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg_path</span>
+
+        <span class="c1"># 7. Write Dataset Manifest (JSON Index)</span>
+        <span class="n">manifest_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"manifest.json"</span>
+        <span class="n">manifest_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_manifest</span><span class="p">(</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">total_records</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">deduped</span><span class="p">),</span>
+            <span class="n">splits</span><span class="o">=</span><span class="p">{</span><span class="s2">"train"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="s2">"val"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="s2">"test"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">),</span> <span class="s2">"dpo"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">dpo_pairs</span><span class="p">)},</span>
+            <span class="n">exported_paths</span><span class="o">=</span><span class="n">exported_paths</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">manifest_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">exported_paths</span><span class="p">[</span><span class="s2">"manifest"</span><span class="p">]</span> <span class="o">=</span> <span class="n">manifest_path</span>
+
+        <span class="c1"># 8. Write Dataset Card</span>
         <span class="n">card_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"dataset_card.md"</span>
         <span class="n">card_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">card_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -384,11 +552,218 @@
                 <span class="sa">f</span><span class="s2">"- **Train Split (85%):** </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
                 <span class="sa">f</span><span class="s2">"- **Validation Split (10%):** </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
                 <span class="sa">f</span><span class="s2">"- **Held-Out Test Benchmark (5%):** </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
-                <span class="sa">f</span><span class="s2">"- **DPO Preference Pairs:** </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dpo_pairs</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"- **DPO Preference Pairs:** </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dpo_pairs</span><span class="p">)</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"### Partitioned Subsets</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"- **By Persona Subsets:** `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">/by_persona/`</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"- **By Archetype Subsets:** `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">/by_archetype/`</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"- **By Category Subsets:** `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">/by_category/`</span><span class="se">\n</span><span class="s2">"</span>
+                <span class="sa">f</span><span class="s2">"- **Dataset Manifest Index:** `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">/manifest.json`</span><span class="se">\n</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="n">exported_paths</span><span class="p">[</span><span class="s2">"card"</span><span class="p">]</span> <span class="o">=</span> <span class="n">card_path</span>
 
+        <span class="c1"># 9. Generate Standalone Interactive Dataset Browser HTML</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_viewer</span><span class="p">:</span>
+            <span class="n">viewer_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">/</span> <span class="s2">"dataset_viewer.html"</span>
+            <span class="n">save_dataset_viewer</span><span class="p">(</span>
+                <span class="n">output_html_path</span><span class="o">=</span><span class="n">viewer_path</span><span class="p">,</span>
+                <span class="n">dataset_dir_or_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                <span class="n">max_samples</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+                <span class="n">open_browser</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">exported_paths</span><span class="p">[</span><span class="s2">"viewer"</span><span class="p">]</span> <span class="o">=</span> <span class="n">viewer_path</span>
+
         <span class="k">return</span> <span class="n">exported_paths</span></div>
+
+
+<div class="viewcode-block" id="MetrologyExporter.generate_manifest">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.generate_manifest">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_manifest</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">total_records</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">splits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">exported_paths</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Generates a comprehensive dataset manifest indexing all partitions and checksums."""</span>
+        <span class="n">files_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">exported_paths</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">".jsonl"</span><span class="p">:</span>
+                <span class="c1"># count lines</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">files_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">"name"</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="s2">"relative_path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)),</span>
+                        <span class="s2">"record_count"</span><span class="p">:</span> <span class="n">count</span><span class="p">,</span>
+                        <span class="s2">"byte_size"</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span>
+                        <span class="s2">"sha256"</span><span class="p">:</span> <span class="n">compute_file_sha256</span><span class="p">(</span><span class="n">p</span><span class="p">),</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"dataset_name"</span><span class="p">:</span> <span class="s2">"drum-ml-metrology-instruct"</span><span class="p">,</span>
+            <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"0.1.0"</span><span class="p">,</span>
+            <span class="s2">"total_records"</span><span class="p">:</span> <span class="n">total_records</span><span class="p">,</span>
+            <span class="s2">"splits"</span><span class="p">:</span> <span class="n">splits</span><span class="p">,</span>
+            <span class="s2">"formats"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">formats</span><span class="p">,</span>
+            <span class="s2">"groupings"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"by_persona"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_by_persona</span><span class="p">,</span>
+                <span class="s2">"by_archetype"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_by_archetype</span><span class="p">,</span>
+                <span class="s2">"by_category"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_by_category</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">"files"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files_info</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">"relative_path"</span><span class="p">]),</span>
+            <span class="s2">"huggingface_usage"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"load_train"</span><span class="p">:</span> <span class="s2">"from datasets import load_dataset; ds = load_dataset('json', data_files={'train': 'train.jsonl', 'validation': 'val.jsonl', 'test': 'test.jsonl'})"</span><span class="p">,</span>
+                <span class="s2">"load_persona"</span><span class="p">:</span> <span class="s2">"from datasets import load_dataset; ds = load_dataset('json', data_files={'train': 'by_persona/academic_metrologist_train.jsonl'})"</span><span class="p">,</span>
+                <span class="s2">"load_archetype"</span><span class="p">:</span> <span class="s2">"from datasets import load_dataset; ds = load_dataset('json', data_files={'train': 'by_archetype/dimensional_decomposition.jsonl'})"</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="MetrologyExporter.partition_existing_dataset">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.exporter.MetrologyExporter.partition_existing_dataset">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partition_existing_dataset</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">dataset_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="s2">"./dataset"</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">generate_viewer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""High-performance partitioner for existing dataset directories with train/val/test/dpo JSONL files."""</span>
+        <span class="n">in_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="k">if</span> <span class="n">output_dir</span> <span class="k">else</span> <span class="n">in_dir</span>
+        <span class="n">out_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">persona_dir</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">/</span> <span class="s2">"by_persona"</span>
+        <span class="n">arch_dir</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">/</span> <span class="s2">"by_archetype"</span>
+        <span class="n">cat_dir</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">/</span> <span class="s2">"by_category"</span>
+        <span class="n">persona_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">arch_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">cat_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Persona handles and Archetype handles for streaming writes</span>
+        <span class="n">persona_all_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">persona_train_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">arch_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">cat_handles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">persona_counts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">archetype_counts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">category_counts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">total_processed</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">split_files</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">"train"</span><span class="p">,</span> <span class="n">in_dir</span> <span class="o">/</span> <span class="s2">"train.jsonl"</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"val"</span><span class="p">,</span> <span class="n">in_dir</span> <span class="o">/</span> <span class="s2">"val.jsonl"</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">in_dir</span> <span class="o">/</span> <span class="s2">"test.jsonl"</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">split_name</span><span class="p">,</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">split_files</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="k">continue</span>
+
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f_in</span><span class="p">:</span>
+                        <span class="n">line_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">line_str</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">rec</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line_str</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="n">p_val</span> <span class="o">=</span> <span class="n">parse_persona_from_record</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+                        <span class="n">a_val</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"archetype"</span><span class="p">,</span> <span class="s2">"direct_identification"</span><span class="p">)</span>
+                        <span class="n">c_val</span> <span class="o">=</span> <span class="n">parse_category_from_record</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+                        <span class="n">persona_counts</span><span class="p">[</span><span class="n">p_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">persona_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p_val</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">archetype_counts</span><span class="p">[</span><span class="n">a_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">archetype_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a_val</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">category_counts</span><span class="p">[</span><span class="n">c_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">category_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c_val</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">total_processed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                        <span class="c1"># Write to persona all handle</span>
+                        <span class="k">if</span> <span class="n">p_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">persona_all_handles</span><span class="p">:</span>
+                            <span class="n">persona_all_handles</span><span class="p">[</span><span class="n">p_val</span><span class="p">]</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+                                <span class="n">persona_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">p_val</span><span class="si">}</span><span class="s2">.jsonl"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+                            <span class="p">)</span>
+                        <span class="n">persona_all_handles</span><span class="p">[</span><span class="n">p_val</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line_str</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+                        <span class="c1"># Write to persona train handle if split is train</span>
+                        <span class="k">if</span> <span class="n">split_name</span> <span class="o">==</span> <span class="s2">"train"</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">p_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">persona_train_handles</span><span class="p">:</span>
+                                <span class="n">persona_train_handles</span><span class="p">[</span><span class="n">p_val</span><span class="p">]</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+                                    <span class="n">persona_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">p_val</span><span class="si">}</span><span class="s2">_train.jsonl"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+                                <span class="p">)</span>
+                            <span class="n">persona_train_handles</span><span class="p">[</span><span class="n">p_val</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line_str</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+                        <span class="c1"># Write to archetype handle</span>
+                        <span class="k">if</span> <span class="n">a_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">arch_handles</span><span class="p">:</span>
+                            <span class="n">arch_handles</span><span class="p">[</span><span class="n">a_val</span><span class="p">]</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+                                <span class="n">arch_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">a_val</span><span class="si">}</span><span class="s2">.jsonl"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+                            <span class="p">)</span>
+                        <span class="n">arch_handles</span><span class="p">[</span><span class="n">a_val</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line_str</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+                        <span class="c1"># Write to category handle</span>
+                        <span class="k">if</span> <span class="n">c_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cat_handles</span><span class="p">:</span>
+                            <span class="n">cat_handles</span><span class="p">[</span><span class="n">c_val</span><span class="p">]</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+                                <span class="n">cat_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">c_val</span><span class="si">}</span><span class="s2">.jsonl"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+                            <span class="p">)</span>
+                        <span class="n">cat_handles</span><span class="p">[</span><span class="n">c_val</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line_str</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">persona_all_handles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">persona_train_handles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">arch_handles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">cat_handles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">h</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="c1"># Build manifest</span>
+        <span class="n">manifest_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p_file</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">persona_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.jsonl"</span><span class="p">))</span>
+            <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">arch_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.jsonl"</span><span class="p">))</span>
+            <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">cat_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.jsonl"</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="n">manifest_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"name"</span><span class="p">:</span> <span class="n">p_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s2">"relative_path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">p_file</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)),</span>
+                    <span class="s2">"record_count"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span>
+                        <span class="mi">1</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">p_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="p">),</span>
+                    <span class="s2">"byte_size"</span><span class="p">:</span> <span class="n">p_file</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span>
+                    <span class="s2">"sha256"</span><span class="p">:</span> <span class="n">compute_file_sha256</span><span class="p">(</span><span class="n">p_file</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="n">manifest</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"dataset_name"</span><span class="p">:</span> <span class="s2">"drum-ml-metrology-instruct"</span><span class="p">,</span>
+            <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"0.1.0"</span><span class="p">,</span>
+            <span class="s2">"total_records"</span><span class="p">:</span> <span class="n">total_processed</span><span class="p">,</span>
+            <span class="s2">"persona_counts"</span><span class="p">:</span> <span class="n">persona_counts</span><span class="p">,</span>
+            <span class="s2">"archetype_counts"</span><span class="p">:</span> <span class="n">archetype_counts</span><span class="p">,</span>
+            <span class="s2">"category_counts"</span><span class="p">:</span> <span class="n">category_counts</span><span class="p">,</span>
+            <span class="s2">"files"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">manifest_files</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">"relative_path"</span><span class="p">]),</span>
+        <span class="p">}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span> <span class="o">/</span> <span class="s2">"manifest.json"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">manifest</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">generate_viewer</span><span class="p">:</span>
+            <span class="n">save_dataset_viewer</span><span class="p">(</span>
+                <span class="n">output_html_path</span><span class="o">=</span><span class="n">out_dir</span> <span class="o">/</span> <span class="s2">"dataset_viewer.html"</span><span class="p">,</span>
+                <span class="n">dataset_dir_or_file</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                <span class="n">max_samples</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+                <span class="n">open_browser</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">manifest</span></div>
 </div>
 
 </pre></div>

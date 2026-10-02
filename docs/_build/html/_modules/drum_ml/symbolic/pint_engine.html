@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -233,12 +236,9 @@
           <h1>Source code for drum_ml.symbolic.pint_engine</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Pint and SymPy Symbolic Equivalence and Unit Verification Engine."""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sympy.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">sp_units</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.symbolic.latex_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">sanitize_latex_units</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.symbolic.latex_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">sanitize_latex_units</span>
 
 <span class="c1"># Initialize global Pint UnitRegistry</span>
 <span class="n">ureg</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">()</span>
@@ -253,7 +253,7 @@
     <span class="n">expr_right_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">is_temperature_delta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">rel_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Checks whether two unit expressions (e.g. '1 N' and '1 kg * m / s**2', or '100 degC' and '373.15 K')</span>
 <span class="sd">    are physically and numerically equivalent.</span>
 
@@ -280,7 +280,10 @@
 
         <span class="c1"># Check dimensional compatibility</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">q_left</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">q_right</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Dimensional incompatibility: [</span><span class="si">{</span><span class="n">q_left</span><span class="o">.</span><span class="n">dimensionality</span><span class="si">}</span><span class="s2">] != [</span><span class="si">{</span><span class="n">q_right</span><span class="o">.</span><span class="n">dimensionality</span><span class="si">}</span><span class="s2">]"</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"Dimensional incompatibility: [</span><span class="si">{</span><span class="n">q_left</span><span class="o">.</span><span class="n">dimensionality</span><span class="si">}</span><span class="s2">] != [</span><span class="si">{</span><span class="n">q_right</span><span class="o">.</span><span class="n">dimensionality</span><span class="si">}</span><span class="s2">]"</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="c1"># Check numerical equality after conversion to base SI</span>
         <span class="n">q_left_base</span> <span class="o">=</span> <span class="n">q_left</span><span class="o">.</span><span class="n">to_base_units</span><span class="p">()</span>
@@ -295,7 +298,7 @@
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Pint evaluation error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span></div>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Pint evaluation error: </span><span class="si">{</span><span class="n">e</span><span class="si">!s}</span><span class="s2">"</span></div>
 
 </pre></div>
         </article>

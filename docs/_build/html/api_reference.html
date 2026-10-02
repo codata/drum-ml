@@ -250,7 +250,7 @@ alongside PhysicalConstant and DimensionVector according to VIM3, ISO 80000, and
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.models.entities.BaseDimension">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.models.entities.</span></span><span class="sig-name descname"><span class="pre">BaseDimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/models/entities.html#BaseDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.models.entities.BaseDimension" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <p>The 7 base dimensions of the International System of Quantities (ISQ).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.BaseDimension.LENGTH">
@@ -398,9 +398,9 @@ making QuantityKind a mandatory discriminator in metrological reasoning.</p>
 <li><p><strong>symbol</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>description</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>dimension_vector</strong> (<a class="reference internal" href="#drum_ml.models.entities.DimensionVector" title="drum_ml.models.entities.DimensionVector"><em>DimensionVector</em></a>)</p></li>
-<li><p><strong>applicable_units</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
-<li><p><strong>broader_quantity_kinds</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
-<li><p><strong>exact_match_uris</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>applicable_units</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>broader_quantity_kinds</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>exact_match_uris</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -431,17 +431,17 @@ making QuantityKind a mandatory discriminator in metrological reasoning.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.QuantityKindEntity.applicable_units">
-<span class="sig-name descname"><span class="pre">applicable_units</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.QuantityKindEntity.applicable_units" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">applicable_units</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.QuantityKindEntity.applicable_units" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.QuantityKindEntity.broader_quantity_kinds">
-<span class="sig-name descname"><span class="pre">broader_quantity_kinds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.QuantityKindEntity.broader_quantity_kinds" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">broader_quantity_kinds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.QuantityKindEntity.broader_quantity_kinds" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.QuantityKindEntity.exact_match_uris">
-<span class="sig-name descname"><span class="pre">exact_match_uris</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.QuantityKindEntity.exact_match_uris" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">exact_match_uris</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.QuantityKindEntity.exact_match_uris" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -512,12 +512,12 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>is_si_derived</strong> (<em>bool</em>)</p></li>
 <li><p><strong>is_coherent</strong> (<em>bool</em>)</p></li>
 <li><p><strong>dimension_vector</strong> (<a class="reference internal" href="#drum_ml.models.entities.DimensionVector" title="drum_ml.models.entities.DimensionVector"><em>DimensionVector</em></a>)</p></li>
-<li><p><strong>has_quantity_kinds</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>has_quantity_kinds</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 <li><p><strong>ucum_code</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>iec_symbol</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>latex_symbol</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>conversion</strong> (<a class="reference internal" href="#drum_ml.models.entities.ConversionRelation" title="drum_ml.models.entities.ConversionRelation"><em>ConversionRelation</em></a><em> | </em><em>None</em>)</p></li>
-<li><p><strong>exact_match_uris</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>exact_match_uris</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -563,7 +563,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.UnitEntity.has_quantity_kinds">
-<span class="sig-name descname"><span class="pre">has_quantity_kinds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.UnitEntity.has_quantity_kinds" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">has_quantity_kinds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.UnitEntity.has_quantity_kinds" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -588,7 +588,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.UnitEntity.exact_match_uris">
-<span class="sig-name descname"><span class="pre">exact_match_uris</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.UnitEntity.exact_match_uris" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">exact_match_uris</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.UnitEntity.exact_match_uris" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -602,7 +602,7 @@ SI_val = (val * multiplier) + offset.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.models.entities.ConstantCategory">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.models.entities.</span></span><span class="sig-name descname"><span class="pre">ConstantCategory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/models/entities.html#ConstantCategory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.models.entities.ConstantCategory" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.ConstantCategory.EXACT_SI_DEFINING">
 <span class="sig-name descname"><span class="pre">EXACT_SI_DEFINING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'exact_si_defining'</span></span><a class="headerlink" href="#drum_ml.models.entities.ConstantCategory.EXACT_SI_DEFINING" title="Link to this definition">¶</a></dt>
@@ -726,25 +726,25 @@ SI_val = (val * multiplier) + offset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>units</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><em>UnitEntity</em></a><em>]</em>)</p></li>
-<li><p><strong>quantity_kinds</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><em>QuantityKindEntity</em></a><em>]</em>)</p></li>
-<li><p><strong>constants</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><em>PhysicalConstantEntity</em></a><em>]</em>)</p></li>
+<li><p><strong>units</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><em>UnitEntity</em></a><em>]</em>)</p></li>
+<li><p><strong>quantity_kinds</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><em>QuantityKindEntity</em></a><em>]</em>)</p></li>
+<li><p><strong>constants</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><em>PhysicalConstantEntity</em></a><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.CanonicalEntityStore.units">
-<span class="sig-name descname"><span class="pre">units</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><span class="pre">UnitEntity</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.CanonicalEntityStore.units" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><span class="pre">UnitEntity</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.CanonicalEntityStore.units" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.CanonicalEntityStore.quantity_kinds">
-<span class="sig-name descname"><span class="pre">quantity_kinds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><span class="pre">QuantityKindEntity</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.CanonicalEntityStore.quantity_kinds" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">quantity_kinds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><span class="pre">QuantityKindEntity</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.CanonicalEntityStore.quantity_kinds" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.entities.CanonicalEntityStore.constants">
-<span class="sig-name descname"><span class="pre">constants</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><span class="pre">PhysicalConstantEntity</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.CanonicalEntityStore.constants" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">constants</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><span class="pre">PhysicalConstantEntity</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.entities.CanonicalEntityStore.constants" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -759,7 +759,7 @@ SI_val = (val * multiplier) + offset.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.ArchetypeType">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.models.scaffolds.</span></span><span class="sig-name descname"><span class="pre">ArchetypeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/models/scaffolds.html#ArchetypeType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.models.scaffolds.ArchetypeType" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <p>The 6 Pedagogical Metrology Archetypes.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.ArchetypeType.DIRECT_IDENTIFICATION">
@@ -796,7 +796,7 @@ SI_val = (val * multiplier) + offset.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.PersonaType">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.models.scaffolds.</span></span><span class="sig-name descname"><span class="pre">PersonaType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/models/scaffolds.html#PersonaType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.models.scaffolds.PersonaType" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <p>Linguistic and domain persona profiles representing CODATA DRUM Scientific Unions &amp; NMIs.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.PersonaType.GENERAL_USER">
@@ -998,7 +998,7 @@ SI_val = (val * multiplier) + offset.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.DifficultyTier">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.models.scaffolds.</span></span><span class="sig-name descname"><span class="pre">DifficultyTier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/models/scaffolds.html#DifficultyTier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.models.scaffolds.DifficultyTier" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.DifficultyTier.INTRODUCTORY">
 <span class="sig-name descname"><span class="pre">INTRODUCTORY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'introductory'</span></span><a class="headerlink" href="#drum_ml.models.scaffolds.DifficultyTier.INTRODUCTORY" title="Link to this definition">¶</a></dt>
@@ -1030,9 +1030,9 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>quantity_kind_uri</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>canonical_query</strong> (<em>str</em>)</p></li>
 <li><p><strong>ground_truth_answer</strong> (<em>str</em>)</p></li>
-<li><p><strong>context_facts</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>)</p></li>
-<li><p><strong>latex_expressions</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
-<li><p><strong>numerical_constants</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>context_facts</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>latex_expressions</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>numerical_constants</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>)</p></li>
 <li><p><strong>difficulty</strong> (<a class="reference internal" href="#drum_ml.models.scaffolds.DifficultyTier" title="drum_ml.models.scaffolds.DifficultyTier"><em>DifficultyTier</em></a>)</p></li>
 </ul>
 </dd>
@@ -1069,17 +1069,17 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.ScaffoldRecord.context_facts">
-<span class="sig-name descname"><span class="pre">context_facts</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.ScaffoldRecord.context_facts" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">context_facts</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.ScaffoldRecord.context_facts" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.ScaffoldRecord.latex_expressions">
-<span class="sig-name descname"><span class="pre">latex_expressions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.ScaffoldRecord.latex_expressions" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">latex_expressions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.ScaffoldRecord.latex_expressions" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.ScaffoldRecord.numerical_constants">
-<span class="sig-name descname"><span class="pre">numerical_constants</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.ScaffoldRecord.numerical_constants" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">numerical_constants</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.ScaffoldRecord.numerical_constants" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1113,7 +1113,7 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>quantity_kind_uri</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>temperature</strong> (<em>float</em>)</p></li>
 <li><p><strong>llm_generator</strong> (<em>str</em>)</p></li>
-<li><p><strong>metadata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1169,7 +1169,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.scaffolds.AugmentedRecord.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.AugmentedRecord.metadata" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.scaffolds.AugmentedRecord.metadata" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1193,7 +1193,7 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>balanced_delimiters</strong> (<em>bool</em>)</p></li>
 <li><p><strong>valid_latex_syntax</strong> (<em>bool</em>)</p></li>
 <li><p><strong>clean_json_escaping</strong> (<em>bool</em>)</p></li>
-<li><p><strong>errors</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>errors</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1219,7 +1219,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.validation.Tier1SyntaxReport.errors">
-<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier1SyntaxReport.errors" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier1SyntaxReport.errors" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1242,7 +1242,7 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>dimensions_homogeneous</strong> (<em>bool</em>)</p></li>
 <li><p><strong>quantity_kind_compatible</strong> (<em>bool</em>)</p></li>
 <li><p><strong>symbolic_equivalence_verified</strong> (<em>bool</em>)</p></li>
-<li><p><strong>errors</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>errors</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1268,7 +1268,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.validation.Tier2SymbolicReport.errors">
-<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier2SymbolicReport.errors" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier2SymbolicReport.errors" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1290,7 +1290,7 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>passed</strong> (<em>bool</em>)</p></li>
 <li><p><strong>exact_constants_preserved</strong> (<em>bool</em>)</p></li>
 <li><p><strong>zero_rounding_drift</strong> (<em>bool</em>)</p></li>
-<li><p><strong>errors</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>errors</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1311,7 +1311,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.validation.Tier3PrecisionReport.errors">
-<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier3PrecisionReport.errors" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier3PrecisionReport.errors" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1334,7 +1334,7 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>sparql_syntax_valid</strong> (<em>bool</em>)</p></li>
 <li><p><strong>python_ast_valid</strong> (<em>bool</em>)</p></li>
 <li><p><strong>sandbox_execution_success</strong> (<em>bool</em>)</p></li>
-<li><p><strong>errors</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>errors</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1360,7 +1360,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.validation.Tier4CodeReport.errors">
-<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier4CodeReport.errors" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">errors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.Tier4CodeReport.errors" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1382,7 +1382,7 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>record_id</strong> (<em>str</em>)</p></li>
 <li><p><strong>passed</strong> (<em>bool</em>)</p></li>
 <li><p><strong>is_dpo_eligible</strong> (<em>bool</em>)</p></li>
-<li><p><strong>rejection_reasons</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>)</p></li>
+<li><p><strong>rejection_reasons</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>)</p></li>
 <li><p><strong>tier1_syntax</strong> (<a class="reference internal" href="#drum_ml.models.validation.Tier1SyntaxReport" title="drum_ml.models.validation.Tier1SyntaxReport"><em>Tier1SyntaxReport</em></a>)</p></li>
 <li><p><strong>tier2_symbolic</strong> (<a class="reference internal" href="#drum_ml.models.validation.Tier2SymbolicReport" title="drum_ml.models.validation.Tier2SymbolicReport"><em>Tier2SymbolicReport</em></a>)</p></li>
 <li><p><strong>tier3_precision</strong> (<a class="reference internal" href="#drum_ml.models.validation.Tier3PrecisionReport" title="drum_ml.models.validation.Tier3PrecisionReport"><em>Tier3PrecisionReport</em></a>)</p></li>
@@ -1408,7 +1408,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.validation.ValidationResult.rejection_reasons">
-<span class="sig-name descname"><span class="pre">rejection_reasons</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.ValidationResult.rejection_reasons" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rejection_reasons</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.validation.ValidationResult.rejection_reasons" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1485,8 +1485,8 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>id</strong> (<em>str</em>)</p></li>
 <li><p><strong>archetype</strong> (<a class="reference internal" href="#drum_ml.models.scaffolds.ArchetypeType" title="drum_ml.models.scaffolds.ArchetypeType"><em>ArchetypeType</em></a>)</p></li>
 <li><p><strong>entity_uri</strong> (<em>str</em>)</p></li>
-<li><p><strong>messages</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.export.OpenAIChatMessage" title="drum_ml.models.export.OpenAIChatMessage"><em>OpenAIChatMessage</em></a><em>]</em>)</p></li>
-<li><p><strong>metadata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>messages</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.export.OpenAIChatMessage" title="drum_ml.models.export.OpenAIChatMessage"><em>OpenAIChatMessage</em></a><em>]</em>)</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1507,12 +1507,12 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.export.OpenAIChatRecord.messages">
-<span class="sig-name descname"><span class="pre">messages</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#drum_ml.models.export.OpenAIChatMessage" title="drum_ml.models.export.OpenAIChatMessage"><span class="pre">OpenAIChatMessage</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.OpenAIChatRecord.messages" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">messages</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#drum_ml.models.export.OpenAIChatMessage" title="drum_ml.models.export.OpenAIChatMessage"><span class="pre">OpenAIChatMessage</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.OpenAIChatRecord.messages" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.export.OpenAIChatRecord.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.OpenAIChatRecord.metadata" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.OpenAIChatRecord.metadata" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1536,6 +1536,12 @@ SI_val = (val * multiplier) + offset.</p>
 </dd>
 </dl>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTTurn.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'populate_by_name':</span> <span class="pre">True,</span> <span class="pre">'validate_by_alias':</span> <span class="pre">True,</span> <span class="pre">'validate_by_name':</span> <span class="pre">True}</span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTTurn.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTTurn.from_">
 <span class="sig-name descname"><span class="pre">from_</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTTurn.from_" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1544,12 +1550,6 @@ SI_val = (val * multiplier) + offset.</p>
 <dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTTurn.value">
 <span class="sig-name descname"><span class="pre">value</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTTurn.value" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTTurn.model_config">
-<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTTurn.model_config" title="Link to this definition">¶</a></dt>
-<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -1561,11 +1561,17 @@ SI_val = (val * multiplier) + offset.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<em>str</em>)</p></li>
-<li><p><strong>conversations</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn" title="drum_ml.models.export.ShareGPTTurn"><em>ShareGPTTurn</em></a><em>]</em>)</p></li>
-<li><p><strong>metadata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>conversations</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn" title="drum_ml.models.export.ShareGPTTurn"><em>ShareGPTTurn</em></a><em>]</em>)</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTRecord.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'populate_by_name':</span> <span class="pre">True,</span> <span class="pre">'validate_by_alias':</span> <span class="pre">True,</span> <span class="pre">'validate_by_name':</span> <span class="pre">True}</span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTRecord.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTRecord.id">
 <span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTRecord.id" title="Link to this definition">¶</a></dt>
@@ -1573,19 +1579,13 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTRecord.conversations">
-<span class="sig-name descname"><span class="pre">conversations</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn" title="drum_ml.models.export.ShareGPTTurn"><span class="pre">ShareGPTTurn</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTRecord.conversations" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">conversations</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn" title="drum_ml.models.export.ShareGPTTurn"><span class="pre">ShareGPTTurn</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTRecord.conversations" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTRecord.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTRecord.metadata" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTRecord.metadata" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="drum_ml.models.export.ShareGPTRecord.model_config">
-<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#drum_ml.models.export.ShareGPTRecord.model_config" title="Link to this definition">¶</a></dt>
-<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -1604,7 +1604,7 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>chosen</strong> (<em>str</em>)</p></li>
 <li><p><strong>rejected</strong> (<em>str</em>)</p></li>
 <li><p><strong>rejection_reason</strong> (<em>str</em>)</p></li>
-<li><p><strong>metadata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1645,7 +1645,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.models.export.DPOPreferenceRecord.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.DPOPreferenceRecord.metadata" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.models.export.DPOPreferenceRecord.metadata" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1659,11 +1659,10 @@ SI_val = (val * multiplier) + offset.</p>
 </section>
 <section id="module-drum_ml.benchmark.models">
 <span id="benchmark-suite-drum-ml-benchmark"></span><h2>Benchmark Suite (<code class="docutils literal notranslate"><span class="pre">drum_ml.benchmark</span></code>)<a class="headerlink" href="#module-drum_ml.benchmark.models" title="Link to this heading">¶</a></h2>
-<p>Data Models for the DRUM Metrology Benchmark (M-Eval) Suite.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">BenchmarkTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#BenchmarkTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkTask" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <p>The 6 Core Metrology Benchmark Tasks.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkTask.CONSTANTS">
@@ -1700,7 +1699,7 @@ SI_val = (val * multiplier) + offset.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkFormat">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">BenchmarkFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#BenchmarkFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkFormat" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <p>Evaluation formats.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkFormat.MCQ">
@@ -1717,7 +1716,7 @@ SI_val = (val * multiplier) + offset.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.DifficultyTier">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.models.</span></span><span class="sig-name descname"><span class="pre">DifficultyTier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/models.html#DifficultyTier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.models.DifficultyTier" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.DifficultyTier.INTRODUCTORY">
 <span class="sig-name descname"><span class="pre">INTRODUCTORY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'introductory'</span></span><a class="headerlink" href="#drum_ml.benchmark.models.DifficultyTier.INTRODUCTORY" title="Link to this definition">¶</a></dt>
@@ -1790,12 +1789,12 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>difficulty</strong> (<a class="reference internal" href="#drum_ml.benchmark.models.DifficultyTier" title="drum_ml.benchmark.models.DifficultyTier"><em>DifficultyTier</em></a>)</p></li>
 <li><p><strong>question</strong> (<em>str</em>)</p></li>
 <li><p><strong>context</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
-<li><p><strong>options</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption" title="drum_ml.benchmark.models.MCQOption"><em>MCQOption</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>options</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption" title="drum_ml.benchmark.models.MCQOption"><em>MCQOption</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 <li><p><strong>correct_option_key</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>ground_truth_answer</strong> (<em>str</em>)</p></li>
 <li><p><strong>entity_uri</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>explanation</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
-<li><p><strong>metadata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1831,7 +1830,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.options">
-<span class="sig-name descname"><span class="pre">options</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption" title="drum_ml.benchmark.models.MCQOption"><span class="pre">MCQOption</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.options" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">options</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#drum_ml.benchmark.models.MCQOption" title="drum_ml.benchmark.models.MCQOption"><span class="pre">MCQOption</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.options" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1856,7 +1855,7 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkSample.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.metadata" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkSample.metadata" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1920,10 +1919,10 @@ SI_val = (val * multiplier) + offset.</p>
 <li><p><strong>total_samples</strong> (<em>int</em>)</p></li>
 <li><p><strong>passed_samples</strong> (<em>int</em>)</p></li>
 <li><p><strong>overall_accuracy_pct</strong> (<em>float</em>)</p></li>
-<li><p><strong>task_breakdown</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
-<li><p><strong>format_breakdown</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
-<li><p><strong>difficulty_breakdown</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
-<li><p><strong>detailed_results</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>task_breakdown</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
+<li><p><strong>format_breakdown</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
+<li><p><strong>difficulty_breakdown</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><em>TaskScore</em></a><em>]</em>)</p></li>
+<li><p><strong>detailed_results</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1949,22 +1948,22 @@ SI_val = (val * multiplier) + offset.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.task_breakdown">
-<span class="sig-name descname"><span class="pre">task_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.task_breakdown" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">task_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.task_breakdown" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.format_breakdown">
-<span class="sig-name descname"><span class="pre">format_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.format_breakdown" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.format_breakdown" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.difficulty_breakdown">
-<span class="sig-name descname"><span class="pre">difficulty_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.difficulty_breakdown" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">difficulty_breakdown</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#drum_ml.benchmark.models.TaskScore" title="drum_ml.benchmark.models.TaskScore"><span class="pre">TaskScore</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.difficulty_breakdown" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.benchmark.models.BenchmarkScorecard.detailed_results">
-<span class="sig-name descname"><span class="pre">detailed_results</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.detailed_results" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">detailed_results</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#drum_ml.benchmark.models.BenchmarkScorecard.detailed_results" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1997,7 +1996,7 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 <dd><p>Generate a balanced benchmark dataset across all 6 tasks and formats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>samples_per_task</strong> (<em>int</em>)</p>
@@ -2010,7 +2009,7 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 <span class="sig-name descname"><span class="pre">generate_constants_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_constants_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_constants_task" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
@@ -2023,7 +2022,7 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 <span class="sig-name descname"><span class="pre">generate_dimensions_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_dimensions_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_dimensions_task" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
@@ -2036,7 +2035,7 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 <span class="sig-name descname"><span class="pre">generate_conversions_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_conversions_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conversions_task" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
@@ -2049,7 +2048,7 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 <span class="sig-name descname"><span class="pre">generate_homogeneity_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_homogeneity_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_homogeneity_task" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
@@ -2062,7 +2061,7 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 <span class="sig-name descname"><span class="pre">generate_conventions_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_conventions_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_conventions_task" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
@@ -2075,7 +2074,7 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 <span class="sig-name descname"><span class="pre">generate_uncertainty_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/generator.html#DRUMBenchmarkGenerator.generate_uncertainty_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.generate_uncertainty_task" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">BenchmarkSample</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>count</strong> (<em>int</em>)</p>
@@ -2093,13 +2092,188 @@ in both Multiple-Choice Question (MCQ) and Free-Form Symbolic reasoning formats.
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>samples</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><em>BenchmarkSample</em></a><em>]</em>)</p></li>
+<li><p><strong>samples</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.benchmark.models.BenchmarkSample" title="drum_ml.benchmark.models.BenchmarkSample"><em>BenchmarkSample</em></a><em>]</em>)</p></li>
 <li><p><strong>filepath</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<p id="module-drum_ml.benchmark.viewer">DRUM Metrology Benchmark (M-Eval) Interactive HTML Viewer Generator.</p>
+<p>Generates a standalone, feature-rich, interactive HTML dashboard for browsing,
+reviewing, testing, and auditing the DRUM Metrology Benchmark dataset.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.benchmark.viewer.load_jsonl_records">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.viewer.</span></span><span class="sig-name descname"><span class="pre">load_jsonl_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/viewer.html#load_jsonl_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.viewer.load_jsonl_records" title="Link to this definition">¶</a></dt>
+<dd><p>Load benchmark records from a JSONL file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.benchmark.viewer.load_json_file">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.viewer.</span></span><span class="sig-name descname"><span class="pre">load_json_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/viewer.html#load_json_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.viewer.load_json_file" title="Link to this definition">¶</a></dt>
+<dd><p>Load a JSON file if it exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.benchmark.viewer.generate_benchmark_html">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.viewer.</span></span><span class="sig-name descname"><span class="pre">generate_benchmark_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">benchmark_records</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorecard</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DRUM</span> <span class="pre">Metrology</span> <span class="pre">Benchmark</span> <span class="pre">(M-Eval)'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/viewer.html#generate_benchmark_html"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.viewer.generate_benchmark_html" title="Link to this definition">¶</a></dt>
+<dd><p>Generate the complete self-contained HTML page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>benchmark_records</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>scorecard</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>dataset_title</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.benchmark.viewer.save_benchmark_viewer">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.benchmark.viewer.</span></span><span class="sig-name descname"><span class="pre">save_benchmark_viewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_html_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">benchmark_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset/benchmark/drum_benchmark_all.jsonl'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorecard_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset/benchmark/benchmark_report.json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">open_browser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/benchmark/viewer.html#save_benchmark_viewer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.benchmark.viewer.save_benchmark_viewer" title="Link to this definition">¶</a></dt>
+<dd><p>Compile and save the standalone benchmark viewer HTML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>output_html_path</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
+<li><p><strong>benchmark_file</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
+<li><p><strong>scorecard_file</strong> (<em>str</em><em> | </em><em>Path</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>open_browser</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-drum_ml.dataset_viewer">
+<span id="interactive-browsers-drum-ml-dataset-viewer"></span><h2>Interactive Browsers (<code class="docutils literal notranslate"><span class="pre">drum_ml.dataset_viewer</span></code>)<a class="headerlink" href="#module-drum_ml.dataset_viewer" title="Link to this heading">¶</a></h2>
+<p>DRUM-ML Interactive HTML Dataset Browser &amp; Viewer Generator.</p>
+<p>Generates a standalone, feature-rich, high-performance interactive HTML dashboard
+for exploring, filtering, reviewing, and auditing DRUM-ML training, validation,
+test, and DPO datasets, including breakdowns by persona, archetype, and category.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.dataset_viewer.parse_persona_from_record">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.dataset_viewer.</span></span><span class="sig-name descname"><span class="pre">parse_persona_from_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/dataset_viewer.html#parse_persona_from_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.dataset_viewer.parse_persona_from_record" title="Link to this definition">¶</a></dt>
+<dd><p>Extract or infer persona identifier from a dataset record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>item</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.dataset_viewer.parse_category_from_record">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.dataset_viewer.</span></span><span class="sig-name descname"><span class="pre">parse_category_from_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/dataset_viewer.html#parse_category_from_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.dataset_viewer.parse_category_from_record" title="Link to this definition">¶</a></dt>
+<dd><p>Extract or infer entity category (units, constants, quantity_kinds).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>item</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.dataset_viewer.normalize_record_for_viewer">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.dataset_viewer.</span></span><span class="sig-name descname"><span class="pre">normalize_record_for_viewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'train'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/dataset_viewer.html#normalize_record_for_viewer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.dataset_viewer.normalize_record_for_viewer" title="Link to this definition">¶</a></dt>
+<dd><p>Normalizes any record format (OpenAI, ShareGPT, DPO, Augmented) into a standard viewer item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>item</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>default_split</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.dataset_viewer.load_dataset_records">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.dataset_viewer.</span></span><span class="sig-name descname"><span class="pre">load_dataset_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir_or_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/dataset_viewer.html#load_dataset_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.dataset_viewer.load_dataset_records" title="Link to this definition">¶</a></dt>
+<dd><p>Loads dataset files from directory or a single file and extracts a balanced stratified sample + global statistics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>dataset_dir_or_file</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
+<li><p><strong>max_samples</strong> (<em>int</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>seed</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.dataset_viewer.generate_dataset_html">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.dataset_viewer.</span></span><span class="sig-name descname"><span class="pre">generate_dataset_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_records</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DRUM-ML</span> <span class="pre">Metrology</span> <span class="pre">Instruct</span> <span class="pre">Dataset'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/dataset_viewer.html#generate_dataset_html"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.dataset_viewer.generate_dataset_html" title="Link to this definition">¶</a></dt>
+<dd><p>Generates the complete self-contained HTML page for exploring training/test dataset splits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>dataset_records</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>dataset_stats</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>dataset_title</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.dataset_viewer.save_dataset_viewer">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.dataset_viewer.</span></span><span class="sig-name descname"><span class="pre">save_dataset_viewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_html_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_dir_or_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">open_browser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/dataset_viewer.html#save_dataset_viewer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.dataset_viewer.save_dataset_viewer" title="Link to this definition">¶</a></dt>
+<dd><p>Compiles and saves the standalone interactive dataset viewer HTML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>output_html_path</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
+<li><p><strong>dataset_dir_or_file</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
+<li><p><strong>max_samples</strong> (<em>int</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>open_browser</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -2130,7 +2304,7 @@ that share identical DimensionVectors (e.g., Torque vs. Energy, Frequency vs. Ac
 <dd><p>Checks whether a given unit symbol is metrologically valid for a quantity kind.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>(is_valid, error_explanation)</p>
@@ -2154,7 +2328,7 @@ that share identical DimensionVectors (e.g., Torque vs. Energy, Frequency vs. Ac
 e.g. ‘6.67430(15)e-11’ -&gt; (‘6.67430e-11’, ‘0.00015e-11’) or (‘6.67430e-11’, ‘1.5e-15’).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>(clean_value_string, standard_uncertainty_string)</p>
@@ -2201,7 +2375,7 @@ are physically and numerically equivalent.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(is_equivalent, error_message)</p>
@@ -2234,7 +2408,7 @@ are physically and numerically equivalent.</p>
 <dd><p>Verifies that math delimiters ($ and $$), curly braces, and brackets are properly balanced.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>text</strong> (<em>str</em>)</p>
@@ -2270,7 +2444,7 @@ are physically and numerically equivalent.</p>
 <dd><p>Downloads the latest official BIPM SI Digital Framework TTL files from GitHub.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2292,7 +2466,7 @@ are physically and numerically equivalent.</p>
 <dd><p>Dynamically extracts SI base units from BIPM SI ontology using SPARQL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>graph</strong> (<em>Graph</em>)</p>
@@ -2306,7 +2480,7 @@ are physically and numerically equivalent.</p>
 <dd><p>Dynamically extracts SI defining constants from BIPM SI ontology using SPARQL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>graph</strong> (<em>Graph</em>)</p>
@@ -2320,7 +2494,7 @@ are physically and numerically equivalent.</p>
 <dd><p>Extracts SI base units and defining constants dynamically from local or provided graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>graph</strong> (<em>Graph</em><em> | </em><em>None</em>)</p>
@@ -2357,7 +2531,7 @@ from RDF Turtle, JSON releases, or the CODATA DRUM API with QUDT crosswalks.</p>
 <dd><p>Downloads latest CODATA constants Turtle files and JSON history from GitHub.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2379,7 +2553,7 @@ from RDF Turtle, JSON releases, or the CODATA DRUM API with QUDT crosswalks.</p>
 <dd><p>Fetches constants dynamically from the CODATA DRUM REST API.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>year</strong> (<em>int</em><em> | </em><em>None</em>)</p>
@@ -2393,7 +2567,7 @@ from RDF Turtle, JSON releases, or the CODATA DRUM API with QUDT crosswalks.</p>
 <dd><p>Parses constants dynamically from codata-history.json or versioned JSON files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -2410,7 +2584,7 @@ from RDF Turtle, JSON releases, or the CODATA DRUM API with QUDT crosswalks.</p>
 <dd><p>Parses constants from an RDF graph using SPARQL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -2428,7 +2602,7 @@ from RDF Turtle, JSON releases, or the CODATA DRUM API with QUDT crosswalks.</p>
 and CODATA recommended values for the requested evaluation year (default: 2022).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.PhysicalConstantEntity" title="drum_ml.models.entities.PhysicalConstantEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalConstantEntity</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -2457,7 +2631,7 @@ and CODATA recommended values for the requested evaluation year (default: 2022).
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="drum_ml.data_sources.qudt_fetcher.QUDTFetcher.QUDT_VOCAB_URLS">
-<span class="sig-name descname"><span class="pre">QUDT_VOCAB_URLS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'VOCAB_QUDT-DIMENSION-VECTORS-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/dimensionvector',</span> <span class="pre">'VOCAB_QUDT-PREFIXES-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/prefix',</span> <span class="pre">'VOCAB_QUDT-QUANTITY-KINDS-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/quantitykind',</span> <span class="pre">'VOCAB_QUDT-UNITS-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/unit'}</span></span><a class="headerlink" href="#drum_ml.data_sources.qudt_fetcher.QUDTFetcher.QUDT_VOCAB_URLS" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">QUDT_VOCAB_URLS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'VOCAB_QUDT-DIMENSION-VECTORS-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/dimensionvector',</span> <span class="pre">'VOCAB_QUDT-PREFIXES-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/prefix',</span> <span class="pre">'VOCAB_QUDT-QUANTITY-KINDS-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/quantitykind',</span> <span class="pre">'VOCAB_QUDT-UNITS-ALL.ttl':</span> <span class="pre">'https://qudt.org/2.1/vocab/unit'}</span></span><a class="headerlink" href="#drum_ml.data_sources.qudt_fetcher.QUDTFetcher.QUDT_VOCAB_URLS" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2466,7 +2640,7 @@ and CODATA recommended values for the requested evaluation year (default: 2022).
 <dd><p>Downloads official QUDT TTL vocabularies from official endpoints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>tag</strong> (<em>str</em><em> | </em><em>None</em>)</p>
@@ -2491,7 +2665,7 @@ and CODATA recommended values for the requested evaluation year (default: 2022).
 <dd><p>Extracts QuantityKinds dynamically via SPARQL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantityKindEntity</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantityKindEntity</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>graph</strong> (<em>Graph</em>)</p>
@@ -2505,7 +2679,7 @@ and CODATA recommended values for the requested evaluation year (default: 2022).
 <dd><p>Extracts Units dynamically via SPARQL from the QUDT RDF Graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>graph</strong> (<em>Graph</em>)</p>
@@ -2519,7 +2693,7 @@ and CODATA recommended values for the requested evaluation year (default: 2022).
 <dd><p>Loads local graph or provided graph and executes dynamic SPARQL extraction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantityKindEntity</span></code></a>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.UnitEntity" title="drum_ml.models.entities.UnitEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitEntity</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#drum_ml.models.entities.QuantityKindEntity" title="drum_ml.models.entities.QuantityKindEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantityKindEntity</span></code></a>]]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>graph</strong> (<em>Graph</em><em> | </em><em>None</em>)</p>
@@ -2592,17 +2766,18 @@ Tier 1 (BIPM SI) &gt; Tier 2 (CODATA DRUM Constants) &gt; Tier 3 (QUDT 2.1).</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="drum_ml.pipeline.scaffolder.MetrologyScaffolder.generate_all">
-<span class="sig-name descname"><span class="pre">generate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">store</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_per_category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/scaffolder.html#MetrologyScaffolder.generate_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.scaffolder.MetrologyScaffolder.generate_all" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">generate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">store</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_per_category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/scaffolder.html#MetrologyScaffolder.generate_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.scaffolder.MetrologyScaffolder.generate_all" title="Link to this definition">¶</a></dt>
 <dd><p>Generates canonical scaffolds for units and constants in the store.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>store</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#drum_ml.models.entities.CanonicalEntityStore" title="drum_ml.models.entities.CanonicalEntityStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanonicalEntityStore</span></code></a></span>) – The canonical entity store.</p></li>
-<li><p><strong>limit_per_category</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Optional maximum number of units and constants to scaffold (for quick sample generation).</p></li>
+<li><p><strong>limit_per_category</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Optional maximum number of entities to scaffold.</p></li>
+<li><p><strong>category</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – ‘all’, ‘constants’, or ‘units’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.ScaffoldRecord" title="drum_ml.models.scaffolds.ScaffoldRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScaffoldRecord</span></code></a>]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.ScaffoldRecord" title="drum_ml.models.scaffolds.ScaffoldRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScaffoldRecord</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2617,7 +2792,7 @@ Tier 1 (BIPM SI) &gt; Tier 2 (CODATA DRUM Constants) &gt; Tier 3 (QUDT 2.1).</p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>scaffolds</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.ScaffoldRecord" title="drum_ml.models.scaffolds.ScaffoldRecord"><em>ScaffoldRecord</em></a><em>]</em>)</p></li>
+<li><p><strong>scaffolds</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.ScaffoldRecord" title="drum_ml.models.scaffolds.ScaffoldRecord"><em>ScaffoldRecord</em></a><em>]</em>)</p></li>
 <li><p><strong>output_path</strong> (<em>str</em>)</p></li>
 </ul>
 </dd>
@@ -2626,7 +2801,25 @@ Tier 1 (BIPM SI) &gt; Tier 2 (CODATA DRUM Constants) &gt; Tier 3 (QUDT 2.1).</p>
 
 </dd></dl>
 
-<dl class="py class" id="module-drum_ml.pipeline.augmenter">
+<dl class="py function" id="module-drum_ml.pipeline.augmenter">
+<dt class="sig sig-object py" id="drum_ml.pipeline.augmenter.extract_clean_queries">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.pipeline.augmenter.</span></span><span class="sig-name descname"><span class="pre">extract_clean_queries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persona_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/augmenter.html#extract_clean_queries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.augmenter.extract_clean_queries" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts pristine user queries from LLM responses, stripping reasoning/think tags and prompt leakage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>raw_text</strong> (<em>str</em>)</p></li>
+<li><p><strong>fallback_query</strong> (<em>str</em>)</p></li>
+<li><p><strong>persona_type</strong> (<a class="reference internal" href="#drum_ml.models.scaffolds.PersonaType" title="drum_ml.models.scaffolds.PersonaType"><em>PersonaType</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.pipeline.augmenter.MetrologyAugmenter">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.pipeline.augmenter.</span></span><span class="sig-name descname"><span class="pre">MetrologyAugmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">provider</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'google'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gemini/gemini-2.5-flash'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_db_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./data/cache/llm_cache.sqlite'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrency_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/augmenter.html#MetrologyAugmenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.augmenter.MetrologyAugmenter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -2651,7 +2844,7 @@ Tier 1 (BIPM SI) &gt; Tier 2 (CODATA DRUM Constants) &gt; Tier 3 (QUDT 2.1).</p>
 <dd><p>Synchronously augments a scaffold for a specific persona.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -2669,12 +2862,12 @@ Tier 1 (BIPM SI) &gt; Tier 2 (CODATA DRUM Constants) &gt; Tier 3 (QUDT 2.1).</p>
 <dd><p>Augments a collection of scaffolds concurrently across all designated personas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>scaffolds</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.ScaffoldRecord" title="drum_ml.models.scaffolds.ScaffoldRecord"><em>ScaffoldRecord</em></a><em>]</em>)</p></li>
-<li><p><strong>personas</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.PersonaType" title="drum_ml.models.scaffolds.PersonaType"><em>PersonaType</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>scaffolds</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.ScaffoldRecord" title="drum_ml.models.scaffolds.ScaffoldRecord"><em>ScaffoldRecord</em></a><em>]</em>)</p></li>
+<li><p><strong>personas</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.PersonaType" title="drum_ml.models.scaffolds.PersonaType"><em>PersonaType</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 <li><p><strong>variations_per_archetype</strong> (<em>int</em>)</p></li>
 <li><p><strong>progress_callback</strong> (<em>Callable</em><em>[</em><em>[</em><em>int</em><em>]</em><em>, </em><em>None</em><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
@@ -2692,7 +2885,7 @@ Tier 1 (BIPM SI) &gt; Tier 2 (CODATA DRUM Constants) &gt; Tier 3 (QUDT 2.1).</p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
+<li><p><strong>records</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
 <li><p><strong>output_path</strong> (<em>str</em>)</p></li>
 </ul>
 </dd>
@@ -2732,10 +2925,10 @@ Tier 1 (BIPM SI) &gt; Tier 2 (CODATA DRUM Constants) &gt; Tier 3 (QUDT 2.1).</p>
 <dd><p>Validates all records, separating approved records from audit results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.validation.ValidationResult" title="drum_ml.models.validation.ValidationResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationResult</span></code></a>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.validation.ValidationResult" title="drum_ml.models.validation.ValidationResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationResult</span></code></a>]]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p>
+<dd class="field-even"><p><strong>records</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2755,12 +2948,12 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 <dd><p>Harvests verified DPO pairs where the prompt is high-quality and chosen answer is ground truth.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.export.DPOPreferenceRecord" title="drum_ml.models.export.DPOPreferenceRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">DPOPreferenceRecord</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.export.DPOPreferenceRecord" title="drum_ml.models.export.DPOPreferenceRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">DPOPreferenceRecord</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
-<li><p><strong>reports</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.validation.ValidationResult" title="drum_ml.models.validation.ValidationResult"><em>ValidationResult</em></a><em>]</em>)</p></li>
+<li><p><strong>records</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
+<li><p><strong>reports</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.validation.ValidationResult" title="drum_ml.models.validation.ValidationResult"><em>ValidationResult</em></a><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -2768,12 +2961,26 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 
 </dd></dl>
 
-<p id="module-drum_ml.pipeline.exporter">Agent 5: Deduplication, Stratified Partitioning, and Dataset Packaging.</p>
+<p id="module-drum_ml.pipeline.exporter">Agent 5: Deduplication, Stratified Partitioning, Grouped Subsets, and Dataset Packaging.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="drum_ml.pipeline.exporter.compute_file_sha256">
+<span class="sig-prename descclassname"><span class="pre">drum_ml.pipeline.exporter.</span></span><span class="sig-name descname"><span class="pre">compute_file_sha256</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#compute_file_sha256"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.compute_file_sha256" title="Link to this definition">¶</a></dt>
+<dd><p>Computes SHA-256 checksum of a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>file_path</strong> (<em>Path</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="drum_ml.pipeline.exporter.MetrologyExporter">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.pipeline.exporter.</span></span><span class="sig-name descname"><span class="pre">MetrologyExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jaccard_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dedup_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#MetrologyExporter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.MetrologyExporter" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">drum_ml.pipeline.exporter.</span></span><span class="sig-name descname"><span class="pre">MetrologyExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jaccard_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dedup_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_by_persona</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_by_archetype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_by_category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_viewer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#MetrologyExporter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.MetrologyExporter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Agent 5: MinHash deduplication, entity-stratified split, and multi-format dataset exporter.</p>
+<p>Agent 5: MinHash deduplication, entity-stratified split, and multi-format / multi-group dataset exporter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2783,6 +2990,11 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 <li><p><strong>test_ratio</strong> (<em>float</em>)</p></li>
 <li><p><strong>jaccard_threshold</strong> (<em>float</em>)</p></li>
 <li><p><strong>dedup_threshold</strong> (<em>float</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>export_by_persona</strong> (<em>bool</em>)</p></li>
+<li><p><strong>export_by_archetype</strong> (<em>bool</em>)</p></li>
+<li><p><strong>export_by_category</strong> (<em>bool</em>)</p></li>
+<li><p><strong>generate_viewer</strong> (<em>bool</em>)</p></li>
+<li><p><strong>formats</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -2792,10 +3004,10 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 <dd><p>Performs MinHash LSH near-duplicate and exact-hash deduplication.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p>
+<dd class="field-even"><p><strong>records</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2806,11 +3018,11 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 <dd><p>Partitions dataset with entity isolation to prevent train-to-test data leakage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">AugmentedRecord</span></code></a>]]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
+<li><p><strong>records</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
 <li><p><strong>seed</strong> (<em>int</em>)</p></li>
 </ul>
 </dd>
@@ -2832,17 +3044,68 @@ filtering out noisy, garbled, or mismatched prompts.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="drum_ml.pipeline.exporter.MetrologyExporter.export_all">
-<span class="sig-name descname"><span class="pre">export_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpo_pairs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#MetrologyExporter.export_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.MetrologyExporter.export_all" title="Link to this definition">¶</a></dt>
-<dd><p>Deduplicates, splits, and writes dataset splits to disk.</p>
+<dt class="sig sig-object py" id="drum_ml.pipeline.exporter.MetrologyExporter.to_sharegpt_format">
+<span class="sig-name descname"><span class="pre">to_sharegpt_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#MetrologyExporter.to_sharegpt_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.MetrologyExporter.to_sharegpt_format" title="Link to this definition">¶</a></dt>
+<dd><p>Converts augmented record to ShareGPT multi-turn conversation format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#drum_ml.models.export.ShareGPTRecord" title="drum_ml.models.export.ShareGPTRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShareGPTRecord</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>record</strong> (<a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.pipeline.exporter.MetrologyExporter.export_all">
+<span class="sig-name descname"><span class="pre">export_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpo_pairs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#MetrologyExporter.export_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.MetrologyExporter.export_all" title="Link to this definition">¶</a></dt>
+<dd><p>Deduplicates, splits, partitions into groupings, and writes dataset splits and viewer to disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>records</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
-<li><p><strong>dpo_pairs</strong> (<em>List</em><em>[</em><a class="reference internal" href="#drum_ml.models.export.DPOPreferenceRecord" title="drum_ml.models.export.DPOPreferenceRecord"><em>DPOPreferenceRecord</em></a><em>]</em>)</p></li>
+<li><p><strong>records</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.scaffolds.AugmentedRecord" title="drum_ml.models.scaffolds.AugmentedRecord"><em>AugmentedRecord</em></a><em>]</em>)</p></li>
+<li><p><strong>dpo_pairs</strong> (<em>list</em><em>[</em><a class="reference internal" href="#drum_ml.models.export.DPOPreferenceRecord" title="drum_ml.models.export.DPOPreferenceRecord"><em>DPOPreferenceRecord</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.pipeline.exporter.MetrologyExporter.generate_manifest">
+<span class="sig-name descname"><span class="pre">generate_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_records</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exported_paths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#MetrologyExporter.generate_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.MetrologyExporter.generate_manifest" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a comprehensive dataset manifest indexing all partitions and checksums.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>Path</em>)</p></li>
+<li><p><strong>total_records</strong> (<em>int</em>)</p></li>
+<li><p><strong>splits</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>)</p></li>
+<li><p><strong>exported_paths</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="drum_ml.pipeline.exporter.MetrologyExporter.partition_existing_dataset">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">partition_existing_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_viewer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/drum_ml/pipeline/exporter.html#MetrologyExporter.partition_existing_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#drum_ml.pipeline.exporter.MetrologyExporter.partition_existing_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>High-performance partitioner for existing dataset directories with train/val/test/dpo JSONL files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>dataset_dir</strong> (<em>str</em><em> | </em><em>Path</em>)</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em><em> | </em><em>Path</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>generate_viewer</strong> (<em>bool</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -2870,7 +3133,7 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <dd><p>Load benchmark samples from JSONL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2881,7 +3144,7 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <dd><p>Extracts the predicted MCQ option letter (A, B, C, D) from an LLM response.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>response_text</strong> (<em>str</em>)</p>
@@ -2895,11 +3158,11 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <dd><p>Grades a response against ground truth using MCQ extraction or symbolic equivalence.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>record</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>record</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
 <li><p><strong>predicted_text</strong> (<em>str</em>)</p></li>
 </ul>
 </dd>
@@ -2917,7 +3180,7 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>model_name</strong> (<em>str</em>)</p></li>
-<li><p><strong>results</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>results</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -3236,16 +3499,16 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn"><code class="docutils literal notranslate"><span class="pre">ShareGPTTurn</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn.model_config"><code class="docutils literal notranslate"><span class="pre">ShareGPTTurn.model_config</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn.from_"><code class="docutils literal notranslate"><span class="pre">ShareGPTTurn.from_</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn.value"><code class="docutils literal notranslate"><span class="pre">ShareGPTTurn.value</span></code></a></li>
-<li><a class="reference internal" href="#drum_ml.models.export.ShareGPTTurn.model_config"><code class="docutils literal notranslate"><span class="pre">ShareGPTTurn.model_config</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#drum_ml.models.export.ShareGPTRecord"><code class="docutils literal notranslate"><span class="pre">ShareGPTRecord</span></code></a><ul>
+<li><a class="reference internal" href="#drum_ml.models.export.ShareGPTRecord.model_config"><code class="docutils literal notranslate"><span class="pre">ShareGPTRecord.model_config</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.models.export.ShareGPTRecord.id"><code class="docutils literal notranslate"><span class="pre">ShareGPTRecord.id</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.models.export.ShareGPTRecord.conversations"><code class="docutils literal notranslate"><span class="pre">ShareGPTRecord.conversations</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.models.export.ShareGPTRecord.metadata"><code class="docutils literal notranslate"><span class="pre">ShareGPTRecord.metadata</span></code></a></li>
-<li><a class="reference internal" href="#drum_ml.models.export.ShareGPTRecord.model_config"><code class="docutils literal notranslate"><span class="pre">ShareGPTRecord.model_config</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#drum_ml.models.export.DPOPreferenceRecord"><code class="docutils literal notranslate"><span class="pre">DPOPreferenceRecord</span></code></a><ul>
@@ -3338,6 +3601,19 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <li><a class="reference internal" href="#drum_ml.benchmark.generator.DRUMBenchmarkGenerator.save_jsonl"><code class="docutils literal notranslate"><span class="pre">DRUMBenchmarkGenerator.save_jsonl()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#drum_ml.benchmark.viewer.load_jsonl_records"><code class="docutils literal notranslate"><span class="pre">load_jsonl_records()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.viewer.load_json_file"><code class="docutils literal notranslate"><span class="pre">load_json_file()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.viewer.generate_benchmark_html"><code class="docutils literal notranslate"><span class="pre">generate_benchmark_html()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.benchmark.viewer.save_benchmark_viewer"><code class="docutils literal notranslate"><span class="pre">save_benchmark_viewer()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-drum_ml.dataset_viewer">Interactive Browsers (<code class="docutils literal notranslate"><span class="pre">drum_ml.dataset_viewer</span></code>)</a><ul>
+<li><a class="reference internal" href="#drum_ml.dataset_viewer.parse_persona_from_record"><code class="docutils literal notranslate"><span class="pre">parse_persona_from_record()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.dataset_viewer.parse_category_from_record"><code class="docutils literal notranslate"><span class="pre">parse_category_from_record()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.dataset_viewer.normalize_record_for_viewer"><code class="docutils literal notranslate"><span class="pre">normalize_record_for_viewer()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.dataset_viewer.load_dataset_records"><code class="docutils literal notranslate"><span class="pre">load_dataset_records()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.dataset_viewer.generate_dataset_html"><code class="docutils literal notranslate"><span class="pre">generate_dataset_html()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.dataset_viewer.save_dataset_viewer"><code class="docutils literal notranslate"><span class="pre">save_dataset_viewer()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-drum_ml.symbolic.dimensions">Symbolic Core (<code class="docutils literal notranslate"><span class="pre">drum_ml.symbolic</span></code>)</a><ul>
@@ -3392,6 +3668,7 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <li><a class="reference internal" href="#drum_ml.pipeline.scaffolder.MetrologyScaffolder.save_to_json"><code class="docutils literal notranslate"><span class="pre">MetrologyScaffolder.save_to_json()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#drum_ml.pipeline.augmenter.extract_clean_queries"><code class="docutils literal notranslate"><span class="pre">extract_clean_queries()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.pipeline.augmenter.MetrologyAugmenter"><code class="docutils literal notranslate"><span class="pre">MetrologyAugmenter</span></code></a><ul>
 <li><a class="reference internal" href="#drum_ml.pipeline.augmenter.MetrologyAugmenter.augment_scaffold_sync"><code class="docutils literal notranslate"><span class="pre">MetrologyAugmenter.augment_scaffold_sync()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.pipeline.augmenter.MetrologyAugmenter.augment_all"><code class="docutils literal notranslate"><span class="pre">MetrologyAugmenter.augment_all()</span></code></a></li>
@@ -3407,11 +3684,15 @@ and generating stratified metrology scorecards across all 6 sub-disciplines.</p>
 <li><a class="reference internal" href="#drum_ml.pipeline.dpo_miner.DPOMiner.mine_pairs"><code class="docutils literal notranslate"><span class="pre">DPOMiner.mine_pairs()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#drum_ml.pipeline.exporter.compute_file_sha256"><code class="docutils literal notranslate"><span class="pre">compute_file_sha256()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter</span></code></a><ul>
 <li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter.deduplicate"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter.deduplicate()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter.stratified_split"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter.stratified_split()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter.to_openai_format"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter.to_openai_format()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter.to_sharegpt_format"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter.to_sharegpt_format()</span></code></a></li>
 <li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter.export_all"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter.export_all()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter.generate_manifest"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter.generate_manifest()</span></code></a></li>
+<li><a class="reference internal" href="#drum_ml.pipeline.exporter.MetrologyExporter.partition_existing_dataset"><code class="docutils literal notranslate"><span class="pre">MetrologyExporter.partition_existing_dataset()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#drum_ml.pipeline.evaluator.MEvalBenchmark"><code class="docutils literal notranslate"><span class="pre">MEvalBenchmark</span></code></a><ul>

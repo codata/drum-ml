@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -233,9 +236,8 @@
           <h1>Source code for drum_ml.pipeline.extractor</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Agent 1: SPARQL Ingestion and Multi-Graph Canonical Extractor."""</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.data_sources.bipm_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">BIPMClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.data_sources.codata_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">CODATAClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.data_sources.qudt_fetcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">QUDTFetcher</span>
@@ -264,7 +266,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bipm_client</span><span class="o">.</span><span class="n">local_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.ttl"</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bipm_client</span><span class="o">.</span><span class="n">download_latest_ontology</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">codata_client</span><span class="o">.</span><span class="n">local_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.ttl"</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">codata_client</span><span class="o">.</span><span class="n">local_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.json"</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">codata_client</span><span class="o">.</span><span class="n">local_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.ttl"</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">codata_client</span><span class="o">.</span><span class="n">local_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.json"</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">codata_client</span><span class="o">.</span><span class="n">download_latest_data</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qudt_fetcher</span><span class="o">.</span><span class="n">local_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.ttl"</span><span class="p">)):</span>
@@ -295,12 +299,26 @@
         <span class="n">codata_constants</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">codata_client</span><span class="o">.</span><span class="n">extract_canonical_constants</span><span class="p">()</span>
         <span class="n">store</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">codata_constants</span><span class="p">)</span>
 
+        <span class="c1"># Filter out placeholder/dummy entities (e.g. QUDT UNKNOWN unit placeholder)</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">uri</span><span class="p">:</span> <span class="n">u</span>
+            <span class="k">for</span> <span class="n">uri</span><span class="p">,</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/UNKNOWN"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">symbol</span> <span class="o">==</span> <span class="s2">"Unknown"</span> <span class="ow">and</span> <span class="n">u</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="s2">"Unknown"</span><span class="p">))</span>
+        <span class="p">}</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">quantity_kinds</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">uri</span><span class="p">:</span> <span class="n">qk</span>
+            <span class="k">for</span> <span class="n">uri</span><span class="p">,</span> <span class="n">qk</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">quantity_kinds</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/Unknown"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">qk</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="s2">"Unknown"</span><span class="p">)</span>
+        <span class="p">}</span>
+
         <span class="k">return</span> <span class="n">store</span></div>
 
 
 <div class="viewcode-block" id="MetrologyExtractor.save_to_json">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.extractor.MetrologyExtractor.save_to_json">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="p">:</span> <span class="n">CanonicalEntityStore</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./data/entities.json"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="p">:</span> <span class="n">CanonicalEntityStore</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./data/entities.json"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Serializes canonical entity store to JSON with UTF-8 encoding."""</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

@@ -1,4 +1,4 @@
-"""Data Models for the DRUM Metrology Benchmark (M-Eval) Suite."""
+from __future__ import annotations
 
 from enum import StrEnum
 from typing import Any

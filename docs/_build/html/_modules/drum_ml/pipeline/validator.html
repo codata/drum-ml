@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -233,19 +236,11 @@
           <h1>Source code for drum_ml.pipeline.validator</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Agent 4: Multi-Tier Metrology Validation Gate."""</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">AugmentedRecord</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.validation</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Tier1SyntaxReport</span><span class="p">,</span>
-    <span class="n">Tier2SymbolicReport</span><span class="p">,</span>
-    <span class="n">Tier3PrecisionReport</span><span class="p">,</span>
-    <span class="n">Tier4CodeReport</span><span class="p">,</span>
     <span class="n">ValidationResult</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.symbolic.latex_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_latex_math_balance</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.symbolic.pint_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_unit_conversion_equivalence</span>
 
 
 <div class="viewcode-block" id="MetrologyValidator">
@@ -297,10 +292,12 @@
 
 <div class="viewcode-block" id="MetrologyValidator.validate_all">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.validator.MetrologyValidator.validate_all">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_all</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">"""Validates all records, separating approved records from audit results."""</span>
-        <span class="n">approved</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">reports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">approved</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">reports</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
             <span class="n">report</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_record</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>

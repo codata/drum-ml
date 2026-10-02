@@ -266,11 +266,29 @@ drum-ml build-benchmark --samples-per-task 50
 # Step 4: Run full dataset generation pipeline (extract -> scaffold -> augment -> validate -> export)
 drum-ml run
 
-# Step 5: Evaluate local or remote models against the DRUM benchmark
+# Step 5: Partition existing datasets into per-persona, per-archetype, and per-category files
+drum-ml partition --dataset-dir ./dataset --viewer
+
+# Step 6: Launch the interactive HTML dataset browser (explore training, val, test, and DPO data)
+drum-ml view-dataset --dataset-dir ./dataset
+
+# Step 7: Evaluate local or remote models against the DRUM benchmark
 drum-ml evaluate --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl
 ```
 
-### 4. LLM Provider & API Key Configuration
+### 4. Interactive HTML Dataset & Benchmark Explorers
+
+DRUM-ML includes standalone, rich interactive HTML browser dashboards for instant visual inspection and auditing:
+
+```bash
+# Launch the Interactive Training & Test Dataset Browser
+drum-ml view-dataset --dataset-dir ./dataset
+
+# Launch the DRUM Benchmark (M-Eval) Interactive Dashboard
+drum-ml view-benchmark --benchmark-file ./dataset/benchmark/drum_benchmark_all.jsonl
+```
+
+### 5. LLM Provider & API Key Configuration
 
 Configure your model provider in `config.yaml` or via environment variables:
 
@@ -281,7 +299,8 @@ Configure your model provider in `config.yaml` or via environment variables:
 | **Local LM Studio** | `provider: "lm_studio"`<br/>`model: "local-model"`<br/>`api_base: "http://localhost:1234/v1"` | None needed |
 | **Anthropic Claude** | `provider: "anthropic"`<br/>`model: "claude-3-7-sonnet"` | `ANTHROPIC_API_KEY` |
 | **OpenAI** | `provider: "openai"`<br/>`model: "gpt-4.5-preview"` | `OPENAI_API_KEY` |
-### 5. Publishing to Hugging Face Hub
+
+### 6. Publishing to Hugging Face Hub
 
 DRUM-ML includes built-in commands to publish generated dataset splits, DPO pairs, and generated dataset cards directly to Hugging Face:
 

@@ -25,6 +25,60 @@ def test_mcq_answer_extraction():
     assert evaluator.extract_mcq_answer("D. Some description here") == "D"
 
 
+def test_mcq_json_extraction():
+    evaluator = MEvalBenchmark()
+
+    # Pure JSON
+    pure_json = '{"answer": "B", "explanation": "By the 2019 SI definition, c is exact."}'
+    key, exp = evaluator.parse_mcq_response(pure_json)
+    assert key == "B"
+    assert exp == "By the 2019 SI definition, c is exact."
+
+    # Markdown fenced JSON
+    fenced_json = """Here is my answer:
+```json
+{
+  "answer": "C",
+  "explanation": "Energy has dimensions L^2 M T^-2."
+}
+```
+"""
+    key, exp = evaluator.parse_mcq_response(fenced_json)
+    assert key == "C"
+    assert "Energy has dimensions" in (exp or "")
+
+    # Reasoning tag with JSON
+    reasoning_json = """<think>
+Evaluating options:
+A is false. B is false. C is false. D is true.
+</think>
+```json
+{
+  "selected_option": "D",
+  "reasoning": "Standard uncertainty is zero for exact defining constants."
+}
+```"""
+    key, exp = evaluator.parse_mcq_response(reasoning_json)
+    assert key == "D"
+    assert "Standard uncertainty is zero" in (exp or "")
+
+
+def test_format_prompt_json():
+    record = {
+        "question": "What is the exact value of c?",
+        "options": [
+            {"key": "A", "text": "299 792 458 m/s"},
+            {"key": "B", "text": "3.00 x 10^8 m/s"},
+        ],
+    }
+    prompt = MEvalBenchmark.format_prompt(record)
+    assert "What is the exact value of c?" in prompt
+    assert "A. 299 792 458 m/s" in prompt
+    assert "B. 3.00 x 10^8 m/s" in prompt
+    assert "json" in prompt.lower()
+    assert '"answer"' in prompt
+
+
 def test_mcq_grading():
     evaluator = MEvalBenchmark()
     record = {
@@ -34,15 +88,25 @@ def test_mcq_grading():
         "ground_truth_answer": "Option B text",
     }
 
-    # Correct predictions
+    # Correct predictions via plain text
     res_correct = evaluator.grade_response(record, "The correct option is (B)")
     assert res_correct["passed"] is True
     assert res_correct["predicted_key"] == "B"
 
+    # Correct predictions via JSON with explanation
+    res_json = evaluator.grade_response(
+        record,
+        '```json\n{"answer": "B", "explanation": "Correct SI multiplier."}\n```',
+    )
+    assert res_json["passed"] is True
+    assert res_json["predicted_key"] == "B"
+    assert res_json.get("predicted_explanation") == "Correct SI multiplier."
+
     # Wrong predictions
-    res_wrong = evaluator.grade_response(record, "Option (C) is correct")
+    res_wrong = evaluator.grade_response(record, '{"answer": "C", "explanation": "wrong"}')
     assert res_wrong["passed"] is False
     assert res_wrong["predicted_key"] == "C"
+    assert res_wrong.get("predicted_explanation") == "wrong"
 
 
 def test_scorecard_computation():

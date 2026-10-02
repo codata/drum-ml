@@ -1,0 +1,3153 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>drum_ml.benchmark.viewer - DRUM-ML Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">DRUM-ML Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">DRUM-ML Documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for drum_ml.benchmark.viewer</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""DRUM Metrology Benchmark (M-Eval) Interactive HTML Viewer Generator.</span>
+
+<span class="sd">Generates a standalone, feature-rich, interactive HTML dashboard for browsing,</span>
+<span class="sd">reviewing, testing, and auditing the DRUM Metrology Benchmark dataset.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="load_jsonl_records">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.viewer.load_jsonl_records">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_jsonl_records</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Load benchmark records from a JSONL file."""</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">records</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+                <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+    <span class="k">return</span> <span class="n">records</span></div>
+
+
+
+<div class="viewcode-block" id="load_json_file">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.viewer.load_json_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_json_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Load a JSON file if it exists."""</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="n">HTML_TEMPLATE</span> <span class="o">=</span> <span class="s2">"""&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang="en" data-theme="dark"&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">  &lt;meta charset="UTF-8" /&gt;</span>
+<span class="s2">  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</span>
+<span class="s2">  &lt;title&gt;__DATASET_TITLE__ - Interactive Explorer &amp; Review Tool&lt;/title&gt;</span>
+
+<span class="s2">  &lt;!-- Google Fonts --&gt;</span>
+<span class="s2">  &lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;</span>
+<span class="s2">  &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;</span>
+<span class="s2">  &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Outfit:wght@500;600;700;800&amp;display=swap" rel="stylesheet" /&gt;</span>
+
+<span class="s2">  &lt;!-- KaTeX for math rendering --&gt;</span>
+<span class="s2">  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" /&gt;</span>
+<span class="s2">  &lt;script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"&gt;&lt;/script&gt;</span>
+<span class="s2">  &lt;script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"&gt;&lt;/script&gt;</span>
+
+<span class="s2">  &lt;style&gt;</span>
+<span class="s2">    :root {</span>
+<span class="s2">      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;</span>
+<span class="s2">      --font-display: 'Outfit', var(--font-sans);</span>
+<span class="s2">      --font-mono: 'JetBrains Mono', monospace;</span>
+
+<span class="s2">      /* Dark Theme */</span>
+<span class="s2">      --bg-main: #0a0e17;</span>
+<span class="s2">      --bg-card: #111827;</span>
+<span class="s2">      --bg-card-hover: #172236;</span>
+<span class="s2">      --bg-sidebar: #0d1322;</span>
+<span class="s2">      --bg-subtle: #1e293b;</span>
+<span class="s2">      --bg-input: #0f172a;</span>
+
+<span class="s2">      --border-color: #24324d;</span>
+<span class="s2">      --border-subtle: #1c273e;</span>
+<span class="s2">      --border-focus: #38bdf8;</span>
+
+<span class="s2">      --text-primary: #f8fafc;</span>
+<span class="s2">      --text-secondary: #94a3b8;</span>
+<span class="s2">      --text-muted: #64748b;</span>
+<span class="s2">      --text-link: #38bdf8;</span>
+
+<span class="s2">      --accent-blue: #3b82f6;</span>
+<span class="s2">      --accent-cyan: #06b6d4;</span>
+<span class="s2">      --accent-emerald: #10b981;</span>
+<span class="s2">      --accent-amber: #f59e0b;</span>
+<span class="s2">      --accent-rose: #f43f5e;</span>
+<span class="s2">      --accent-purple: #8b5cf6;</span>
+<span class="s2">      --accent-indigo: #6366f1;</span>
+
+<span class="s2">      /* Task Specific Colors */</span>
+<span class="s2">      --task-constants: #a855f7;</span>
+<span class="s2">      --task-dimensions: #0ea5e9;</span>
+<span class="s2">      --task-conversions: #10b981;</span>
+<span class="s2">      --task-homogeneity: #f59e0b;</span>
+<span class="s2">      --task-conventions: #ec4899;</span>
+<span class="s2">      --task-uncertainty: #6366f1;</span>
+
+<span class="s2">      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);</span>
+<span class="s2">      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);</span>
+<span class="s2">      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);</span>
+
+<span class="s2">      --radius-sm: 6px;</span>
+<span class="s2">      --radius-md: 10px;</span>
+<span class="s2">      --radius-lg: 16px;</span>
+<span class="s2">      --radius-xl: 24px;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    [data-theme="light"] {</span>
+<span class="s2">      --bg-main: #f8fafc;</span>
+<span class="s2">      --bg-card: #ffffff;</span>
+<span class="s2">      --bg-card-hover: #f1f5f9;</span>
+<span class="s2">      --bg-sidebar: #f8fafc;</span>
+<span class="s2">      --bg-subtle: #e2e8f0;</span>
+<span class="s2">      --bg-input: #ffffff;</span>
+
+<span class="s2">      --border-color: #cbd5e1;</span>
+<span class="s2">      --border-subtle: #e2e8f0;</span>
+<span class="s2">      --border-focus: #0284c7;</span>
+
+<span class="s2">      --text-primary: #0f172a;</span>
+<span class="s2">      --text-secondary: #475569;</span>
+<span class="s2">      --text-muted: #94a3b8;</span>
+<span class="s2">      --text-link: #0284c7;</span>
+
+<span class="s2">      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);</span>
+<span class="s2">      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);</span>
+<span class="s2">      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    * {</span>
+<span class="s2">      box-sizing: border-box;</span>
+<span class="s2">      margin: 0;</span>
+<span class="s2">      padding: 0;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    body {</span>
+<span class="s2">      font-family: var(--font-sans);</span>
+<span class="s2">      background-color: var(--bg-main);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      line-height: 1.5;</span>
+<span class="s2">      -webkit-font-smoothing: antialiased;</span>
+<span class="s2">      overflow-x: hidden;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      height: 100vh;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Top Navigation Bar */</span>
+<span class="s2">    header.app-header {</span>
+<span class="s2">      background: var(--bg-sidebar);</span>
+<span class="s2">      border-bottom: 1px solid var(--border-color);</span>
+<span class="s2">      padding: 0.75rem 1.5rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: space-between;</span>
+<span class="s2">      gap: 1rem;</span>
+<span class="s2">      z-index: 100;</span>
+<span class="s2">      flex-shrink: 0;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .logo-container {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.85rem;</span>
+<span class="s2">      text-decoration: none;</span>
+<span class="s2">      color: inherit;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .brand-icon {</span>
+<span class="s2">      width: 36px;</span>
+<span class="s2">      height: 36px;</span>
+<span class="s2">      background: linear-gradient(135deg, #0ea5e9, #6366f1, #a855f7);</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: center;</span>
+<span class="s2">      color: white;</span>
+<span class="s2">      font-weight: 800;</span>
+<span class="s2">      font-size: 1.1rem;</span>
+<span class="s2">      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .brand-text h1 {</span>
+<span class="s2">      font-family: var(--font-display);</span>
+<span class="s2">      font-size: 1.15rem;</span>
+<span class="s2">      font-weight: 700;</span>
+<span class="s2">      letter-spacing: -0.02em;</span>
+<span class="s2">      background: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);</span>
+<span class="s2">      -webkit-background-clip: text;</span>
+<span class="s2">      -webkit-text-fill-color: transparent;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .brand-text p {</span>
+<span class="s2">      font-size: 0.75rem;</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">      font-weight: 500;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .nav-tabs {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      padding: 0.25rem;</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      gap: 0.25rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .nav-tab-btn {</span>
+<span class="s2">      background: transparent;</span>
+<span class="s2">      border: none;</span>
+<span class="s2">      padding: 0.45rem 0.9rem;</span>
+<span class="s2">      border-radius: var(--radius-sm);</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.4rem;</span>
+<span class="s2">      transition: all 0.15s ease;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .nav-tab-btn:hover {</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      background: rgba(255, 255, 255, 0.05);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .nav-tab-btn.active {</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      box-shadow: var(--shadow-sm);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .header-actions {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.6rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn {</span>
+<span class="s2">      display: inline-flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.4rem;</span>
+<span class="s2">      padding: 0.45rem 0.85rem;</span>
+<span class="s2">      font-size: 0.825rem;</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">      border-radius: var(--radius-sm);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      transition: all 0.15s ease;</span>
+<span class="s2">      white-space: nowrap;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn:hover {</span>
+<span class="s2">      background: var(--bg-card-hover);</span>
+<span class="s2">      border-color: var(--border-focus);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn-primary {</span>
+<span class="s2">      background: linear-gradient(135deg, #0284c7, #2563eb);</span>
+<span class="s2">      border-color: #38bdf8;</span>
+<span class="s2">      color: white;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn-primary:hover {</span>
+<span class="s2">      background: linear-gradient(135deg, #0369a1, #1d4ed8);</span>
+<span class="s2">      box-shadow: 0 0 12px rgba(14, 165, 233, 0.4);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn-success {</span>
+<span class="s2">      background: rgba(16, 185, 129, 0.15);</span>
+<span class="s2">      border-color: #10b981;</span>
+<span class="s2">      color: #34d399;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn-success:hover {</span>
+<span class="s2">      background: rgba(16, 185, 129, 0.25);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn-warning {</span>
+<span class="s2">      background: rgba(245, 158, 11, 0.15);</span>
+<span class="s2">      border-color: #f59e0b;</span>
+<span class="s2">      color: #fbbf24;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .btn-warning:hover {</span>
+<span class="s2">      background: rgba(245, 158, 11, 0.25);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .icon-btn {</span>
+<span class="s2">      padding: 0.45rem;</span>
+<span class="s2">      width: 34px;</span>
+<span class="s2">      height: 34px;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: center;</span>
+<span class="s2">      border-radius: var(--radius-sm);</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      transition: all 0.15s ease;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .icon-btn:hover {</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      border-color: var(--border-focus);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Main App Layout */</span>
+<span class="s2">    .app-body {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex: 1;</span>
+<span class="s2">      overflow: hidden;</span>
+<span class="s2">      position: relative;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* View Containers */</span>
+<span class="s2">    .view-panel {</span>
+<span class="s2">      display: none;</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      height: 100%;</span>
+<span class="s2">      overflow: hidden;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .view-panel.active {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Explorer Split View */</span>
+<span class="s2">    .explorer-sidebar {</span>
+<span class="s2">      width: 380px;</span>
+<span class="s2">      min-width: 320px;</span>
+<span class="s2">      max-width: 480px;</span>
+<span class="s2">      background: var(--bg-sidebar);</span>
+<span class="s2">      border-right: 1px solid var(--border-color);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      flex-shrink: 0;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sidebar-header {</span>
+<span class="s2">      padding: 1rem;</span>
+<span class="s2">      border-bottom: 1px solid var(--border-color);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.75rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .search-box {</span>
+<span class="s2">      position: relative;</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .search-input {</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      padding: 0.55rem 2rem 0.55rem 2.2rem;</span>
+<span class="s2">      border-radius: var(--radius-sm);</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">      outline: none;</span>
+<span class="s2">      transition: border-color 0.15s ease;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .search-input:focus {</span>
+<span class="s2">      border-color: var(--border-focus);</span>
+<span class="s2">      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .search-icon {</span>
+<span class="s2">      position: absolute;</span>
+<span class="s2">      left: 0.75rem;</span>
+<span class="s2">      top: 50%;</span>
+<span class="s2">      transform: translateY(-50%);</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">      pointer-events: none;</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .search-clear {</span>
+<span class="s2">      position: absolute;</span>
+<span class="s2">      right: 0.6rem;</span>
+<span class="s2">      top: 50%;</span>
+<span class="s2">      transform: translateY(-50%);</span>
+<span class="s2">      background: none;</span>
+<span class="s2">      border: none;</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      padding: 0.2rem;</span>
+<span class="s2">      display: none;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .filter-group {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .filter-chips-scroll {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-wrap: wrap;</span>
+<span class="s2">      gap: 0.35rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .filter-chip {</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      padding: 0.25rem 0.6rem;</span>
+<span class="s2">      border-radius: 9999px;</span>
+<span class="s2">      font-size: 0.75rem;</span>
+<span class="s2">      font-weight: 500;</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      user-select: none;</span>
+<span class="s2">      transition: all 0.12s ease;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.3rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .filter-chip:hover {</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      border-color: var(--text-muted);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .filter-chip.active {</span>
+<span class="s2">      background: var(--accent-blue);</span>
+<span class="s2">      border-color: #60a5fa;</span>
+<span class="s2">      color: white;</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .filter-chip[data-task="constants"].active { background: var(--task-constants); border-color: #c084fc; }</span>
+<span class="s2">    .filter-chip[data-task="dimensions"].active { background: var(--task-dimensions); border-color: #38bdf8; }</span>
+<span class="s2">    .filter-chip[data-task="conversions"].active { background: var(--task-conversions); border-color: #34d399; }</span>
+<span class="s2">    .filter-chip[data-task="homogeneity"].active { background: var(--task-homogeneity); border-color: #fbbf24; }</span>
+<span class="s2">    .filter-chip[data-task="conventions"].active { background: var(--task-conventions); border-color: #f472b6; }</span>
+<span class="s2">    .filter-chip[data-task="uncertainty"].active { background: var(--task-uncertainty); border-color: #818cf8; }</span>
+
+<span class="s2">    .filter-row {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: space-between;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">      font-size: 0.8rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .select-sm {</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      padding: 0.3rem 0.5rem;</span>
+<span class="s2">      border-radius: var(--radius-sm);</span>
+<span class="s2">      font-size: 0.775rem;</span>
+<span class="s2">      outline: none;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .list-meta-bar {</span>
+<span class="s2">      padding: 0.45rem 1rem;</span>
+<span class="s2">      background: rgba(0, 0, 0, 0.15);</span>
+<span class="s2">      border-bottom: 1px solid var(--border-color);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      justify-content: space-between;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      font-size: 0.75rem;</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Sidebar Sample List */</span>
+<span class="s2">    .sample-list {</span>
+<span class="s2">      flex: 1;</span>
+<span class="s2">      overflow-y: auto;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sample-item {</span>
+<span class="s2">      padding: 0.85rem 1rem;</span>
+<span class="s2">      border-bottom: 1px solid var(--border-subtle);</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      transition: background 0.12s ease;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.4rem;</span>
+<span class="s2">      position: relative;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sample-item:hover {</span>
+<span class="s2">      background: var(--bg-card-hover);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sample-item.active {</span>
+<span class="s2">      background: rgba(56, 189, 248, 0.08);</span>
+<span class="s2">      border-left: 3px solid var(--accent-cyan);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sample-item-top {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: space-between;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sample-item-id {</span>
+<span class="s2">      font-family: var(--font-mono);</span>
+<span class="s2">      font-size: 0.725rem;</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">      font-weight: 500;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sample-tags {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.3rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .tag {</span>
+<span class="s2">      display: inline-flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.2rem;</span>
+<span class="s2">      padding: 0.15rem 0.45rem;</span>
+<span class="s2">      border-radius: 4px;</span>
+<span class="s2">      font-size: 0.68rem;</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">      text-transform: uppercase;</span>
+<span class="s2">      letter-spacing: 0.03em;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .tag-task {</span>
+<span class="s2">      background: rgba(255, 255, 255, 0.08);</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .tag-task[data-task="constants"] { background: rgba(168, 85, 247, 0.18); color: #d8b4fe; }</span>
+<span class="s2">    .tag-task[data-task="dimensions"] { background: rgba(14, 165, 233, 0.18); color: #7dd3fc; }</span>
+<span class="s2">    .tag-task[data-task="conversions"] { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }</span>
+<span class="s2">    .tag-task[data-task="homogeneity"] { background: rgba(245, 158, 11, 0.18); color: #fde68a; }</span>
+<span class="s2">    .tag-task[data-task="conventions"] { background: rgba(236, 72, 153, 0.18); color: #fbcfe8; }</span>
+<span class="s2">    .tag-task[data-task="uncertainty"] { background: rgba(99, 102, 241, 0.18); color: #c7d2fe; }</span>
+
+<span class="s2">    .tag-diff-introductory { background: rgba(16, 185, 129, 0.12); color: #34d399; }</span>
+<span class="s2">    .tag-diff-intermediate { background: rgba(14, 165, 233, 0.12); color: #38bdf8; }</span>
+<span class="s2">    .tag-diff-advanced { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }</span>
+
+<span class="s2">    .tag-format {</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .status-dot {</span>
+<span class="s2">      width: 8px;</span>
+<span class="s2">      height: 8px;</span>
+<span class="s2">      border-radius: 50%;</span>
+<span class="s2">      display: inline-block;</span>
+<span class="s2">    }</span>
+<span class="s2">    .status-approved { background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); }</span>
+<span class="s2">    .status-flagged { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.6); }</span>
+<span class="s2">    .status-pending { background: #475569; }</span>
+
+<span class="s2">    .sample-item-text {</span>
+<span class="s2">      font-size: 0.825rem;</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      display: -webkit-box;</span>
+<span class="s2">      -webkit-line-clamp: 2;</span>
+<span class="s2">      -webkit-box-orient: vertical;</span>
+<span class="s2">      overflow: hidden;</span>
+<span class="s2">      line-height: 1.35;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Main Inspector Panel */</span>
+<span class="s2">    .explorer-content {</span>
+<span class="s2">      flex: 1;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      overflow-y: auto;</span>
+<span class="s2">      background: var(--bg-main);</span>
+<span class="s2">      padding: 1.5rem 2rem;</span>
+<span class="s2">      gap: 1.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .inspector-header {</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-lg);</span>
+<span class="s2">      padding: 1.25rem 1.5rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: space-between;</span>
+<span class="s2">      gap: 1rem;</span>
+<span class="s2">      flex-wrap: wrap;</span>
+<span class="s2">      box-shadow: var(--shadow-sm);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .inspector-title-area {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.4rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .inspector-id-row {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.6rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .inspector-id {</span>
+<span class="s2">      font-family: var(--font-mono);</span>
+<span class="s2">      font-size: 1.1rem;</span>
+<span class="s2">      font-weight: 700;</span>
+<span class="s2">      color: var(--accent-cyan);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .inspector-badges {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.4rem;</span>
+<span class="s2">      flex-wrap: wrap;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .inspector-actions {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Question &amp; Content Cards */</span>
+<span class="s2">    .card {</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-lg);</span>
+<span class="s2">      padding: 1.5rem;</span>
+<span class="s2">      box-shadow: var(--shadow-sm);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 1rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .card-title {</span>
+<span class="s2">      font-family: var(--font-display);</span>
+<span class="s2">      font-size: 0.95rem;</span>
+<span class="s2">      font-weight: 700;</span>
+<span class="s2">      text-transform: uppercase;</span>
+<span class="s2">      letter-spacing: 0.05em;</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .question-box {</span>
+<span class="s2">      font-size: 1.125rem;</span>
+<span class="s2">      font-weight: 500;</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      line-height: 1.6;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .context-box {</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      border-left: 3px solid var(--accent-blue);</span>
+<span class="s2">      padding: 0.75rem 1rem;</span>
+<span class="s2">      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;</span>
+<span class="s2">      font-size: 0.875rem;</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Options / Distractor Cards */</span>
+<span class="s2">    .options-grid {</span>
+<span class="s2">      display: grid;</span>
+<span class="s2">      grid-template-columns: 1fr;</span>
+<span class="s2">      gap: 0.75rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-card {</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      padding: 1rem 1.25rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">      transition: all 0.15s ease;</span>
+<span class="s2">      position: relative;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-card.correct {</span>
+<span class="s2">      background: rgba(16, 185, 129, 0.08);</span>
+<span class="s2">      border-color: #10b981;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-card.distractor {</span>
+<span class="s2">      background: rgba(239, 68, 68, 0.03);</span>
+<span class="s2">      border-color: var(--border-subtle);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-main {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: flex-start;</span>
+<span class="s2">      gap: 0.85rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-key-badge {</span>
+<span class="s2">      width: 28px;</span>
+<span class="s2">      height: 28px;</span>
+<span class="s2">      border-radius: 6px;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: center;</span>
+<span class="s2">      font-family: var(--font-mono);</span>
+<span class="s2">      font-weight: 700;</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">      flex-shrink: 0;</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-card.correct .option-key-badge {</span>
+<span class="s2">      background: #10b981;</span>
+<span class="s2">      border-color: #34d399;</span>
+<span class="s2">      color: white;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-text {</span>
+<span class="s2">      font-size: 0.95rem;</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      flex: 1;</span>
+<span class="s2">      line-height: 1.5;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .option-status-badge {</span>
+<span class="s2">      font-size: 0.7rem;</span>
+<span class="s2">      font-weight: 700;</span>
+<span class="s2">      text-transform: uppercase;</span>
+<span class="s2">      padding: 0.2rem 0.5rem;</span>
+<span class="s2">      border-radius: 9999px;</span>
+<span class="s2">      letter-spacing: 0.03em;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .badge-correct {</span>
+<span class="s2">      background: rgba(16, 185, 129, 0.2);</span>
+<span class="s2">      color: #34d399;</span>
+<span class="s2">      border: 1px solid rgba(16, 185, 129, 0.4);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .distractor-pill {</span>
+<span class="s2">      background: rgba(245, 158, 11, 0.08);</span>
+<span class="s2">      border: 1px solid rgba(245, 158, 11, 0.2);</span>
+<span class="s2">      color: #fbbf24;</span>
+<span class="s2">      padding: 0.35rem 0.75rem;</span>
+<span class="s2">      border-radius: var(--radius-sm);</span>
+<span class="s2">      font-size: 0.775rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.4rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Free Form Answer Card */</span>
+<span class="s2">    .ground-truth-box {</span>
+<span class="s2">      background: rgba(14, 165, 233, 0.08);</span>
+<span class="s2">      border: 1px solid rgba(14, 165, 233, 0.3);</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      padding: 1rem 1.25rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .ground-truth-val {</span>
+<span class="s2">      font-size: 1.1rem;</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">      color: #38bdf8;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Explanation Box */</span>
+<span class="s2">    .explanation-content {</span>
+<span class="s2">      font-size: 0.95rem;</span>
+<span class="s2">      line-height: 1.6;</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Metrology Anatomy Grid */</span>
+<span class="s2">    .meta-anatomy-grid {</span>
+<span class="s2">      display: grid;</span>
+<span class="s2">      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));</span>
+<span class="s2">      gap: 1rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .meta-cell {</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      padding: 0.75rem 1rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.3rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .meta-cell-label {</span>
+<span class="s2">      font-size: 0.725rem;</span>
+<span class="s2">      text-transform: uppercase;</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .meta-cell-value {</span>
+<span class="s2">      font-family: var(--font-mono);</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      word-break: break-all;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Dimension Vector Visualizer */</span>
+<span class="s2">    .dimension-chips {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-wrap: wrap;</span>
+<span class="s2">      gap: 0.4rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .dim-chip {</span>
+<span class="s2">      padding: 0.2rem 0.5rem;</span>
+<span class="s2">      border-radius: 4px;</span>
+<span class="s2">      font-family: var(--font-mono);</span>
+<span class="s2">      font-size: 0.75rem;</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .dim-chip.active-dim {</span>
+<span class="s2">      background: rgba(14, 165, 233, 0.15);</span>
+<span class="s2">      border-color: #38bdf8;</span>
+<span class="s2">      color: #7dd3fc;</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Reviewer Workspace Area */</span>
+<span class="s2">    .reviewer-box {</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-lg);</span>
+<span class="s2">      padding: 1.25rem 1.5rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.75rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .reviewer-textarea {</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      padding: 0.75rem;</span>
+<span class="s2">      border-radius: var(--radius-sm);</span>
+<span class="s2">      font-family: var(--font-sans);</span>
+<span class="s2">      font-size: 0.875rem;</span>
+<span class="s2">      resize: vertical;</span>
+<span class="s2">      min-height: 80px;</span>
+<span class="s2">      outline: none;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .reviewer-textarea:focus {</span>
+<span class="s2">      border-color: var(--border-focus);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Raw JSON Collapsible */</span>
+<span class="s2">    details.raw-json {</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      overflow: hidden;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    details.raw-json summary {</span>
+<span class="s2">      padding: 0.75rem 1rem;</span>
+<span class="s2">      font-size: 0.825rem;</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      user-select: none;</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    details.raw-json pre {</span>
+<span class="s2">      padding: 1rem;</span>
+<span class="s2">      font-family: var(--font-mono);</span>
+<span class="s2">      font-size: 0.78rem;</span>
+<span class="s2">      overflow-x: auto;</span>
+<span class="s2">      color: #7dd3fc;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Quiz Mode Styles */</span>
+<span class="s2">    .quiz-container {</span>
+<span class="s2">      max-width: 860px;</span>
+<span class="s2">      margin: 0 auto;</span>
+<span class="s2">      padding: 2rem 1.5rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 1.5rem;</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      overflow-y: auto;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-progress-bar-container {</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      height: 6px;</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      border-radius: 9999px;</span>
+<span class="s2">      overflow: hidden;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-progress-fill {</span>
+<span class="s2">      height: 100%;</span>
+<span class="s2">      background: linear-gradient(to right, #06b6d4, #3b82f6);</span>
+<span class="s2">      width: 0%;</span>
+<span class="s2">      transition: width 0.3s ease;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-stats-header {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: space-between;</span>
+<span class="s2">      gap: 1rem;</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-lg);</span>
+<span class="s2">      padding: 1rem 1.5rem;</span>
+<span class="s2">      flex-wrap: wrap;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-stat-pill {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-stat-pill strong {</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      font-size: 1.05rem;</span>
+<span class="s2">      font-family: var(--font-mono);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-card {</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-xl);</span>
+<span class="s2">      padding: 2rem;</span>
+<span class="s2">      box-shadow: var(--shadow-lg);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 1.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-option-btn {</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      padding: 1rem 1.25rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: flex-start;</span>
+<span class="s2">      gap: 1rem;</span>
+<span class="s2">      text-align: left;</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      font-size: 0.95rem;</span>
+<span class="s2">      transition: all 0.15s ease;</span>
+<span class="s2">      position: relative;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-option-btn:hover:not(:disabled) {</span>
+<span class="s2">      background: var(--bg-card-hover);</span>
+<span class="s2">      border-color: var(--border-focus);</span>
+<span class="s2">      transform: translateY(-1px);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-option-btn.selected {</span>
+<span class="s2">      background: rgba(56, 189, 248, 0.12);</span>
+<span class="s2">      border-color: #38bdf8;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-option-btn.revealed-correct {</span>
+<span class="s2">      background: rgba(16, 185, 129, 0.15) !important;</span>
+<span class="s2">      border-color: #10b981 !important;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-option-btn.revealed-incorrect {</span>
+<span class="s2">      background: rgba(239, 68, 68, 0.15) !important;</span>
+<span class="s2">      border-color: #ef4444 !important;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-feedback-box {</span>
+<span class="s2">      padding: 1.25rem 1.5rem;</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.75rem;</span>
+<span class="s2">      animation: fadeIn 0.25s ease;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-feedback-box.correct {</span>
+<span class="s2">      background: rgba(16, 185, 129, 0.12);</span>
+<span class="s2">      border: 1px solid rgba(16, 185, 129, 0.3);</span>
+<span class="s2">      color: #34d399;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .quiz-feedback-box.incorrect {</span>
+<span class="s2">      background: rgba(239, 68, 68, 0.12);</span>
+<span class="s2">      border: 1px solid rgba(239, 68, 68, 0.3);</span>
+<span class="s2">      color: #f87171;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Analytics View */</span>
+<span class="s2">    .analytics-container {</span>
+<span class="s2">      max-width: 1200px;</span>
+<span class="s2">      margin: 0 auto;</span>
+<span class="s2">      padding: 2rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 2rem;</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      overflow-y: auto;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .stats-overview-grid {</span>
+<span class="s2">      display: grid;</span>
+<span class="s2">      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));</span>
+<span class="s2">      gap: 1rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .stat-card {</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-lg);</span>
+<span class="s2">      padding: 1.25rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 0.35rem;</span>
+<span class="s2">      box-shadow: var(--shadow-sm);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .stat-card-title {</span>
+<span class="s2">      font-size: 0.8rem;</span>
+<span class="s2">      text-transform: uppercase;</span>
+<span class="s2">      color: var(--text-muted);</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">      letter-spacing: 0.05em;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .stat-card-value {</span>
+<span class="s2">      font-family: var(--font-display);</span>
+<span class="s2">      font-size: 1.85rem;</span>
+<span class="s2">      font-weight: 700;</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .stat-card-sub {</span>
+<span class="s2">      font-size: 0.75rem;</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .analytics-grid-2col {</span>
+<span class="s2">      display: grid;</span>
+<span class="s2">      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));</span>
+<span class="s2">      gap: 1.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .table-container {</span>
+<span class="s2">      overflow-x: auto;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    table.data-table {</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      border-collapse: collapse;</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">      text-align: left;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    table.data-table th {</span>
+<span class="s2">      padding: 0.65rem 1rem;</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      color: var(--text-secondary);</span>
+<span class="s2">      font-weight: 600;</span>
+<span class="s2">      border-bottom: 1px solid var(--border-color);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    table.data-table td {</span>
+<span class="s2">      padding: 0.65rem 1rem;</span>
+<span class="s2">      border-bottom: 1px solid var(--border-subtle);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .progress-bar-inline {</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      height: 8px;</span>
+<span class="s2">      background: var(--bg-subtle);</span>
+<span class="s2">      border-radius: 9999px;</span>
+<span class="s2">      overflow: hidden;</span>
+<span class="s2">      margin-top: 0.25rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .progress-fill-inline {</span>
+<span class="s2">      height: 100%;</span>
+<span class="s2">      background: var(--accent-cyan);</span>
+<span class="s2">      border-radius: 9999px;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Triage / Review Queue */</span>
+<span class="s2">    .triage-container {</span>
+<span class="s2">      max-width: 1100px;</span>
+<span class="s2">      margin: 0 auto;</span>
+<span class="s2">      padding: 2rem;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 1.5rem;</span>
+<span class="s2">      width: 100%;</span>
+<span class="s2">      overflow-y: auto;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Modal dialog */</span>
+<span class="s2">    .modal-overlay {</span>
+<span class="s2">      display: none;</span>
+<span class="s2">      position: fixed;</span>
+<span class="s2">      inset: 0;</span>
+<span class="s2">      background: rgba(0, 0, 0, 0.7);</span>
+<span class="s2">      backdrop-filter: blur(4px);</span>
+<span class="s2">      z-index: 1000;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: center;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .modal-overlay.active {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .modal-card {</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      border: 1px solid var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-xl);</span>
+<span class="s2">      max-width: 550px;</span>
+<span class="s2">      width: 90%;</span>
+<span class="s2">      padding: 1.75rem;</span>
+<span class="s2">      box-shadow: var(--shadow-lg);</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      gap: 1.25rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .modal-header {</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      justify-content: space-between;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .modal-title {</span>
+<span class="s2">      font-family: var(--font-display);</span>
+<span class="s2">      font-size: 1.15rem;</span>
+<span class="s2">      font-weight: 700;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .dropzone {</span>
+<span class="s2">      border: 2px dashed var(--border-color);</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      padding: 2.5rem 1.5rem;</span>
+<span class="s2">      text-align: center;</span>
+<span class="s2">      background: var(--bg-input);</span>
+<span class="s2">      cursor: pointer;</span>
+<span class="s2">      transition: all 0.15s ease;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      flex-direction: column;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.5rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .dropzone:hover, .dropzone.dragover {</span>
+<span class="s2">      border-color: var(--accent-cyan);</span>
+<span class="s2">      background: rgba(14, 165, 233, 0.05);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Toast Notification */</span>
+<span class="s2">    .toast {</span>
+<span class="s2">      position: fixed;</span>
+<span class="s2">      bottom: 2rem;</span>
+<span class="s2">      right: 2rem;</span>
+<span class="s2">      background: var(--bg-card);</span>
+<span class="s2">      border: 1px solid var(--border-focus);</span>
+<span class="s2">      color: var(--text-primary);</span>
+<span class="s2">      padding: 0.75rem 1.25rem;</span>
+<span class="s2">      border-radius: var(--radius-md);</span>
+<span class="s2">      box-shadow: var(--shadow-lg);</span>
+<span class="s2">      font-size: 0.85rem;</span>
+<span class="s2">      font-weight: 500;</span>
+<span class="s2">      z-index: 2000;</span>
+<span class="s2">      display: flex;</span>
+<span class="s2">      align-items: center;</span>
+<span class="s2">      gap: 0.6rem;</span>
+<span class="s2">      transform: translateY(100px);</span>
+<span class="s2">      opacity: 0;</span>
+<span class="s2">      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);</span>
+<span class="s2">      pointer-events: none;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .toast.show {</span>
+<span class="s2">      transform: translateY(0);</span>
+<span class="s2">      opacity: 1;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    @keyframes fadeIn {</span>
+<span class="s2">      from { opacity: 0; transform: translateY(6px); }</span>
+<span class="s2">      to { opacity: 1; transform: translateY(0); }</span>
+<span class="s2">    }</span>
+
+<span class="s2">    /* Responsive Design */</span>
+<span class="s2">    @media (max-width: 900px) {</span>
+<span class="s2">      .explorer-sidebar {</span>
+<span class="s2">        width: 100%;</span>
+<span class="s2">        max-width: none;</span>
+<span class="s2">        height: 45vh;</span>
+<span class="s2">      }</span>
+<span class="s2">      .app-body {</span>
+<span class="s2">        flex-direction: column;</span>
+<span class="s2">      }</span>
+<span class="s2">      .view-panel.active {</span>
+<span class="s2">        flex-direction: column;</span>
+<span class="s2">      }</span>
+<span class="s2">    }</span>
+<span class="s2">  &lt;/style&gt;</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+
+<span class="s2">  &lt;!-- Top App Header --&gt;</span>
+<span class="s2">  &lt;header class="app-header"&gt;</span>
+<span class="s2">    &lt;div class="logo-container"&gt;</span>
+<span class="s2">      &lt;div class="brand-icon"&gt;M&lt;/div&gt;</span>
+<span class="s2">      &lt;div class="brand-text"&gt;</span>
+<span class="s2">        &lt;h1&gt;DRUM Metrology Benchmark&lt;/h1&gt;</span>
+<span class="s2">        &lt;p&gt;CODATA Digital Representation of Units of Measurement (M-Eval)&lt;/p&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;!-- View Navigation Tabs --&gt;</span>
+<span class="s2">    &lt;nav class="nav-tabs" role="tablist"&gt;</span>
+<span class="s2">      &lt;button class="nav-tab-btn active" data-view="explorer" id="tabExplorer"&gt;</span>
+<span class="s2">        &lt;span&gt;🔍&lt;/span&gt; Explorer &amp; Review</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="nav-tab-btn" data-view="quiz" id="tabQuiz"&gt;</span>
+<span class="s2">        &lt;span&gt;🎯&lt;/span&gt; Test Yourself</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="nav-tab-btn" data-view="analytics" id="tabAnalytics"&gt;</span>
+<span class="s2">        &lt;span&gt;📊&lt;/span&gt; Analytics &amp; Scorecards</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="nav-tab-btn" data-view="triage" id="tabTriage"&gt;</span>
+<span class="s2">        &lt;span&gt;🚩&lt;/span&gt; Review Queue (&lt;span id="triageBadgeCount"&gt;0&lt;/span&gt;)</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">    &lt;/nav&gt;</span>
+
+<span class="s2">    &lt;!-- Header Actions --&gt;</span>
+<span class="s2">    &lt;div class="header-actions"&gt;</span>
+<span class="s2">      &lt;button class="btn" id="btnLoadFile" title="Load custom benchmark JSONL / JSON"&gt;</span>
+<span class="s2">        &lt;span&gt;📁&lt;/span&gt; Load Data</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="btn" id="btnExport" title="Export review annotations &amp; data"&gt;</span>
+<span class="s2">        &lt;span&gt;💾&lt;/span&gt; Export</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="icon-btn" id="btnShortcuts" title="Keyboard Shortcuts"&gt;</span>
+<span class="s2">        &lt;span&gt;⌨️&lt;/span&gt;</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">      &lt;button class="icon-btn" id="btnThemeToggle" title="Toggle Dark/Light Mode"&gt;</span>
+<span class="s2">        &lt;span id="themeIcon"&gt;🌓&lt;/span&gt;</span>
+<span class="s2">      &lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/header&gt;</span>
+
+<span class="s2">  &lt;!-- Main Body --&gt;</span>
+<span class="s2">  &lt;main class="app-body"&gt;</span>
+
+<span class="s2">    &lt;!-- VIEW 1: EXPLORER &amp; REVIEW INSPECTOR --&gt;</span>
+<span class="s2">    &lt;div class="view-panel active" id="viewExplorer"&gt;</span>
+
+<span class="s2">      &lt;!-- Left Sidebar: Filters &amp; List --&gt;</span>
+<span class="s2">      &lt;aside class="explorer-sidebar"&gt;</span>
+<span class="s2">        &lt;div class="sidebar-header"&gt;</span>
+<span class="s2">          &lt;!-- Search Box --&gt;</span>
+<span class="s2">          &lt;div class="search-box"&gt;</span>
+<span class="s2">            &lt;span class="search-icon"&gt;🔍&lt;/span&gt;</span>
+<span class="s2">            &lt;input type="text" id="searchInput" class="search-input" placeholder="Search questions, IDs, entities, math... (/ to focus)" /&gt;</span>
+<span class="s2">            &lt;button class="search-clear" id="searchClear" title="Clear search"&gt;✕&lt;/button&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;!-- Task Filter Chips --&gt;</span>
+<span class="s2">          &lt;div class="filter-group"&gt;</span>
+<span class="s2">            &lt;div class="filter-chips-scroll" id="taskFilters"&gt;</span>
+<span class="s2">              &lt;button class="filter-chip active" data-task="all"&gt;All Tasks&lt;/button&gt;</span>
+<span class="s2">              &lt;button class="filter-chip" data-task="constants"&gt;⚡ Constants&lt;/button&gt;</span>
+<span class="s2">              &lt;button class="filter-chip" data-task="dimensions"&gt;📐 Dimensions&lt;/button&gt;</span>
+<span class="s2">              &lt;button class="filter-chip" data-task="conversions"&gt;🔄 Conversions&lt;/button&gt;</span>
+<span class="s2">              &lt;button class="filter-chip" data-task="homogeneity"&gt;⚠️ Homogeneity&lt;/button&gt;</span>
+<span class="s2">              &lt;button class="filter-chip" data-task="conventions"&gt;📜 Conventions&lt;/button&gt;</span>
+<span class="s2">              &lt;button class="filter-chip" data-task="uncertainty"&gt;🎯 Uncertainty&lt;/button&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;!-- Sub-filters: Difficulty, Format, Status --&gt;</span>
+<span class="s2">          &lt;div class="filter-row"&gt;</span>
+<span class="s2">            &lt;select id="diffFilter" class="select-sm"&gt;</span>
+<span class="s2">              &lt;option value="all"&gt;All Difficulties&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="introductory"&gt;Introductory&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="intermediate"&gt;Intermediate&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="advanced"&gt;Advanced&lt;/option&gt;</span>
+<span class="s2">            &lt;/select&gt;</span>
+
+<span class="s2">            &lt;select id="formatFilter" class="select-sm"&gt;</span>
+<span class="s2">              &lt;option value="all"&gt;All Formats&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="mcq"&gt;MCQ (Track A)&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="free_form"&gt;Free-Form (Track B)&lt;/option&gt;</span>
+<span class="s2">            &lt;/select&gt;</span>
+
+<span class="s2">            &lt;select id="statusFilter" class="select-sm"&gt;</span>
+<span class="s2">              &lt;option value="all"&gt;All Status&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="approved"&gt;Approved&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="flagged"&gt;Flagged&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="pending"&gt;Pending Review&lt;/option&gt;</span>
+<span class="s2">            &lt;/select&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Meta bar: Counts &amp; Sort --&gt;</span>
+<span class="s2">        &lt;div class="list-meta-bar"&gt;</span>
+<span class="s2">          &lt;span id="filteredCountLabel"&gt;Showing 0 samples&lt;/span&gt;</span>
+<span class="s2">          &lt;div style="display:flex; align-items:center; gap:0.4rem;"&gt;</span>
+<span class="s2">            &lt;span&gt;Sort:&lt;/span&gt;</span>
+<span class="s2">            &lt;select id="sortSelect" class="select-sm" style="padding:0.15rem 0.3rem;"&gt;</span>
+<span class="s2">              &lt;option value="default"&gt;Default&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="id"&gt;ID&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="task"&gt;Task&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="difficulty"&gt;Difficulty&lt;/option&gt;</span>
+<span class="s2">              &lt;option value="status"&gt;Review Status&lt;/option&gt;</span>
+<span class="s2">            &lt;/select&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Sample List Items --&gt;</span>
+<span class="s2">        &lt;div class="sample-list" id="sampleListContainer"&gt;</span>
+<span class="s2">          &lt;!-- Dynamically populated --&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/aside&gt;</span>
+
+<span class="s2">      &lt;!-- Right Inspector Panel --&gt;</span>
+<span class="s2">      &lt;section class="explorer-content" id="inspectorPanel"&gt;</span>
+<span class="s2">        &lt;!-- Sticky Sample Header --&gt;</span>
+<span class="s2">        &lt;div class="inspector-header"&gt;</span>
+<span class="s2">          &lt;div class="inspector-title-area"&gt;</span>
+<span class="s2">            &lt;div class="inspector-id-row"&gt;</span>
+<span class="s2">              &lt;span class="status-dot status-pending" id="inspectStatusDot"&gt;&lt;/span&gt;</span>
+<span class="s2">              &lt;span class="inspector-id" id="inspectId"&gt;-&lt;/span&gt;</span>
+<span class="s2">              &lt;button class="btn" id="btnCopyId" style="padding:0.2rem 0.5rem; font-size:0.75rem;" title="Copy ID"&gt;📋&lt;/button&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">            &lt;div class="inspector-badges" id="inspectBadges"&gt;</span>
+<span class="s2">              &lt;!-- Task, Difficulty, Format tags dynamically injected --&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;div class="inspector-actions"&gt;</span>
+<span class="s2">            &lt;button class="btn btn-success" id="btnApprove" title="Mark sample as verified &amp; accurate (V)"&gt;</span>
+<span class="s2">              &lt;span&gt;✅&lt;/span&gt; Approve</span>
+<span class="s2">            &lt;/button&gt;</span>
+<span class="s2">            &lt;button class="btn btn-warning" id="btnFlag" title="Flag sample for review or correction (F)"&gt;</span>
+<span class="s2">              &lt;span&gt;🚩&lt;/span&gt; Flag</span>
+<span class="s2">            &lt;/button&gt;</span>
+<span class="s2">            &lt;button class="btn" id="btnRandomSample" title="Jump to random sample"&gt;</span>
+<span class="s2">              &lt;span&gt;🔀&lt;/span&gt; Random</span>
+<span class="s2">            &lt;/button&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Question Card --&gt;</span>
+<span class="s2">        &lt;div class="card"&gt;</span>
+<span class="s2">          &lt;div class="card-title"&gt;</span>
+<span class="s2">            &lt;span&gt;❓&lt;/span&gt; Question &amp; Prompt</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="question-box render-math" id="inspectQuestion"&gt;</span>
+<span class="s2">            Select a benchmark sample from the sidebar to inspect its full metrological anatomy.</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="context-box render-math" id="inspectContext" style="display: none;"&gt;</span>
+<span class="s2">            &lt;!-- Optional Context --&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Options &amp; Answers Card --&gt;</span>
+<span class="s2">        &lt;div class="card" id="inspectAnswersCard"&gt;</span>
+<span class="s2">          &lt;div class="card-title"&gt;</span>
+<span class="s2">            &lt;span&gt;🎯&lt;/span&gt; Options &amp; Ground Truth Validation</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div id="inspectOptionsContainer"&gt;</span>
+<span class="s2">            &lt;!-- MCQ Options or Free-form Ground Truth injected here --&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Metrological Explanation &amp; Standards Citation --&gt;</span>
+<span class="s2">        &lt;div class="card"&gt;</span>
+<span class="s2">          &lt;div class="card-title"&gt;</span>
+<span class="s2">            &lt;span&gt;💡&lt;/span&gt; Metrological Derivation &amp; Standards Reference</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="explanation-content render-math" id="inspectExplanation"&gt;</span>
+<span class="s2">            -</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Provenance, Dimensions &amp; Metadata Anatomy --&gt;</span>
+<span class="s2">        &lt;div class="card"&gt;</span>
+<span class="s2">          &lt;div class="card-title"&gt;</span>
+<span class="s2">            &lt;span&gt;📐&lt;/span&gt; Physical Dimensions &amp; Provenance Metadata</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="meta-anatomy-grid"&gt;</span>
+<span class="s2">            &lt;div class="meta-cell"&gt;</span>
+<span class="s2">              &lt;span class="meta-cell-label"&gt;Provenance Entity URI&lt;/span&gt;</span>
+<span class="s2">              &lt;span class="meta-cell-value" id="inspectEntityUri"&gt;-&lt;/span&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">            &lt;div class="meta-cell"&gt;</span>
+<span class="s2">              &lt;span class="meta-cell-label"&gt;ISQ 7-Base Dimension Vector&lt;/span&gt;</span>
+<span class="s2">              &lt;div class="dimension-chips" id="inspectDimVector"&gt;</span>
+<span class="s2">                &lt;!-- Dimension vector chips --&gt;</span>
+<span class="s2">              &lt;/div&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">            &lt;div class="meta-cell"&gt;</span>
+<span class="s2">              &lt;span class="meta-cell-label"&gt;Standard Reference&lt;/span&gt;</span>
+<span class="s2">              &lt;span class="meta-cell-value" id="inspectStandard"&gt;-&lt;/span&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">            &lt;div class="meta-cell"&gt;</span>
+<span class="s2">              &lt;span class="meta-cell-label"&gt;Unit / Constant Symbol&lt;/span&gt;</span>
+<span class="s2">              &lt;span class="meta-cell-value render-math" id="inspectSymbol"&gt;-&lt;/span&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Reviewer Notes &amp; Feedback --&gt;</span>
+<span class="s2">        &lt;div class="reviewer-box"&gt;</span>
+<span class="s2">          &lt;div class="card-title"&gt;</span>
+<span class="s2">            &lt;span&gt;📝&lt;/span&gt; Reviewer Annotation &amp; Notes</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;textarea id="inspectReviewNotes" class="reviewer-textarea" placeholder="Add notes, domain feedback, or justification for flags... (auto-saved to local storage)"&gt;&lt;/textarea&gt;</span>
+<span class="s2">          &lt;div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted);"&gt;</span>
+<span class="s2">            &lt;span id="notesSaveStatus"&gt;Saved&lt;/span&gt;</span>
+<span class="s2">            &lt;span&gt;Shortcut: [J/K] Navigate samples | [V] Approve | [F] Flag&lt;/span&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Collapsible Raw JSON Data --&gt;</span>
+<span class="s2">        &lt;details class="raw-json"&gt;</span>
+<span class="s2">          &lt;summary&gt;View Canonical Benchmark JSON Record&lt;/summary&gt;</span>
+<span class="s2">          &lt;pre id="inspectRawJson"&gt;</span><span class="si">{}</span><span class="s2">&lt;/pre&gt;</span>
+<span class="s2">        &lt;/details&gt;</span>
+<span class="s2">      &lt;/section&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;!-- VIEW 2: TEST YOURSELF / QUIZ MODE --&gt;</span>
+<span class="s2">    &lt;div class="view-panel" id="viewQuiz"&gt;</span>
+<span class="s2">      &lt;div class="quiz-container"&gt;</span>
+<span class="s2">        &lt;!-- Progress &amp; Live Score Bar --&gt;</span>
+<span class="s2">        &lt;div class="quiz-progress-bar-container"&gt;</span>
+<span class="s2">          &lt;div class="quiz-progress-fill" id="quizProgressFill"&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;div class="quiz-stats-header"&gt;</span>
+<span class="s2">          &lt;div class="quiz-stat-pill"&gt;</span>
+<span class="s2">            &lt;span&gt;Task:&lt;/span&gt;</span>
+<span class="s2">            &lt;strong id="quizTaskBadge"&gt;Constants&lt;/strong&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="quiz-stat-pill"&gt;</span>
+<span class="s2">            &lt;span&gt;Progress:&lt;/span&gt;</span>
+<span class="s2">            &lt;strong&gt;&lt;span id="quizCurrentIndex"&gt;1&lt;/span&gt; / &lt;span id="quizTotalQuestions"&gt;50&lt;/span&gt;&lt;/strong&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="quiz-stat-pill"&gt;</span>
+<span class="s2">            &lt;span&gt;Score:&lt;/span&gt;</span>
+<span class="s2">            &lt;strong&gt;&lt;span id="quizScoreCorrect"&gt;0&lt;/span&gt; / &lt;span id="quizScoreAttempted"&gt;0&lt;/span&gt; (&lt;span id="quizAccuracyPct"&gt;0%&lt;/span&gt;)&lt;/strong&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="quiz-stat-pill"&gt;</span>
+<span class="s2">            &lt;span&gt;Streak:&lt;/span&gt;</span>
+<span class="s2">            &lt;strong&gt;🔥 &lt;span id="quizStreak"&gt;0&lt;/span&gt;&lt;/strong&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;button class="btn" id="btnQuizRestart" title="Restart Quiz"&gt;🔄 Reset&lt;/button&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Quiz Question Card --&gt;</span>
+<span class="s2">        &lt;div class="quiz-card" id="quizCard"&gt;</span>
+<span class="s2">          &lt;div style="display:flex; justify-content:space-between; align-items:center;"&gt;</span>
+<span class="s2">            &lt;span class="tag tag-task" id="quizTaskTag"&gt;Dimensions&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="tag tag-diff-intermediate" id="quizDiffTag"&gt;Intermediate&lt;/span&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;div class="question-box render-math" id="quizQuestionText"&gt;</span>
+<span class="s2">            Loading quiz question...</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;!-- Options Buttons --&gt;</span>
+<span class="s2">          &lt;div class="options-grid" id="quizOptionsGrid"&gt;</span>
+<span class="s2">            &lt;!-- Buttons injected here --&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;!-- Feedback Box --&gt;</span>
+<span class="s2">          &lt;div class="quiz-feedback-box" id="quizFeedbackBox" style="display: none;"&gt;</span>
+<span class="s2">            &lt;div id="quizFeedbackHeading" style="font-weight:700; font-size:1.05rem;"&gt;&lt;/div&gt;</span>
+<span class="s2">            &lt;div id="quizFeedbackExplanation" class="render-math" style="font-size:0.925rem; line-height:1.5;"&gt;&lt;/div&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;!-- Navigation / Submit Button --&gt;</span>
+<span class="s2">          &lt;div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;"&gt;</span>
+<span class="s2">            &lt;button class="btn" id="btnQuizSkip"&gt;Skip&lt;/button&gt;</span>
+<span class="s2">            &lt;button class="btn btn-primary" id="btnQuizSubmit"&gt;Submit Answer&lt;/button&gt;</span>
+<span class="s2">            &lt;button class="btn btn-primary" id="btnQuizNext" style="display: none;"&gt;Next Question ➔&lt;/button&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;!-- VIEW 3: ANALYTICS &amp; SCORECARD VIEW --&gt;</span>
+<span class="s2">    &lt;div class="view-panel" id="viewAnalytics"&gt;</span>
+<span class="s2">      &lt;div class="analytics-container"&gt;</span>
+<span class="s2">        &lt;div&gt;</span>
+<span class="s2">          &lt;h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:700;"&gt;Benchmark Metrics &amp; Scorecards&lt;/h2&gt;</span>
+<span class="s2">          &lt;p style="color:var(--text-secondary); font-size:0.9rem;"&gt;Dataset composition, distribution breakdown, and baseline evaluation performance.&lt;/p&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Global Stat Cards --&gt;</span>
+<span class="s2">        &lt;div class="stats-overview-grid"&gt;</span>
+<span class="s2">          &lt;div class="stat-card"&gt;</span>
+<span class="s2">            &lt;span class="stat-card-title"&gt;Total Samples&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-value" id="statTotalSamples"&gt;252&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-sub" id="statFormatBreakdown"&gt;234 MCQ / 18 Open&lt;/span&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="stat-card"&gt;</span>
+<span class="s2">            &lt;span class="stat-card-title"&gt;Core Tasks&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-value"&gt;6&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-sub"&gt;SI, Dim, Conv, Homog, Rule, GUM&lt;/span&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="stat-card"&gt;</span>
+<span class="s2">            &lt;span class="stat-card-title"&gt;Reviewed Progress&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-value" id="statReviewedPct"&gt;0%&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-sub" id="statReviewedCount"&gt;0 of 252 annotated&lt;/span&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div class="stat-card"&gt;</span>
+<span class="s2">            &lt;span class="stat-card-title"&gt;Flagged Items&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-value" style="color:var(--accent-amber);" id="statFlaggedCount"&gt;0&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="stat-card-sub"&gt;Requires revision&lt;/span&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- 2 Column Analytics Grids --&gt;</span>
+<span class="s2">        &lt;div class="analytics-grid-2col"&gt;</span>
+<span class="s2">          &lt;!-- Task Distribution Table --&gt;</span>
+<span class="s2">          &lt;div class="card"&gt;</span>
+<span class="s2">            &lt;div class="card-title"&gt;&lt;span&gt;⚡&lt;/span&gt; Task Distribution&lt;/div&gt;</span>
+<span class="s2">            &lt;div class="table-container"&gt;</span>
+<span class="s2">              &lt;table class="data-table" id="taskStatsTable"&gt;</span>
+<span class="s2">                &lt;thead&gt;</span>
+<span class="s2">                  &lt;tr&gt;</span>
+<span class="s2">                    &lt;th&gt;Task&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Count&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Share&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Progress&lt;/th&gt;</span>
+<span class="s2">                  &lt;/tr&gt;</span>
+<span class="s2">                &lt;/thead&gt;</span>
+<span class="s2">                &lt;tbody id="taskStatsBody"&gt;</span>
+<span class="s2">                  &lt;!-- Injected --&gt;</span>
+<span class="s2">                &lt;/tbody&gt;</span>
+<span class="s2">              &lt;/table&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+
+<span class="s2">          &lt;!-- Difficulty &amp; Format Breakdown --&gt;</span>
+<span class="s2">          &lt;div class="card"&gt;</span>
+<span class="s2">            &lt;div class="card-title"&gt;&lt;span&gt;📊&lt;/span&gt; Difficulty &amp; Format Breakdown&lt;/div&gt;</span>
+<span class="s2">            &lt;div class="table-container"&gt;</span>
+<span class="s2">              &lt;table class="data-table" id="diffStatsTable"&gt;</span>
+<span class="s2">                &lt;thead&gt;</span>
+<span class="s2">                  &lt;tr&gt;</span>
+<span class="s2">                    &lt;th&gt;Tier / Format&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Count&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Share&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Bar&lt;/th&gt;</span>
+<span class="s2">                  &lt;/tr&gt;</span>
+<span class="s2">                &lt;/thead&gt;</span>
+<span class="s2">                &lt;tbody id="diffStatsBody"&gt;</span>
+<span class="s2">                  &lt;!-- Injected --&gt;</span>
+<span class="s2">                &lt;/tbody&gt;</span>
+<span class="s2">              &lt;/table&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;!-- Baseline Evaluation Scorecard --&gt;</span>
+<span class="s2">        &lt;div class="card" id="scorecardCard"&gt;</span>
+<span class="s2">          &lt;div class="card-title" style="display:flex; justify-content:space-between; align-items:center;"&gt;</span>
+<span class="s2">            &lt;span&gt;🏆 Model Evaluation Baseline Scorecard&lt;/span&gt;</span>
+<span class="s2">            &lt;span class="tag tag-task" id="scorecardModelName"&gt;ground_truth_baseline&lt;/span&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;p style="color:var(--text-secondary); font-size:0.875rem;"&gt;</span>
+<span class="s2">            Evaluation pass rates across tasks and difficulty tiers based on deterministic rule-checking and symbolic verification.</span>
+<span class="s2">          &lt;/p&gt;</span>
+<span class="s2">          &lt;div class="table-container" style="margin-top:0.75rem;"&gt;</span>
+<span class="s2">            &lt;table class="data-table" id="scorecardTable"&gt;</span>
+<span class="s2">              &lt;thead&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                  &lt;th&gt;Category&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Total Tested&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Passed&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Accuracy&lt;/th&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">              &lt;/thead&gt;</span>
+<span class="s2">              &lt;tbody id="scorecardBody"&gt;</span>
+<span class="s2">                &lt;!-- Injected from scorecard JSON --&gt;</span>
+<span class="s2">              &lt;/tbody&gt;</span>
+<span class="s2">            &lt;/table&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">    &lt;!-- VIEW 4: REVIEW QUEUE &amp; FLAGS VIEW --&gt;</span>
+<span class="s2">    &lt;div class="view-panel" id="viewTriage"&gt;</span>
+<span class="s2">      &lt;div class="triage-container"&gt;</span>
+<span class="s2">        &lt;div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;"&gt;</span>
+<span class="s2">          &lt;div&gt;</span>
+<span class="s2">            &lt;h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:700;"&gt;Review Queue &amp; Flagged Samples&lt;/h2&gt;</span>
+<span class="s2">            &lt;p style="color:var(--text-secondary); font-size:0.9rem;"&gt;Audit samples marked as flagged or containing reviewer feedback.&lt;/p&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">          &lt;div style="display:flex; gap:0.5rem;"&gt;</span>
+<span class="s2">            &lt;button class="btn btn-primary" id="btnExportReviews"&gt;Export Reviews JSON&lt;/button&gt;</span>
+<span class="s2">            &lt;button class="btn" id="btnClearAllReviews"&gt;Clear All Annotations&lt;/button&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+
+<span class="s2">        &lt;div class="card"&gt;</span>
+<span class="s2">          &lt;div class="table-container"&gt;</span>
+<span class="s2">            &lt;table class="data-table"&gt;</span>
+<span class="s2">              &lt;thead&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                  &lt;th&gt;ID&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Task&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Difficulty&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Status&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Question Preview&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Notes&lt;/th&gt;</span>
+<span class="s2">                  &lt;th&gt;Action&lt;/th&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">              &lt;/thead&gt;</span>
+<span class="s2">              &lt;tbody id="triageTableBody"&gt;</span>
+<span class="s2">                &lt;!-- Injected dynamically --&gt;</span>
+<span class="s2">              &lt;/tbody&gt;</span>
+<span class="s2">            &lt;/table&gt;</span>
+<span class="s2">          &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+
+<span class="s2">  &lt;/main&gt;</span>
+
+<span class="s2">  &lt;!-- Load File Modal --&gt;</span>
+<span class="s2">  &lt;div class="modal-overlay" id="loadFileModal"&gt;</span>
+<span class="s2">    &lt;div class="modal-card"&gt;</span>
+<span class="s2">      &lt;div class="modal-header"&gt;</span>
+<span class="s2">        &lt;h3 class="modal-title"&gt;Load Benchmark Dataset&lt;/h3&gt;</span>
+<span class="s2">        &lt;button class="icon-btn" id="btnCloseModal"&gt;✕&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;p style="font-size:0.85rem; color:var(--text-secondary);"&gt;</span>
+<span class="s2">        Select a local JSONL or JSON benchmark file to browse and evaluate in the interactive inspector.</span>
+<span class="s2">      &lt;/p&gt;</span>
+
+<span class="s2">      &lt;div class="dropzone" id="fileDropzone"&gt;</span>
+<span class="s2">        &lt;span style="font-size:2rem;"&gt;📄&lt;/span&gt;</span>
+<span class="s2">        &lt;strong style="font-size:0.95rem;"&gt;Drag &amp; drop benchmark .jsonl or .json file here&lt;/strong&gt;</span>
+<span class="s2">        &lt;span style="font-size:0.75rem; color:var(--text-muted);"&gt;or click to browse from disk&lt;/span&gt;</span>
+<span class="s2">        &lt;input type="file" id="fileInput" accept=".jsonl,.json" style="display:none;" /&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+
+<span class="s2">      &lt;div style="display:flex; justify-content:flex-end; gap:0.5rem;"&gt;</span>
+<span class="s2">        &lt;button class="btn" id="btnCancelModal"&gt;Cancel&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;!-- Shortcuts Modal --&gt;</span>
+<span class="s2">  &lt;div class="modal-overlay" id="shortcutsModal"&gt;</span>
+<span class="s2">    &lt;div class="modal-card"&gt;</span>
+<span class="s2">      &lt;div class="modal-header"&gt;</span>
+<span class="s2">        &lt;h3 class="modal-title"&gt;Keyboard Shortcuts&lt;/h3&gt;</span>
+<span class="s2">        &lt;button class="icon-btn" id="btnCloseShortcuts"&gt;✕&lt;/button&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">      &lt;div class="table-container"&gt;</span>
+<span class="s2">        &lt;table class="data-table"&gt;</span>
+<span class="s2">          &lt;thead&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;th&gt;Shortcut&lt;/th&gt;&lt;th&gt;Action&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="s2">          &lt;/thead&gt;</span>
+<span class="s2">          &lt;tbody&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;&lt;kbd&gt;J&lt;/kbd&gt; / &lt;kbd&gt;↓&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Next sample&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;&lt;kbd&gt;K&lt;/kbd&gt; / &lt;kbd&gt;↑&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Previous sample&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;&lt;kbd&gt;V&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Toggle Verify / Approved&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;&lt;kbd&gt;F&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Toggle Flag for Revision&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;&lt;kbd&gt;/&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Focus search bar&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;&lt;kbd&gt;1&lt;/kbd&gt; - &lt;kbd&gt;4&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Select Option A-D in Quiz Mode&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;&lt;td&gt;&lt;kbd&gt;Esc&lt;/kbd&gt;&lt;/td&gt;&lt;td&gt;Close modals&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="s2">          &lt;/tbody&gt;</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">      &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;!-- Toast Notification Container --&gt;</span>
+<span class="s2">  &lt;div class="toast" id="toast"&gt;</span>
+<span class="s2">    &lt;span id="toastIcon"&gt;✓&lt;/span&gt;</span>
+<span class="s2">    &lt;span id="toastMsg"&gt;Operation successful&lt;/span&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+
+<span class="s2">  &lt;!-- Embedded Benchmark Data --&gt;</span>
+<span class="s2">  &lt;script id="embeddedBenchmarkData" type="application/json"&gt;</span>
+<span class="s2">    __DATA_JSON__</span>
+<span class="s2">  &lt;/script&gt;</span>
+
+<span class="s2">  &lt;!-- Embedded Scorecard Data --&gt;</span>
+<span class="s2">  &lt;script id="embeddedScorecardData" type="application/json"&gt;</span>
+<span class="s2">    __SCORECARD_JSON__</span>
+<span class="s2">  &lt;/script&gt;</span>
+
+<span class="s2">  &lt;!-- Core Interactive Application Logic --&gt;</span>
+<span class="s2">  &lt;script&gt;</span>
+<span class="s2">    (function() {</span>
+<span class="s2">      "use strict";</span>
+
+<span class="s2">      // --- STATE &amp; PERSISTENCE ---</span>
+<span class="s2">      let rawData = [];</span>
+<span class="s2">      let currentRecords = [];</span>
+<span class="s2">      let filteredRecords = [];</span>
+<span class="s2">      let selectedIndex = 0;</span>
+<span class="s2">      let activeView = "explorer";</span>
+<span class="s2">      let scorecardData = null;</span>
+
+<span class="s2">      // LocalStorage Keys</span>
+<span class="s2">      const STORAGE_KEY_REVIEWS = "drum_benchmark_reviews_v1";</span>
+<span class="s2">      const STORAGE_KEY_THEME = "drum_benchmark_theme_v1";</span>
+
+<span class="s2">      let reviews = </span><span class="si">{}</span><span class="s2">; // id -&gt; { status: 'approved'|'flagged'|'pending', notes: string }</span>
+
+<span class="s2">      // --- INITIALIZATION ---</span>
+<span class="s2">      function init() {</span>
+<span class="s2">        loadSavedTheme();</span>
+<span class="s2">        loadSavedReviews();</span>
+<span class="s2">        loadEmbeddedData();</span>
+<span class="s2">        setupEventListeners();</span>
+<span class="s2">        renderActiveView();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function loadSavedTheme() {</span>
+<span class="s2">        const saved = localStorage.getItem(STORAGE_KEY_THEME);</span>
+<span class="s2">        if (saved) {</span>
+<span class="s2">          document.documentElement.setAttribute("data-theme", saved);</span>
+<span class="s2">          updateThemeIcon(saved);</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function loadSavedReviews() {</span>
+<span class="s2">        try {</span>
+<span class="s2">          const saved = localStorage.getItem(STORAGE_KEY_REVIEWS);</span>
+<span class="s2">          if (saved) {</span>
+<span class="s2">            reviews = JSON.parse(saved);</span>
+<span class="s2">          }</span>
+<span class="s2">        } catch (e) {</span>
+<span class="s2">          reviews = </span><span class="si">{}</span><span class="s2">;</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function saveReviews() {</span>
+<span class="s2">        try {</span>
+<span class="s2">          localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(reviews));</span>
+<span class="s2">          updateTriageBadge();</span>
+<span class="s2">        } catch (e) {</span>
+<span class="s2">          console.error("Failed to save reviews to localStorage", e);</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function loadEmbeddedData() {</span>
+<span class="s2">        try {</span>
+<span class="s2">          const rawEl = document.getElementById("embeddedBenchmarkData");</span>
+<span class="s2">          if (rawEl &amp;&amp; rawEl.textContent.trim()) {</span>
+<span class="s2">            rawData = JSON.parse(rawEl.textContent);</span>
+<span class="s2">            currentRecords = [...rawData];</span>
+<span class="s2">          }</span>
+<span class="s2">        } catch (e) {</span>
+<span class="s2">          console.error("Failed to parse embedded benchmark data", e);</span>
+<span class="s2">          rawData = [];</span>
+<span class="s2">          currentRecords = [];</span>
+<span class="s2">        }</span>
+
+<span class="s2">        try {</span>
+<span class="s2">          const scEl = document.getElementById("embeddedScorecardData");</span>
+<span class="s2">          if (scEl &amp;&amp; scEl.textContent.trim() &amp;&amp; scEl.textContent.trim() !== "null") {</span>
+<span class="s2">            scorecardData = JSON.parse(scEl.textContent);</span>
+<span class="s2">          }</span>
+<span class="s2">        } catch (e) {</span>
+<span class="s2">          console.error("Failed to parse scorecard data", e);</span>
+<span class="s2">        }</span>
+
+<span class="s2">        applyFilters();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- EVENT LISTENERS ---</span>
+<span class="s2">      function setupEventListeners() {</span>
+<span class="s2">        // View Navigation Tabs</span>
+<span class="s2">        document.querySelectorAll(".nav-tab-btn").forEach(btn =&gt; {</span>
+<span class="s2">          btn.addEventListener("click", () =&gt; {</span>
+<span class="s2">            const view = btn.getAttribute("data-view");</span>
+<span class="s2">            switchView(view);</span>
+<span class="s2">          });</span>
+<span class="s2">        });</span>
+
+<span class="s2">        // Theme Toggle</span>
+<span class="s2">        document.getElementById("btnThemeToggle").addEventListener("click", toggleTheme);</span>
+
+<span class="s2">        // Search Input</span>
+<span class="s2">        const searchInput = document.getElementById("searchInput");</span>
+<span class="s2">        const searchClear = document.getElementById("searchClear");</span>
+
+<span class="s2">        searchInput.addEventListener("input", () =&gt; {</span>
+<span class="s2">          searchClear.style.display = searchInput.value ? "block" : "none";</span>
+<span class="s2">          applyFilters();</span>
+<span class="s2">        });</span>
+
+<span class="s2">        searchClear.addEventListener("click", () =&gt; {</span>
+<span class="s2">          searchInput.value = "";</span>
+<span class="s2">          searchClear.style.display = "none";</span>
+<span class="s2">          searchInput.focus();</span>
+<span class="s2">          applyFilters();</span>
+<span class="s2">        });</span>
+
+<span class="s2">        // Task Filter Chips</span>
+<span class="s2">        document.querySelectorAll("#taskFilters .filter-chip").forEach(chip =&gt; {</span>
+<span class="s2">          chip.addEventListener("click", () =&gt; {</span>
+<span class="s2">            document.querySelectorAll("#taskFilters .filter-chip").forEach(c =&gt; c.classList.remove("active"));</span>
+<span class="s2">            chip.classList.add("active");</span>
+<span class="s2">            applyFilters();</span>
+<span class="s2">          });</span>
+<span class="s2">        });</span>
+
+<span class="s2">        // Sub-filters &amp; Sorting</span>
+<span class="s2">        document.getElementById("diffFilter").addEventListener("change", applyFilters);</span>
+<span class="s2">        document.getElementById("formatFilter").addEventListener("change", applyFilters);</span>
+<span class="s2">        document.getElementById("statusFilter").addEventListener("change", applyFilters);</span>
+<span class="s2">        document.getElementById("sortSelect").addEventListener("change", applyFilters);</span>
+
+<span class="s2">        // Actions in Inspector Header</span>
+<span class="s2">        document.getElementById("btnApprove").addEventListener("click", () =&gt; toggleReviewStatus("approved"));</span>
+<span class="s2">        document.getElementById("btnFlag").addEventListener("click", () =&gt; toggleReviewStatus("flagged"));</span>
+<span class="s2">        document.getElementById("btnRandomSample").addEventListener("click", selectRandomSample);</span>
+<span class="s2">        document.getElementById("btnCopyId").addEventListener("click", () =&gt; {</span>
+<span class="s2">          if (filteredRecords[selectedIndex]) {</span>
+<span class="s2">            copyToClipboard(filteredRecords[selectedIndex].id, "Sample ID copied to clipboard!");</span>
+<span class="s2">          }</span>
+<span class="s2">        });</span>
+
+<span class="s2">        // Notes textarea</span>
+<span class="s2">        const notesArea = document.getElementById("inspectReviewNotes");</span>
+<span class="s2">        notesArea.addEventListener("input", () =&gt; {</span>
+<span class="s2">          const item = filteredRecords[selectedIndex];</span>
+<span class="s2">          if (!item) return;</span>
+<span class="s2">          if (!reviews[item.id]) {</span>
+<span class="s2">            reviews[item.id] = { status: "pending", notes: "" };</span>
+<span class="s2">          }</span>
+<span class="s2">          reviews[item.id].notes = notesArea.value;</span>
+<span class="s2">          saveReviews();</span>
+<span class="s2">          const statusLbl = document.getElementById("notesSaveStatus");</span>
+<span class="s2">          statusLbl.textContent = "Saved";</span>
+<span class="s2">        });</span>
+
+<span class="s2">        // Modal triggers</span>
+<span class="s2">        document.getElementById("btnLoadFile").addEventListener("click", openLoadModal);</span>
+<span class="s2">        document.getElementById("btnCloseModal").addEventListener("click", closeLoadModal);</span>
+<span class="s2">        document.getElementById("btnCancelModal").addEventListener("click", closeLoadModal);</span>
+<span class="s2">        document.getElementById("btnShortcuts").addEventListener("click", openShortcutsModal);</span>
+<span class="s2">        document.getElementById("btnCloseShortcuts").addEventListener("click", closeShortcutsModal);</span>
+
+<span class="s2">        // Export Actions</span>
+<span class="s2">        document.getElementById("btnExport").addEventListener("click", exportDataMenu);</span>
+<span class="s2">        document.getElementById("btnExportReviews")?.addEventListener("click", exportReviewsJson);</span>
+<span class="s2">        document.getElementById("btnClearAllReviews")?.addEventListener("click", clearAllReviews);</span>
+
+<span class="s2">        // File Drag &amp; Drop</span>
+<span class="s2">        setupFileLoader();</span>
+
+<span class="s2">        // Quiz Interactions</span>
+<span class="s2">        setupQuizListeners();</span>
+
+<span class="s2">        // Keyboard Shortcuts</span>
+<span class="s2">        window.addEventListener("keydown", handleGlobalKeyDown);</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- FILTERING &amp; LIST RENDERING ---</span>
+<span class="s2">      function applyFilters() {</span>
+<span class="s2">        const query = document.getElementById("searchInput").value.trim().toLowerCase();</span>
+<span class="s2">        const activeTaskChip = document.querySelector("#taskFilters .filter-chip.active");</span>
+<span class="s2">        const taskFilter = activeTaskChip ? activeTaskChip.getAttribute("data-task") : "all";</span>
+<span class="s2">        const diffFilter = document.getElementById("diffFilter").value;</span>
+<span class="s2">        const formatFilter = document.getElementById("formatFilter").value;</span>
+<span class="s2">        const statusFilter = document.getElementById("statusFilter").value;</span>
+<span class="s2">        const sortBy = document.getElementById("sortSelect").value;</span>
+
+<span class="s2">        filteredRecords = currentRecords.filter(item =&gt; {</span>
+<span class="s2">          // Task filter</span>
+<span class="s2">          if (taskFilter !== "all" &amp;&amp; item.task !== taskFilter) return false;</span>
+<span class="s2">          // Difficulty filter</span>
+<span class="s2">          if (diffFilter !== "all" &amp;&amp; item.difficulty !== diffFilter) return false;</span>
+<span class="s2">          // Format filter</span>
+<span class="s2">          if (formatFilter !== "all" &amp;&amp; item.format !== formatFilter) return false;</span>
+<span class="s2">          // Status filter</span>
+<span class="s2">          if (statusFilter !== "all") {</span>
+<span class="s2">            const st = (reviews[item.id] &amp;&amp; reviews[item.id].status) || "pending";</span>
+<span class="s2">            if (st !== statusFilter) return false;</span>
+<span class="s2">          }</span>
+<span class="s2">          // Text search query</span>
+<span class="s2">          if (query) {</span>
+<span class="s2">            const matchId = (item.id || "").toLowerCase().includes(query);</span>
+<span class="s2">            const matchQ = (item.question || "").toLowerCase().includes(query);</span>
+<span class="s2">            const matchAns = (item.ground_truth_answer || "").toLowerCase().includes(query);</span>
+<span class="s2">            const matchExp = (item.explanation || "").toLowerCase().includes(query);</span>
+<span class="s2">            const matchUri = (item.entity_uri || "").toLowerCase().includes(query);</span>
+<span class="s2">            const matchMeta = JSON.stringify(item.metadata || </span><span class="si">{}</span><span class="s2">).toLowerCase().includes(query);</span>
+<span class="s2">            if (!matchId &amp;&amp; !matchQ &amp;&amp; !matchAns &amp;&amp; !matchExp &amp;&amp; !matchUri &amp;&amp; !matchMeta) {</span>
+<span class="s2">              return false;</span>
+<span class="s2">            }</span>
+<span class="s2">          }</span>
+<span class="s2">          return true;</span>
+<span class="s2">        });</span>
+
+<span class="s2">        // Sort</span>
+<span class="s2">        if (sortBy === "id") {</span>
+<span class="s2">          filteredRecords.sort((a, b) =&gt; a.id.localeCompare(b.id));</span>
+<span class="s2">        } else if (sortBy === "task") {</span>
+<span class="s2">          filteredRecords.sort((a, b) =&gt; (a.task || "").localeCompare(b.task || ""));</span>
+<span class="s2">        } else if (sortBy === "difficulty") {</span>
+<span class="s2">          const diffOrder = { introductory: 1, intermediate: 2, advanced: 3 };</span>
+<span class="s2">          filteredRecords.sort((a, b) =&gt; (diffOrder[a.difficulty] || 0) - (diffOrder[b.difficulty] || 0));</span>
+<span class="s2">        } else if (sortBy === "status") {</span>
+<span class="s2">          const getStatus = id =&gt; (reviews[id] &amp;&amp; reviews[id].status) || "pending";</span>
+<span class="s2">          filteredRecords.sort((a, b) =&gt; getStatus(a.id).localeCompare(getStatus(b.id)));</span>
+<span class="s2">        }</span>
+
+<span class="s2">        // Update list counter</span>
+<span class="s2">        document.getElementById("filteredCountLabel").textContent = `Showing $</span><span class="si">{filteredRecords.length}</span><span class="s2"> of $</span><span class="si">{currentRecords.length}</span><span class="s2"> samples`;</span>
+
+<span class="s2">        if (selectedIndex &gt;= filteredRecords.length) {</span>
+<span class="s2">          selectedIndex = 0;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        renderSampleList();</span>
+<span class="s2">        renderInspector();</span>
+<span class="s2">        updateTriageBadge();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function renderSampleList() {</span>
+<span class="s2">        const container = document.getElementById("sampleListContainer");</span>
+<span class="s2">        container.innerHTML = "";</span>
+
+<span class="s2">        if (filteredRecords.length === 0) {</span>
+<span class="s2">          container.innerHTML = `</span>
+<span class="s2">            &lt;div style="padding:2rem; text-align:center; color:var(--text-muted); font-size:0.875rem;"&gt;</span>
+<span class="s2">              No matching benchmark samples found.&lt;br/&gt;</span>
+<span class="s2">              Try clearing filters or search query.</span>
+<span class="s2">            &lt;/div&gt;`;</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        filteredRecords.forEach((item, idx) =&gt; {</span>
+<span class="s2">          const itemEl = document.createElement("div");</span>
+<span class="s2">          itemEl.className = `sample-item ${idx === selectedIndex ? "active" : ""}`;</span>
+<span class="s2">          itemEl.addEventListener("click", () =&gt; {</span>
+<span class="s2">            selectedIndex = idx;</span>
+<span class="s2">            updateActiveListItem();</span>
+<span class="s2">            renderInspector();</span>
+<span class="s2">          });</span>
+
+<span class="s2">          const status = (reviews[item.id] &amp;&amp; reviews[item.id].status) || "pending";</span>
+<span class="s2">          const statusClass = status === "approved" ? "status-approved" : (status === "flagged" ? "status-flagged" : "status-pending");</span>
+
+<span class="s2">          const task = item.task || "general";</span>
+<span class="s2">          const diff = item.difficulty || "intermediate";</span>
+<span class="s2">          const format = item.format || "mcq";</span>
+
+<span class="s2">          itemEl.innerHTML = `</span>
+<span class="s2">            &lt;div class="sample-item-top"&gt;</span>
+<span class="s2">              &lt;span class="sample-item-id"&gt;</span>
+<span class="s2">                &lt;span class="status-dot $</span><span class="si">{statusClass}</span><span class="s2">" style="margin-right:4px;"&gt;&lt;/span&gt;</span>
+<span class="s2">                ${escapeHtml(item.id)}</span>
+<span class="s2">              &lt;/span&gt;</span>
+<span class="s2">              &lt;div class="sample-tags"&gt;</span>
+<span class="s2">                &lt;span class="tag tag-task" data-task="$</span><span class="si">{task}</span><span class="s2">"&gt;$</span><span class="si">{task}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">                &lt;span class="tag tag-diff-$</span><span class="si">{diff}</span><span class="s2">"&gt;${diff.slice(0, 3)}&lt;/span&gt;</span>
+<span class="s2">                &lt;span class="tag tag-format"&gt;${format === "mcq" ? "MCQ" : "Open"}&lt;/span&gt;</span>
+<span class="s2">              &lt;/div&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">            &lt;div class="sample-item-text"&gt;${escapeHtml(cleanMathText(item.question))}&lt;/div&gt;</span>
+<span class="s2">          `;</span>
+
+<span class="s2">          container.appendChild(itemEl);</span>
+<span class="s2">        });</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function updateActiveListItem() {</span>
+<span class="s2">        const items = document.querySelectorAll("#sampleListContainer .sample-item");</span>
+<span class="s2">        items.forEach((el, idx) =&gt; {</span>
+<span class="s2">          if (idx === selectedIndex) {</span>
+<span class="s2">            el.classList.add("active");</span>
+<span class="s2">            el.scrollIntoView({ block: "nearest", behavior: "smooth" });</span>
+<span class="s2">          } else {</span>
+<span class="s2">            el.classList.remove("active");</span>
+<span class="s2">          }</span>
+<span class="s2">        });</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- INSPECTOR PANEL RENDERING ---</span>
+<span class="s2">      function renderInspector() {</span>
+<span class="s2">        const item = filteredRecords[selectedIndex];</span>
+<span class="s2">        if (!item) {</span>
+<span class="s2">          document.getElementById("inspectId").textContent = "-";</span>
+<span class="s2">          document.getElementById("inspectQuestion").textContent = "No sample selected.";</span>
+<span class="s2">          document.getElementById("inspectBadges").innerHTML = "";</span>
+<span class="s2">          document.getElementById("inspectOptionsContainer").innerHTML = "";</span>
+<span class="s2">          document.getElementById("inspectExplanation").textContent = "";</span>
+<span class="s2">          document.getElementById("inspectRawJson").textContent = "</span><span class="si">{}</span><span class="s2">";</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        // Header ID and badges</span>
+<span class="s2">        document.getElementById("inspectId").textContent = item.id;</span>
+<span class="s2">        const status = (reviews[item.id] &amp;&amp; reviews[item.id].status) || "pending";</span>
+<span class="s2">        const dot = document.getElementById("inspectStatusDot");</span>
+<span class="s2">        dot.className = "status-dot " + (status === "approved" ? "status-approved" : (status === "flagged" ? "status-flagged" : "status-pending"));</span>
+
+<span class="s2">        const badgesEl = document.getElementById("inspectBadges");</span>
+<span class="s2">        badgesEl.innerHTML = `</span>
+<span class="s2">          &lt;span class="tag tag-task" data-task="$</span><span class="si">{item.task}</span><span class="s2">"&gt;$</span><span class="si">{item.task}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">          &lt;span class="tag tag-diff-$</span><span class="si">{item.difficulty}</span><span class="s2">"&gt;$</span><span class="si">{item.difficulty}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">          &lt;span class="tag tag-format"&gt;${item.format === "mcq" ? "Multiple Choice (Track A)" : "Free-Form Symbolic (Track B)"}&lt;/span&gt;</span>
+<span class="s2">          ${status === "approved" ? '&lt;span class="tag badge-correct"&gt;✓ Verified Approved&lt;/span&gt;' : ''}</span>
+<span class="s2">          ${status === "flagged" ? '&lt;span class="tag" style="background:rgba(245,158,11,0.2); color:#fbbf24;"&gt;🚩 Flagged for Revision&lt;/span&gt;' : ''}</span>
+<span class="s2">        `;</span>
+
+<span class="s2">        // Question &amp; Context</span>
+<span class="s2">        document.getElementById("inspectQuestion").innerHTML = formatMathText(item.question);</span>
+
+<span class="s2">        const ctxBox = document.getElementById("inspectContext");</span>
+<span class="s2">        if (item.context) {</span>
+<span class="s2">          ctxBox.style.display = "block";</span>
+<span class="s2">          ctxBox.innerHTML = `&lt;strong&gt;Context:&lt;/strong&gt; ` + formatMathText(item.context);</span>
+<span class="s2">        } else {</span>
+<span class="s2">          ctxBox.style.display = "none";</span>
+<span class="s2">        }</span>
+
+<span class="s2">        // Options &amp; Answers</span>
+<span class="s2">        const optContainer = document.getElementById("inspectOptionsContainer");</span>
+<span class="s2">        optContainer.innerHTML = "";</span>
+
+<span class="s2">        if (item.format === "mcq" &amp;&amp; item.options &amp;&amp; item.options.length &gt; 0) {</span>
+<span class="s2">          const grid = document.createElement("div");</span>
+<span class="s2">          grid.className = "options-grid";</span>
+
+<span class="s2">          item.options.forEach(opt =&gt; {</span>
+<span class="s2">            const isCorrect = opt.is_correct || opt.key === item.correct_option_key;</span>
+<span class="s2">            const optCard = document.createElement("div");</span>
+<span class="s2">            optCard.className = `option-card ${isCorrect ? "correct" : "distractor"}`;</span>
+
+<span class="s2">            let distractorHtml = "";</span>
+<span class="s2">            if (!isCorrect &amp;&amp; opt.distractor_rationale) {</span>
+<span class="s2">              distractorHtml = `</span>
+<span class="s2">                &lt;div class="distractor-pill"&gt;</span>
+<span class="s2">                  &lt;span&gt;⚠️ Distractor Flaw:&lt;/span&gt;</span>
+<span class="s2">                  &lt;span&gt;${escapeHtml(opt.distractor_rationale)}&lt;/span&gt;</span>
+<span class="s2">                &lt;/div&gt;</span>
+<span class="s2">              `;</span>
+<span class="s2">            } else if (isCorrect) {</span>
+<span class="s2">              distractorHtml = `</span>
+<span class="s2">                &lt;div class="distractor-pill" style="background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3); color:#34d399;"&gt;</span>
+<span class="s2">                  &lt;span&gt;✓ Ground Truth Canonical Reference&lt;/span&gt;</span>
+<span class="s2">                &lt;/div&gt;</span>
+<span class="s2">              `;</span>
+<span class="s2">            }</span>
+
+<span class="s2">            optCard.innerHTML = `</span>
+<span class="s2">              &lt;div class="option-main"&gt;</span>
+<span class="s2">                &lt;div class="option-key-badge"&gt;$</span><span class="si">{opt.key}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">                &lt;div class="option-text"&gt;${formatMathText(opt.text)}&lt;/div&gt;</span>
+<span class="s2">                ${isCorrect ? '&lt;span class="option-status-badge badge-correct"&gt;Correct Option&lt;/span&gt;' : ''}</span>
+<span class="s2">              &lt;/div&gt;</span>
+<span class="s2">              $</span><span class="si">{distractorHtml}</span>
+<span class="s2">            `;</span>
+<span class="s2">            grid.appendChild(optCard);</span>
+<span class="s2">          });</span>
+<span class="s2">          optContainer.appendChild(grid);</span>
+<span class="s2">        } else {</span>
+<span class="s2">          // Free form / Open representation</span>
+<span class="s2">          const ffBox = document.createElement("div");</span>
+<span class="s2">          ffBox.className = "ground-truth-box";</span>
+<span class="s2">          ffBox.innerHTML = `</span>
+<span class="s2">            &lt;span style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:#38bdf8;"&gt;Canonical Ground Truth Target&lt;/span&gt;</span>
+<span class="s2">            &lt;div class="ground-truth-val"&gt;${formatMathText(item.ground_truth_answer)}&lt;/div&gt;</span>
+<span class="s2">          `;</span>
+<span class="s2">          optContainer.appendChild(ffBox);</span>
+<span class="s2">        }</span>
+
+<span class="s2">        // Explanation</span>
+<span class="s2">        const expEl = document.getElementById("inspectExplanation");</span>
+<span class="s2">        expEl.innerHTML = item.explanation ? formatMathText(item.explanation) : "&lt;em&gt;No derivation explanation provided.&lt;/em&gt;";</span>
+
+<span class="s2">        // Provenance &amp; Metadata Anatomy</span>
+<span class="s2">        const entityUriEl = document.getElementById("inspectEntityUri");</span>
+<span class="s2">        if (item.entity_uri) {</span>
+<span class="s2">          entityUriEl.innerHTML = `&lt;a href="${escapeHtml(item.entity_uri)}" target="_blank" rel="noopener noreferrer" style="color:var(--text-link); text-decoration:underline;"&gt;${escapeHtml(item.entity_uri)}&lt;/a&gt;`;</span>
+<span class="s2">        } else {</span>
+<span class="s2">          entityUriEl.textContent = "N/A";</span>
+<span class="s2">        }</span>
+
+<span class="s2">        // Dimension Vector Chips</span>
+<span class="s2">        const dimVectorEl = document.getElementById("inspectDimVector");</span>
+<span class="s2">        dimVectorEl.innerHTML = "";</span>
+<span class="s2">        const dims = (item.metadata &amp;&amp; item.metadata.dim_vector) || null;</span>
+<span class="s2">        if (dims) {</span>
+<span class="s2">          const baseNames = ["L", "M", "T", "I", "Theta", "N", "J"];</span>
+<span class="s2">          baseNames.forEach(dim =&gt; {</span>
+<span class="s2">            const val = dims[dim] || 0;</span>
+<span class="s2">            const chip = document.createElement("span");</span>
+<span class="s2">            chip.className = `dim-chip ${val !== 0 ? "active-dim" : ""}`;</span>
+<span class="s2">            chip.textContent = `${dim === "Theta" ? "Θ" : dim}: $</span><span class="si">{val}</span><span class="s2">`;</span>
+<span class="s2">            dimVectorEl.appendChild(chip);</span>
+<span class="s2">          });</span>
+<span class="s2">        } else {</span>
+<span class="s2">          dimVectorEl.innerHTML = `&lt;span style="font-size:0.75rem; color:var(--text-muted);"&gt;No dimension vector specified&lt;/span&gt;`;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        // Standard Reference &amp; Symbol</span>
+<span class="s2">        const standardEl = document.getElementById("inspectStandard");</span>
+<span class="s2">        const standardVal = (item.metadata &amp;&amp; (item.metadata.standard || item.metadata.category)) || "SI Digital Framework (9th Ed)";</span>
+<span class="s2">        standardEl.textContent = standardVal;</span>
+
+<span class="s2">        const symbolEl = document.getElementById("inspectSymbol");</span>
+<span class="s2">        const symVal = (item.metadata &amp;&amp; (item.metadata.unit_symbol || item.metadata.constant_symbol)) || item.ground_truth_answer || "-";</span>
+<span class="s2">        symbolEl.innerHTML = formatMathText(symVal);</span>
+
+<span class="s2">        // Reviewer Notes</span>
+<span class="s2">        const notesArea = document.getElementById("inspectReviewNotes");</span>
+<span class="s2">        notesArea.value = (reviews[item.id] &amp;&amp; reviews[item.id].notes) || "";</span>
+
+<span class="s2">        // Raw JSON</span>
+<span class="s2">        document.getElementById("inspectRawJson").textContent = JSON.stringify(item, null, 2);</span>
+
+<span class="s2">        // Trigger LaTeX Math Render</span>
+<span class="s2">        renderMathInDOM();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function toggleReviewStatus(newStatus) {</span>
+<span class="s2">        const item = filteredRecords[selectedIndex];</span>
+<span class="s2">        if (!item) return;</span>
+
+<span class="s2">        if (!reviews[item.id]) {</span>
+<span class="s2">          reviews[item.id] = { status: "pending", notes: "" };</span>
+<span class="s2">        }</span>
+
+<span class="s2">        if (reviews[item.id].status === newStatus) {</span>
+<span class="s2">          reviews[item.id].status = "pending";</span>
+<span class="s2">          showToast(`Status cleared for $</span><span class="si">{item.id}</span><span class="s2">`);</span>
+<span class="s2">        } else {</span>
+<span class="s2">          reviews[item.id].status = newStatus;</span>
+<span class="s2">          showToast(`Marked $</span><span class="si">{item.id}</span><span class="s2"> as ${newStatus.toUpperCase()}`);</span>
+<span class="s2">        }</span>
+
+<span class="s2">        saveReviews();</span>
+<span class="s2">        updateActiveListItem();</span>
+<span class="s2">        renderInspector();</span>
+<span class="s2">        renderAnalytics();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function selectRandomSample() {</span>
+<span class="s2">        if (filteredRecords.length === 0) return;</span>
+<span class="s2">        selectedIndex = Math.floor(Math.random() * filteredRecords.length);</span>
+<span class="s2">        updateActiveListItem();</span>
+<span class="s2">        renderInspector();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- MATH RENDERING HELPER ---</span>
+<span class="s2">      function formatMathText(str) {</span>
+<span class="s2">        if (!str) return "";</span>
+<span class="s2">        let s = escapeHtml(str);</span>
+<span class="s2">        // Replace LaTeX inline formulas</span>
+<span class="s2">        return s.replace(/</span><span class="se">\\\\</span><span class="s2">text</span><span class="se">\\</span><span class="s2">{([^}]+)</span><span class="se">\\</span><span class="s2">}/g, "&lt;strong&gt;$1&lt;/strong&gt;")</span>
+<span class="s2">                .replace(/</span><span class="se">\\\\</span><span class="s2">cdot/g, " · ")</span>
+<span class="s2">                .replace(/</span><span class="se">\\\\</span><span class="s2">Theta/g, "Θ")</span>
+<span class="s2">                .replace(/</span><span class="se">\\\\</span><span class="s2">Delta/g, "Δ")</span>
+<span class="s2">                .replace(/</span><span class="se">\\\\</span><span class="s2">nu/g, "ν")</span>
+<span class="s2">                .replace(/</span><span class="se">\\\\</span><span class="s2">pm/g, "±")</span>
+<span class="s2">                .replace(/</span><span class="se">\\\\</span><span class="s2">circ/g, "°");</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function cleanMathText(str) {</span>
+<span class="s2">        if (!str) return "";</span>
+<span class="s2">        return str.replace(/</span><span class="se">\\</span><span class="s2">text</span><span class="se">\\</span><span class="s2">{([^}]+)</span><span class="se">\\</span><span class="s2">}/g, "$1")</span>
+<span class="s2">                  .replace(/</span><span class="se">\\</span><span class="s2">cdot/g, "·")</span>
+<span class="s2">                  .replace(/</span><span class="se">\\</span><span class="s2">Theta/g, "Θ")</span>
+<span class="s2">                  .replace(/</span><span class="se">\\</span><span class="s2">Delta/g, "Δ")</span>
+<span class="s2">                  .replace(/</span><span class="se">\\</span><span class="s2">nu/g, "ν")</span>
+<span class="s2">                  .replace(/</span><span class="se">\\</span><span class="s2">pm/g, "±")</span>
+<span class="s2">                  .replace(/</span><span class="se">\\</span><span class="s2">circ/g, "°");</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function renderMathInDOM() {</span>
+<span class="s2">        if (window.renderMathInElement) {</span>
+<span class="s2">          try {</span>
+<span class="s2">            renderMathInElement(document.getElementById("inspectorPanel"), {</span>
+<span class="s2">              delimiters: [</span>
+<span class="s2">                { left: "$$", right: "$$", display: true },</span>
+<span class="s2">                { left: "$", right: "$", display: false },</span>
+<span class="s2">                { left: "</span><span class="se">\\</span><span class="s2">(", right: "</span><span class="se">\\</span><span class="s2">)", display: false },</span>
+<span class="s2">                { left: "</span><span class="se">\\</span><span class="s2">[", right: "</span><span class="se">\\</span><span class="s2">]", display: true }</span>
+<span class="s2">              ],</span>
+<span class="s2">              throwOnError: false</span>
+<span class="s2">            });</span>
+<span class="s2">          } catch (e) {</span>
+<span class="s2">            // KaTeX rendering fallback</span>
+<span class="s2">          }</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- VIEW 2: QUIZ / TEST MODE ---</span>
+<span class="s2">      let quizState = {</span>
+<span class="s2">        queue: [],</span>
+<span class="s2">        currentIndex: 0,</span>
+<span class="s2">        correctCount: 0,</span>
+<span class="s2">        attemptedCount: 0,</span>
+<span class="s2">        streak: 0,</span>
+<span class="s2">        selectedOption: null,</span>
+<span class="s2">        isAnswered: false</span>
+<span class="s2">      };</span>
+
+<span class="s2">      function setupQuizListeners() {</span>
+<span class="s2">        document.getElementById("btnQuizSubmit").addEventListener("click", submitQuizAnswer);</span>
+<span class="s2">        document.getElementById("btnQuizNext").addEventListener("click", nextQuizQuestion);</span>
+<span class="s2">        document.getElementById("btnQuizSkip").addEventListener("click", nextQuizQuestion);</span>
+<span class="s2">        document.getElementById("btnQuizRestart").addEventListener("click", startQuiz);</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function startQuiz() {</span>
+<span class="s2">        const mcqItems = currentRecords.filter(r =&gt; r.format === "mcq" &amp;&amp; r.options &amp;&amp; r.options.length &gt; 0);</span>
+<span class="s2">        quizState.queue = shuffleArray([...mcqItems]);</span>
+<span class="s2">        quizState.currentIndex = 0;</span>
+<span class="s2">        quizState.correctCount = 0;</span>
+<span class="s2">        quizState.attemptedCount = 0;</span>
+<span class="s2">        quizState.streak = 0;</span>
+<span class="s2">        quizState.selectedOption = null;</span>
+<span class="s2">        quizState.isAnswered = false;</span>
+
+<span class="s2">        document.getElementById("quizTotalQuestions").textContent = quizState.queue.length;</span>
+<span class="s2">        renderQuizQuestion();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function renderQuizQuestion() {</span>
+<span class="s2">        const item = quizState.queue[quizState.currentIndex];</span>
+<span class="s2">        if (!item) {</span>
+<span class="s2">          document.getElementById("quizQuestionText").textContent = "Quiz complete! Great job!";</span>
+<span class="s2">          document.getElementById("quizOptionsGrid").innerHTML = "";</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        quizState.selectedOption = null;</span>
+<span class="s2">        quizState.isAnswered = false;</span>
+
+<span class="s2">        document.getElementById("quizCurrentIndex").textContent = quizState.currentIndex + 1;</span>
+<span class="s2">        document.getElementById("quizScoreCorrect").textContent = quizState.correctCount;</span>
+<span class="s2">        document.getElementById("quizScoreAttempted").textContent = quizState.attemptedCount;</span>
+<span class="s2">        const acc = quizState.attemptedCount &gt; 0 ? Math.round((quizState.correctCount / quizState.attemptedCount) * 100) : 0;</span>
+<span class="s2">        document.getElementById("quizAccuracyPct").textContent = acc + "%";</span>
+<span class="s2">        document.getElementById("quizStreak").textContent = quizState.streak;</span>
+
+<span class="s2">        const fillPct = (quizState.currentIndex / Math.max(1, quizState.queue.length)) * 100;</span>
+<span class="s2">        document.getElementById("quizProgressFill").style.width = fillPct + "%";</span>
+
+<span class="s2">        document.getElementById("quizTaskBadge").textContent = item.task;</span>
+<span class="s2">        document.getElementById("quizTaskTag").textContent = item.task;</span>
+<span class="s2">        document.getElementById("quizTaskTag").setAttribute("data-task", item.task);</span>
+<span class="s2">        document.getElementById("quizDiffTag").textContent = item.difficulty;</span>
+<span class="s2">        document.getElementById("quizDiffTag").className = `tag tag-diff-$</span><span class="si">{item.difficulty}</span><span class="s2">`;</span>
+
+<span class="s2">        document.getElementById("quizQuestionText").innerHTML = formatMathText(item.question);</span>
+
+<span class="s2">        const optionsGrid = document.getElementById("quizOptionsGrid");</span>
+<span class="s2">        optionsGrid.innerHTML = "";</span>
+
+<span class="s2">        item.options.forEach((opt, idx) =&gt; {</span>
+<span class="s2">          const btn = document.createElement("button");</span>
+<span class="s2">          btn.className = "quiz-option-btn";</span>
+<span class="s2">          btn.innerHTML = `</span>
+<span class="s2">            &lt;div class="option-key-badge"&gt;$</span><span class="si">{opt.key}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">            &lt;div style="flex:1;"&gt;${formatMathText(opt.text)}&lt;/div&gt;</span>
+<span class="s2">          `;</span>
+<span class="s2">          btn.addEventListener("click", () =&gt; {</span>
+<span class="s2">            if (quizState.isAnswered) return;</span>
+<span class="s2">            document.querySelectorAll(".quiz-option-btn").forEach(b =&gt; b.classList.remove("selected"));</span>
+<span class="s2">            btn.classList.add("selected");</span>
+<span class="s2">            quizState.selectedOption = opt.key;</span>
+<span class="s2">          });</span>
+<span class="s2">          optionsGrid.appendChild(btn);</span>
+<span class="s2">        });</span>
+
+<span class="s2">        document.getElementById("quizFeedbackBox").style.display = "none";</span>
+<span class="s2">        document.getElementById("btnQuizSubmit").style.display = "inline-flex";</span>
+<span class="s2">        document.getElementById("btnQuizNext").style.display = "none";</span>
+<span class="s2">        document.getElementById("btnQuizSkip").style.display = "inline-flex";</span>
+
+<span class="s2">        renderMathInDOM();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function submitQuizAnswer() {</span>
+<span class="s2">        if (!quizState.selectedOption) {</span>
+<span class="s2">          showToast("Please select an option first!");</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        const item = quizState.queue[quizState.currentIndex];</span>
+<span class="s2">        const isCorrect = quizState.selectedOption === item.correct_option_key;</span>
+
+<span class="s2">        quizState.isAnswered = true;</span>
+<span class="s2">        quizState.attemptedCount++;</span>
+<span class="s2">        if (isCorrect) {</span>
+<span class="s2">          quizState.correctCount++;</span>
+<span class="s2">          quizState.streak++;</span>
+<span class="s2">        } else {</span>
+<span class="s2">          quizState.streak = 0;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        const buttons = document.querySelectorAll(".quiz-option-btn");</span>
+<span class="s2">        item.options.forEach((opt, idx) =&gt; {</span>
+<span class="s2">          const btn = buttons[idx];</span>
+<span class="s2">          if (btn) {</span>
+<span class="s2">            if (opt.key === item.correct_option_key) {</span>
+<span class="s2">              btn.classList.add("revealed-correct");</span>
+<span class="s2">            } else if (opt.key === quizState.selectedOption) {</span>
+<span class="s2">              btn.classList.add("revealed-incorrect");</span>
+<span class="s2">            }</span>
+<span class="s2">          }</span>
+<span class="s2">        });</span>
+
+<span class="s2">        const fbBox = document.getElementById("quizFeedbackBox");</span>
+<span class="s2">        fbBox.style.display = "flex";</span>
+<span class="s2">        fbBox.className = `quiz-feedback-box ${isCorrect ? "correct" : "incorrect"}`;</span>
+
+<span class="s2">        const heading = document.getElementById("quizFeedbackHeading");</span>
+<span class="s2">        heading.innerHTML = isCorrect ? "🎉 Correct! Metrologically Exact!" : "❌ Incorrect Option";</span>
+
+<span class="s2">        const explanation = document.getElementById("quizFeedbackExplanation");</span>
+<span class="s2">        let expText = item.explanation || "";</span>
+<span class="s2">        if (!isCorrect) {</span>
+<span class="s2">          const chosenOpt = item.options.find(o =&gt; o.key === quizState.selectedOption);</span>
+<span class="s2">          if (chosenOpt &amp;&amp; chosenOpt.distractor_rationale) {</span>
+<span class="s2">            expText = `&lt;strong&gt;Why this distractor is flawed:&lt;/strong&gt; $</span><span class="si">{chosenOpt.distractor_rationale}</span><span class="s2">&lt;br/&gt;&lt;br/&gt;` + expText;</span>
+<span class="s2">          }</span>
+<span class="s2">        }</span>
+<span class="s2">        explanation.innerHTML = formatMathText(expText);</span>
+
+<span class="s2">        document.getElementById("btnQuizSubmit").style.display = "none";</span>
+<span class="s2">        document.getElementById("btnQuizNext").style.display = "inline-flex";</span>
+<span class="s2">        document.getElementById("btnQuizSkip").style.display = "none";</span>
+
+<span class="s2">        renderMathInDOM();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function nextQuizQuestion() {</span>
+<span class="s2">        quizState.currentIndex++;</span>
+<span class="s2">        if (quizState.currentIndex &lt; quizState.queue.length) {</span>
+<span class="s2">          renderQuizQuestion();</span>
+<span class="s2">        } else {</span>
+<span class="s2">          showToast("Quiz finished! Final score: " + quizState.correctCount + "/" + quizState.attemptedCount);</span>
+<span class="s2">          startQuiz();</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- VIEW 3: ANALYTICS &amp; SCORECARDS ---</span>
+<span class="s2">      function renderAnalytics() {</span>
+<span class="s2">        document.getElementById("statTotalSamples").textContent = currentRecords.length;</span>
+<span class="s2">        const mcqCount = currentRecords.filter(r =&gt; r.format === "mcq").length;</span>
+<span class="s2">        const openCount = currentRecords.filter(r =&gt; r.format === "free_form").length;</span>
+<span class="s2">        document.getElementById("statFormatBreakdown").textContent = `$</span><span class="si">{mcqCount}</span><span class="s2"> MCQ / $</span><span class="si">{openCount}</span><span class="s2"> Open`;</span>
+
+<span class="s2">        const reviewedIds = Object.keys(reviews).filter(id =&gt; reviews[id].status === "approved" || reviews[id].status === "flagged");</span>
+<span class="s2">        const flaggedCount = Object.keys(reviews).filter(id =&gt; reviews[id].status === "flagged").length;</span>
+<span class="s2">        const pct = currentRecords.length &gt; 0 ? Math.round((reviewedIds.length / currentRecords.length) * 100) : 0;</span>
+
+<span class="s2">        document.getElementById("statReviewedPct").textContent = pct + "%";</span>
+<span class="s2">        document.getElementById("statReviewedCount").textContent = `$</span><span class="si">{reviewedIds.length}</span><span class="s2"> of $</span><span class="si">{currentRecords.length}</span><span class="s2"> annotated`;</span>
+<span class="s2">        document.getElementById("statFlaggedCount").textContent = flaggedCount;</span>
+
+<span class="s2">        // Task Stats Table</span>
+<span class="s2">        const taskCounts = </span><span class="si">{}</span><span class="s2">;</span>
+<span class="s2">        currentRecords.forEach(r =&gt; {</span>
+<span class="s2">          taskCounts[r.task] = (taskCounts[r.task] || 0) + 1;</span>
+<span class="s2">        });</span>
+
+<span class="s2">        const taskTbody = document.getElementById("taskStatsBody");</span>
+<span class="s2">        taskTbody.innerHTML = "";</span>
+<span class="s2">        Object.keys(taskCounts).sort().forEach(task =&gt; {</span>
+<span class="s2">          const count = taskCounts[task];</span>
+<span class="s2">          const share = Math.round((count / currentRecords.length) * 100);</span>
+<span class="s2">          const tr = document.createElement("tr");</span>
+<span class="s2">          tr.innerHTML = `</span>
+<span class="s2">            &lt;td&gt;&lt;span class="tag tag-task" data-task="$</span><span class="si">{task}</span><span class="s2">"&gt;$</span><span class="si">{task}</span><span class="s2">&lt;/span&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;&lt;strong&gt;$</span><span class="si">{count}</span><span class="s2">&lt;/strong&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;$</span><span class="si">{share}</span><span class="s2">%&lt;/td&gt;</span>
+<span class="s2">            &lt;td style="width:140px;"&gt;</span>
+<span class="s2">              &lt;div class="progress-bar-inline"&gt;</span>
+<span class="s2">                &lt;div class="progress-fill-inline" style="width:$</span><span class="si">{share}</span><span class="s2">%;"&gt;&lt;/div&gt;</span>
+<span class="s2">              &lt;/div&gt;</span>
+<span class="s2">            &lt;/td&gt;</span>
+<span class="s2">          `;</span>
+<span class="s2">          taskTbody.appendChild(tr);</span>
+<span class="s2">        });</span>
+
+<span class="s2">        // Difficulty Stats</span>
+<span class="s2">        const diffCounts = { introductory: 0, intermediate: 0, advanced: 0 };</span>
+<span class="s2">        currentRecords.forEach(r =&gt; {</span>
+<span class="s2">          if (diffCounts[r.difficulty] !== undefined) diffCounts[r.difficulty]++;</span>
+<span class="s2">        });</span>
+
+<span class="s2">        const diffTbody = document.getElementById("diffStatsBody");</span>
+<span class="s2">        diffTbody.innerHTML = "";</span>
+<span class="s2">        ["introductory", "intermediate", "advanced"].forEach(tier =&gt; {</span>
+<span class="s2">          const count = diffCounts[tier] || 0;</span>
+<span class="s2">          const share = Math.round((count / currentRecords.length) * 100);</span>
+<span class="s2">          const tr = document.createElement("tr");</span>
+<span class="s2">          tr.innerHTML = `</span>
+<span class="s2">            &lt;td&gt;&lt;span class="tag tag-diff-$</span><span class="si">{tier}</span><span class="s2">"&gt;$</span><span class="si">{tier}</span><span class="s2">&lt;/span&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;&lt;strong&gt;$</span><span class="si">{count}</span><span class="s2">&lt;/strong&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;$</span><span class="si">{share}</span><span class="s2">%&lt;/td&gt;</span>
+<span class="s2">            &lt;td style="width:140px;"&gt;</span>
+<span class="s2">              &lt;div class="progress-bar-inline"&gt;</span>
+<span class="s2">                &lt;div class="progress-fill-inline" style="width:$</span><span class="si">{share}</span><span class="s2">%; background:var(--accent-blue);"&gt;&lt;/div&gt;</span>
+<span class="s2">              &lt;/div&gt;</span>
+<span class="s2">            &lt;/td&gt;</span>
+<span class="s2">          `;</span>
+<span class="s2">          diffTbody.appendChild(tr);</span>
+<span class="s2">        });</span>
+
+<span class="s2">        renderScorecardTable();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function renderScorecardTable() {</span>
+<span class="s2">        const scBody = document.getElementById("scorecardBody");</span>
+<span class="s2">        scBody.innerHTML = "";</span>
+
+<span class="s2">        if (!scorecardData || !scorecardData.task_breakdown) {</span>
+<span class="s2">          scBody.innerHTML = `&lt;tr&gt;&lt;td colspan="4" style="text-align:center; color:var(--text-muted);"&gt;No evaluation baseline scorecard data found. Run &lt;code&gt;drum-ml evaluate&lt;/code&gt; to generate a report.&lt;/td&gt;&lt;/tr&gt;`;</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        document.getElementById("scorecardModelName").textContent = scorecardData.model_name || "baseline";</span>
+
+<span class="s2">        const total = scorecardData.total_samples || 0;</span>
+<span class="s2">        const passed = scorecardData.passed_samples || 0;</span>
+<span class="s2">        const overallAcc = scorecardData.overall_accuracy_pct || (total &gt; 0 ? (passed / total) * 100 : 0);</span>
+
+<span class="s2">        const summaryTr = document.createElement("tr");</span>
+<span class="s2">        summaryTr.style.fontWeight = "700";</span>
+<span class="s2">        summaryTr.style.background = "rgba(16,185,129,0.08)";</span>
+<span class="s2">        summaryTr.innerHTML = `</span>
+<span class="s2">          &lt;td&gt;OVERALL SUITE&lt;/td&gt;</span>
+<span class="s2">          &lt;td&gt;$</span><span class="si">{total}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">          &lt;td&gt;$</span><span class="si">{passed}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">          &lt;td style="color:#10b981;"&gt;${overallAcc.toFixed(1)}%&lt;/td&gt;</span>
+<span class="s2">        `;</span>
+<span class="s2">        scBody.appendChild(summaryTr);</span>
+
+<span class="s2">        for (const [task, data] of Object.entries(scorecardData.task_breakdown)) {</span>
+<span class="s2">          const tr = document.createElement("tr");</span>
+<span class="s2">          const acc = data.accuracy_pct !== undefined ? data.accuracy_pct : (data.total &gt; 0 ? (data.passed / data.total) * 100 : 0);</span>
+<span class="s2">          tr.innerHTML = `</span>
+<span class="s2">            &lt;td&gt;&lt;span class="tag tag-task" data-task="$</span><span class="si">{task}</span><span class="s2">"&gt;$</span><span class="si">{task}</span><span class="s2">&lt;/span&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;$</span><span class="si">{data.total}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;$</span><span class="si">{data.passed}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;&lt;strong style="color:#10b981;"&gt;${acc.toFixed(1)}%&lt;/strong&gt;&lt;/td&gt;</span>
+<span class="s2">          `;</span>
+<span class="s2">          scBody.appendChild(tr);</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- VIEW 4: TRIAGE / REVIEW QUEUE ---</span>
+<span class="s2">      function renderTriage() {</span>
+<span class="s2">        const tbody = document.getElementById("triageTableBody");</span>
+<span class="s2">        tbody.innerHTML = "";</span>
+
+<span class="s2">        const annotated = currentRecords.filter(r =&gt; {</span>
+<span class="s2">          const s = reviews[r.id];</span>
+<span class="s2">          return s &amp;&amp; (s.status === "flagged" || (s.notes &amp;&amp; s.notes.trim().length &gt; 0));</span>
+<span class="s2">        });</span>
+
+<span class="s2">        if (annotated.length === 0) {</span>
+<span class="s2">          tbody.innerHTML = `</span>
+<span class="s2">            &lt;tr&gt;</span>
+<span class="s2">              &lt;td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);"&gt;</span>
+<span class="s2">                No flagged questions or notes yet. Use the Inspector to flag items that need review.</span>
+<span class="s2">              &lt;/td&gt;</span>
+<span class="s2">            &lt;/tr&gt;</span>
+<span class="s2">          `;</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        annotated.forEach(item =&gt; {</span>
+<span class="s2">          const rev = reviews[item.id] || </span><span class="si">{}</span><span class="s2">;</span>
+<span class="s2">          const tr = document.createElement("tr");</span>
+<span class="s2">          tr.innerHTML = `</span>
+<span class="s2">            &lt;td&gt;&lt;strong style="font-family:var(--font-mono); font-size:0.75rem;"&gt;${escapeHtml(item.id)}&lt;/strong&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;&lt;span class="tag tag-task" data-task="$</span><span class="si">{item.task}</span><span class="s2">"&gt;$</span><span class="si">{item.task}</span><span class="s2">&lt;/span&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;&lt;span class="tag tag-diff-$</span><span class="si">{item.difficulty}</span><span class="s2">"&gt;$</span><span class="si">{item.difficulty}</span><span class="s2">&lt;/span&gt;&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;&lt;span class="status-dot ${rev.status === 'flagged' ? 'status-flagged' : 'status-approved'}"&gt;&lt;/span&gt; $</span><span class="si">{rev.status}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">            &lt;td style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"&gt;${escapeHtml(cleanMathText(item.question))}&lt;/td&gt;</span>
+<span class="s2">            &lt;td style="font-size:0.8rem; color:var(--accent-amber);"&gt;${escapeHtml(rev.notes || "-")}&lt;/td&gt;</span>
+<span class="s2">            &lt;td&gt;</span>
+<span class="s2">              &lt;button class="btn" style="padding:0.2rem 0.5rem; font-size:0.75rem;" data-jump="$</span><span class="si">{item.id}</span><span class="s2">"&gt;Inspect&lt;/button&gt;</span>
+<span class="s2">            &lt;/td&gt;</span>
+<span class="s2">          `;</span>
+<span class="s2">          tr.querySelector("button").addEventListener("click", () =&gt; {</span>
+<span class="s2">            jumpToSampleById(item.id);</span>
+<span class="s2">          });</span>
+<span class="s2">          tbody.appendChild(tr);</span>
+<span class="s2">        });</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function jumpToSampleById(id) {</span>
+<span class="s2">        switchView("explorer");</span>
+<span class="s2">        const idx = filteredRecords.findIndex(r =&gt; r.id === id);</span>
+<span class="s2">        if (idx !== -1) {</span>
+<span class="s2">          selectedIndex = idx;</span>
+<span class="s2">          updateActiveListItem();</span>
+<span class="s2">          renderInspector();</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function updateTriageBadge() {</span>
+<span class="s2">        const flaggedCount = Object.keys(reviews).filter(id =&gt; reviews[id].status === "flagged").length;</span>
+<span class="s2">        document.getElementById("triageBadgeCount").textContent = flaggedCount;</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- EXPORT TOOLS ---</span>
+<span class="s2">      function exportDataMenu() {</span>
+<span class="s2">        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(reviews, null, 2));</span>
+<span class="s2">        const downloadAnchor = document.createElement("a");</span>
+<span class="s2">        downloadAnchor.setAttribute("href", dataStr);</span>
+<span class="s2">        downloadAnchor.setAttribute("download", "drum_benchmark_reviews.json");</span>
+<span class="s2">        document.body.appendChild(downloadAnchor);</span>
+<span class="s2">        downloadAnchor.click();</span>
+<span class="s2">        downloadAnchor.remove();</span>
+<span class="s2">        showToast("Exported review annotations JSON!");</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function exportReviewsJson() {</span>
+<span class="s2">        exportDataMenu();</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function clearAllReviews() {</span>
+<span class="s2">        if (confirm("Are you sure you want to clear all review annotations and flags?")) {</span>
+<span class="s2">          reviews = </span><span class="si">{}</span><span class="s2">;</span>
+<span class="s2">          saveReviews();</span>
+<span class="s2">          renderTriage();</span>
+<span class="s2">          renderAnalytics();</span>
+<span class="s2">          renderInspector();</span>
+<span class="s2">          renderSampleList();</span>
+<span class="s2">          showToast("All review annotations cleared.");</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- FILE LOADER &amp; DROPZONE ---</span>
+<span class="s2">      function setupFileLoader() {</span>
+<span class="s2">        const dropzone = document.getElementById("fileDropzone");</span>
+<span class="s2">        const fileInput = document.getElementById("fileInput");</span>
+
+<span class="s2">        dropzone.addEventListener("click", () =&gt; fileInput.click());</span>
+
+<span class="s2">        dropzone.addEventListener("dragover", e =&gt; {</span>
+<span class="s2">          e.preventDefault();</span>
+<span class="s2">          dropzone.classList.add("dragover");</span>
+<span class="s2">        });</span>
+
+<span class="s2">        dropzone.addEventListener("dragleave", () =&gt; {</span>
+<span class="s2">          dropzone.classList.remove("dragover");</span>
+<span class="s2">        });</span>
+
+<span class="s2">        dropzone.addEventListener("drop", e =&gt; {</span>
+<span class="s2">          e.preventDefault();</span>
+<span class="s2">          dropzone.classList.remove("dragover");</span>
+<span class="s2">          if (e.dataTransfer.files.length &gt; 0) {</span>
+<span class="s2">            handleFile(e.dataTransfer.files[0]);</span>
+<span class="s2">          }</span>
+<span class="s2">        });</span>
+
+<span class="s2">        fileInput.addEventListener("change", e =&gt; {</span>
+<span class="s2">          if (e.target.files.length &gt; 0) {</span>
+<span class="s2">            handleFile(e.target.files[0]);</span>
+<span class="s2">          }</span>
+<span class="s2">        });</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function handleFile(file) {</span>
+<span class="s2">        const reader = new FileReader();</span>
+<span class="s2">        reader.onload = e =&gt; {</span>
+<span class="s2">          try {</span>
+<span class="s2">            const text = e.target.result;</span>
+<span class="s2">            const parsed = [];</span>
+<span class="s2">            if (file.name.endsWith(".jsonl")) {</span>
+<span class="s2">              const lines = text.split("</span><span class="se">\\</span><span class="s2">n");</span>
+<span class="s2">              for (const line of lines) {</span>
+<span class="s2">                if (line.trim()) {</span>
+<span class="s2">                  parsed.push(JSON.parse(line.trim()));</span>
+<span class="s2">                }</span>
+<span class="s2">              }</span>
+<span class="s2">            } else {</span>
+<span class="s2">              const j = JSON.parse(text);</span>
+<span class="s2">              if (Array.isArray(j)) {</span>
+<span class="s2">                parsed.push(...j);</span>
+<span class="s2">              } else if (j.detailed_results) {</span>
+<span class="s2">                scorecardData = j;</span>
+<span class="s2">                renderAnalytics();</span>
+<span class="s2">                showToast("Loaded evaluation scorecard JSON!");</span>
+<span class="s2">                closeLoadModal();</span>
+<span class="s2">                return;</span>
+<span class="s2">              }</span>
+<span class="s2">            }</span>
+
+<span class="s2">            if (parsed.length &gt; 0) {</span>
+<span class="s2">              currentRecords = parsed;</span>
+<span class="s2">              selectedIndex = 0;</span>
+<span class="s2">              applyFilters();</span>
+<span class="s2">              closeLoadModal();</span>
+<span class="s2">              showToast(`Loaded $</span><span class="si">{parsed.length}</span><span class="s2"> samples from $</span><span class="si">{file.name}</span><span class="s2">`);</span>
+<span class="s2">            } else {</span>
+<span class="s2">              showToast("No valid records found in file.");</span>
+<span class="s2">            }</span>
+<span class="s2">          } catch (err) {</span>
+<span class="s2">            console.error(err);</span>
+<span class="s2">            showToast("Failed to parse file: " + err.message);</span>
+<span class="s2">          }</span>
+<span class="s2">        };</span>
+<span class="s2">        reader.readAsText(file);</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function openLoadModal() {</span>
+<span class="s2">        document.getElementById("loadFileModal").classList.add("active");</span>
+<span class="s2">      }</span>
+<span class="s2">      function closeLoadModal() {</span>
+<span class="s2">        document.getElementById("loadFileModal").classList.remove("active");</span>
+<span class="s2">      }</span>
+<span class="s2">      function openShortcutsModal() {</span>
+<span class="s2">        document.getElementById("shortcutsModal").classList.add("active");</span>
+<span class="s2">      }</span>
+<span class="s2">      function closeShortcutsModal() {</span>
+<span class="s2">        document.getElementById("shortcutsModal").classList.remove("active");</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- VIEW SWITCHING ---</span>
+<span class="s2">      function switchView(viewName) {</span>
+<span class="s2">        activeView = viewName;</span>
+<span class="s2">        document.querySelectorAll(".nav-tab-btn").forEach(btn =&gt; {</span>
+<span class="s2">          btn.classList.toggle("active", btn.getAttribute("data-view") === viewName);</span>
+<span class="s2">        });</span>
+<span class="s2">        document.querySelectorAll(".view-panel").forEach(p =&gt; {</span>
+<span class="s2">          p.classList.remove("active");</span>
+<span class="s2">        });</span>
+
+<span class="s2">        if (viewName === "explorer") {</span>
+<span class="s2">          document.getElementById("viewExplorer").classList.add("active");</span>
+<span class="s2">          renderInspector();</span>
+<span class="s2">        } else if (viewName === "quiz") {</span>
+<span class="s2">          document.getElementById("viewQuiz").classList.add("active");</span>
+<span class="s2">          if (quizState.queue.length === 0) startQuiz();</span>
+<span class="s2">        } else if (viewName === "analytics") {</span>
+<span class="s2">          document.getElementById("viewAnalytics").classList.add("active");</span>
+<span class="s2">          renderAnalytics();</span>
+<span class="s2">        } else if (viewName === "triage") {</span>
+<span class="s2">          document.getElementById("viewTriage").classList.add("active");</span>
+<span class="s2">          renderTriage();</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function renderActiveView() {</span>
+<span class="s2">        switchView(activeView);</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- KEYBOARD SHORTCUTS ---</span>
+<span class="s2">      function handleGlobalKeyDown(e) {</span>
+<span class="s2">        if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) {</span>
+<span class="s2">          if (e.key === "Escape") {</span>
+<span class="s2">            e.target.blur();</span>
+<span class="s2">          }</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        if (e.key === "/" &amp;&amp; activeView === "explorer") {</span>
+<span class="s2">          e.preventDefault();</span>
+<span class="s2">          document.getElementById("searchInput").focus();</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        if (e.key === "Escape") {</span>
+<span class="s2">          closeLoadModal();</span>
+<span class="s2">          closeShortcutsModal();</span>
+<span class="s2">          return;</span>
+<span class="s2">        }</span>
+
+<span class="s2">        if (activeView === "explorer") {</span>
+<span class="s2">          if (e.key === "j" || e.key === "ArrowDown") {</span>
+<span class="s2">            e.preventDefault();</span>
+<span class="s2">            if (selectedIndex &lt; filteredRecords.length - 1) {</span>
+<span class="s2">              selectedIndex++;</span>
+<span class="s2">              updateActiveListItem();</span>
+<span class="s2">              renderInspector();</span>
+<span class="s2">            }</span>
+<span class="s2">          } else if (e.key === "k" || e.key === "ArrowUp") {</span>
+<span class="s2">            e.preventDefault();</span>
+<span class="s2">            if (selectedIndex &gt; 0) {</span>
+<span class="s2">              selectedIndex--;</span>
+<span class="s2">              updateActiveListItem();</span>
+<span class="s2">              renderInspector();</span>
+<span class="s2">            }</span>
+<span class="s2">          } else if (e.key === "v" || e.key === "V") {</span>
+<span class="s2">            e.preventDefault();</span>
+<span class="s2">            toggleReviewStatus("approved");</span>
+<span class="s2">          } else if (e.key === "f" || e.key === "F") {</span>
+<span class="s2">            e.preventDefault();</span>
+<span class="s2">            toggleReviewStatus("flagged");</span>
+<span class="s2">          }</span>
+<span class="s2">        } else if (activeView === "quiz") {</span>
+<span class="s2">          if (["1", "2", "3", "4"].includes(e.key)) {</span>
+<span class="s2">            const idx = parseInt(e.key) - 1;</span>
+<span class="s2">            const item = quizState.queue[quizState.currentIndex];</span>
+<span class="s2">            if (item &amp;&amp; item.options &amp;&amp; item.options[idx]) {</span>
+<span class="s2">              quizState.selectedOption = item.options[idx].key;</span>
+<span class="s2">              const buttons = document.querySelectorAll(".quiz-option-btn");</span>
+<span class="s2">              buttons.forEach((b, i) =&gt; b.classList.toggle("selected", i === idx));</span>
+<span class="s2">            }</span>
+<span class="s2">          } else if (e.key === "Enter") {</span>
+<span class="s2">            if (!quizState.isAnswered) {</span>
+<span class="s2">              submitQuizAnswer();</span>
+<span class="s2">            } else {</span>
+<span class="s2">              nextQuizQuestion();</span>
+<span class="s2">            }</span>
+<span class="s2">          }</span>
+<span class="s2">        }</span>
+<span class="s2">      }</span>
+
+<span class="s2">      // --- UTILITIES ---</span>
+<span class="s2">      function toggleTheme() {</span>
+<span class="s2">        const current = document.documentElement.getAttribute("data-theme") || "dark";</span>
+<span class="s2">        const target = current === "dark" ? "light" : "dark";</span>
+<span class="s2">        document.documentElement.setAttribute("data-theme", target);</span>
+<span class="s2">        localStorage.setItem(STORAGE_KEY_THEME, target);</span>
+<span class="s2">        updateThemeIcon(target);</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function updateThemeIcon(theme) {</span>
+<span class="s2">        document.getElementById("themeIcon").textContent = theme === "dark" ? "🌙" : "☀️";</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function showToast(msg) {</span>
+<span class="s2">        const toast = document.getElementById("toast");</span>
+<span class="s2">        document.getElementById("toastMsg").textContent = msg;</span>
+<span class="s2">        toast.classList.add("show");</span>
+<span class="s2">        setTimeout(() =&gt; toast.classList.remove("show"), 2800);</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function copyToClipboard(text, successMsg) {</span>
+<span class="s2">        navigator.clipboard.writeText(text).then(() =&gt; {</span>
+<span class="s2">          showToast(successMsg || "Copied to clipboard!");</span>
+<span class="s2">        }).catch(() =&gt; {</span>
+<span class="s2">          showToast("Failed to copy to clipboard.");</span>
+<span class="s2">        });</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function escapeHtml(str) {</span>
+<span class="s2">        if (!str) return "";</span>
+<span class="s2">        return String(str)</span>
+<span class="s2">          .replace(/&amp;/g, "&amp;amp;")</span>
+<span class="s2">          .replace(/&lt;/g, "&amp;lt;")</span>
+<span class="s2">          .replace(/&gt;/g, "&amp;gt;")</span>
+<span class="s2">          .replace(/"/g, "&amp;quot;")</span>
+<span class="s2">          .replace(/'/g, "&amp;#039;");</span>
+<span class="s2">      }</span>
+
+<span class="s2">      function shuffleArray(arr) {</span>
+<span class="s2">        for (let i = arr.length - 1; i &gt; 0; i--) {</span>
+<span class="s2">          const j = Math.floor(Math.random() * (i + 1));</span>
+<span class="s2">          [arr[i], arr[j]] = [arr[j], arr[i]];</span>
+<span class="s2">        }</span>
+<span class="s2">        return arr;</span>
+<span class="s2">      }</span>
+
+<span class="s2">      if (document.readyState === "loading") {</span>
+<span class="s2">        document.addEventListener("DOMContentLoaded", init);</span>
+<span class="s2">      } else {</span>
+<span class="s2">        init();</span>
+<span class="s2">      }</span>
+
+<span class="s2">    })();</span>
+<span class="s2">  &lt;/script&gt;</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">"""</span>
+
+
+<div class="viewcode-block" id="generate_benchmark_html">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.viewer.generate_benchmark_html">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_benchmark_html</span><span class="p">(</span>
+    <span class="n">benchmark_records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+    <span class="n">scorecard</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dataset_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"DRUM Metrology Benchmark (M-Eval)"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Generate the complete self-contained HTML page."""</span>
+    <span class="n">data_json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">benchmark_records</span><span class="p">)</span>
+    <span class="n">scorecard_json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">scorecard</span><span class="p">)</span> <span class="k">if</span> <span class="n">scorecard</span> <span class="k">else</span> <span class="s2">"null"</span>
+
+    <span class="n">html</span> <span class="o">=</span> <span class="n">HTML_TEMPLATE</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__DATASET_TITLE__"</span><span class="p">,</span> <span class="n">dataset_title</span><span class="p">)</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__DATA_JSON__"</span><span class="p">,</span> <span class="n">data_json_str</span><span class="p">)</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"__SCORECARD_JSON__"</span><span class="p">,</span> <span class="n">scorecard_json_str</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">html</span></div>
+
+
+
+<div class="viewcode-block" id="save_benchmark_viewer">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.viewer.save_benchmark_viewer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_benchmark_viewer</span><span class="p">(</span>
+    <span class="n">output_html_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">benchmark_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="s2">"./dataset/benchmark/drum_benchmark_all.jsonl"</span><span class="p">,</span>
+    <span class="n">scorecard_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"./dataset/benchmark/benchmark_report.json"</span><span class="p">,</span>
+    <span class="n">open_browser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Compile and save the standalone benchmark viewer HTML file."""</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">load_jsonl_records</span><span class="p">(</span><span class="n">benchmark_file</span><span class="p">)</span>
+    <span class="n">scorecard</span> <span class="o">=</span> <span class="n">load_json_file</span><span class="p">(</span><span class="n">scorecard_file</span><span class="p">)</span> <span class="k">if</span> <span class="n">scorecard_file</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="n">html</span> <span class="o">=</span> <span class="n">generate_benchmark_html</span><span class="p">(</span>
+        <span class="n">benchmark_records</span><span class="o">=</span><span class="n">records</span><span class="p">,</span>
+        <span class="n">scorecard</span><span class="o">=</span><span class="n">scorecard</span><span class="p">,</span>
+        <span class="n">dataset_title</span><span class="o">=</span><span class="s2">"DRUM Metrology Benchmark (M-Eval)"</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">out_p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_html_path</span><span class="p">)</span>
+    <span class="n">out_p</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">open_browser</span><span class="p">:</span>
+        <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"file://</span><span class="si">{</span><span class="n">out_p</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out_p</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">"dataset/benchmark/benchmark_viewer.html"</span>
+    <span class="n">bench_file</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="s2">"dataset/benchmark/drum_benchmark_all.jsonl"</span>
+    <span class="n">report_file</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="s2">"dataset/benchmark/benchmark_report.json"</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">save_benchmark_viewer</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="n">bench_file</span><span class="p">,</span> <span class="n">report_file</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generated benchmark viewer HTML at: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, CODATA DRUM Working Group (Lead: Pascal Heus)
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=38b66d78"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

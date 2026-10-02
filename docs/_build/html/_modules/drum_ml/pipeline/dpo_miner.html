@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -233,7 +236,6 @@
           <h1>Source code for drum_ml.pipeline.dpo_miner</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""High-Fidelity DPO Negative Sample Mining with Quality Guards."""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">DPOPreferenceRecord</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">AugmentedRecord</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationResult</span>
@@ -250,11 +252,11 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.dpo_miner.DPOMiner.mine_pairs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mine_pairs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span>
-        <span class="n">reports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DPOPreferenceRecord</span><span class="p">]:</span>
+        <span class="n">records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span>
+        <span class="n">reports</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DPOPreferenceRecord</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Harvests verified DPO pairs where the prompt is high-quality and chosen answer is ground truth."""</span>
-        <span class="n">dpo_pairs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DPOPreferenceRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dpo_pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">DPOPreferenceRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">report_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">rep</span><span class="o">.</span><span class="n">record_id</span><span class="p">:</span> <span class="n">rep</span> <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="n">reports</span><span class="p">}</span>
 
         <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>

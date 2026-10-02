@@ -242,24 +242,77 @@
         <article role="main" id="furo-main-content">
           <section id="training-evaluation-guide">
 <h1>Training &amp; Evaluation Guide<a class="headerlink" href="#training-evaluation-guide" title="Link to this heading">¶</a></h1>
-<section id="local-storage-git-exclusion">
-<h2>Local Storage &amp; Git Exclusion<a class="headerlink" href="#local-storage-git-exclusion" title="Link to this heading">¶</a></h2>
-<p>Generated datasets and raw semantic caches are saved locally and strictly ignored by Git via <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">dataset/train.jsonl</span></code>: 85% SFT training split.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dataset/val.jsonl</span></code>: 10% validation split.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dataset/test.jsonl</span></code>: 5% held-out test split for M-Eval.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dataset/dpo_preferences.jsonl</span></code>: Direct Preference Optimization pairs.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">data/raw/</span></code>: Local cache of downloaded BIPM, CODATA, and QUDT ontologies.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">data/cache/llm_cache.sqlite</span></code>: SQLite semantic cache for LLM queries.</p></li>
-</ul>
+<section id="local-storage-partitioned-file-hierarchy">
+<h2>Local Storage &amp; Partitioned File Hierarchy<a class="headerlink" href="#local-storage-partitioned-file-hierarchy" title="Link to this heading">¶</a></h2>
+<p>Generated datasets and raw semantic caches are saved in <code class="docutils literal notranslate"><span class="pre">./dataset/</span></code> (and ignored by Git via <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>dataset/
+├── train.jsonl                          # Master SFT training split (85%)
+├── val.jsonl                            # Master validation split (10%)
+├── test.jsonl                           # Master held-out test split (5%)
+├── dpo_preferences.jsonl                # Direct Preference Optimization (DPO) pairs
+├── manifest.json                        # Index with file counts, byte sizes, and SHA-256 hashes
+├── dataset_viewer.html                  # Standalone Interactive HTML Dataset Browser
+│
+├── by_persona/                          # 35+ Individual Scientific Union &amp; Domain Subsets
+│   ├── academic_metrologist.jsonl       # Consolidated persona dataset
+│   ├── academic_metrologist_train.jsonl # Training split for Academic Metrologist
+│   ├── physics_student.jsonl
+│   ├── physics_student_train.jsonl
+│   ├── iupap_physicist_train.jsonl
+│   ├── iupac_chemist_train.jsonl
+│   └── ...
+│
+├── by_archetype/                        # 6 Pedagogical Metrology Archetype Subsets
+│   ├── direct_identification.jsonl
+│   ├── dimensional_decomposition.jsonl
+│   ├── conversion_scaling.jsonl
+│   ├── error_detection.jsonl
+│   ├── semantic_tool_use.jsonl
+│   └── metrological_uncertainty.jsonl
+│
+├── by_category/                         # Physical Entity Category Subsets
+│   ├── units.jsonl                      # All unit definitions &amp; conversions
+│   └── constants.jsonl                  # Physical constants &amp; uncertainties
+│
+└── formats/                             # Alternative formats (ShareGPT, Alpaca)
+    └── sharegpt/
+        ├── train.jsonl
+        └── val.jsonl
+</pre></div>
+</div>
+</section>
+<section id="dataset-partitioning-cli">
+<h2>Dataset Partitioning CLI<a class="headerlink" href="#dataset-partitioning-cli" title="Link to this heading">¶</a></h2>
+<p>DRUM-ML includes a high-performance standalone partitioner that breaks down large dataset files into per-persona, per-archetype, and per-category subsets without re-running LLM generation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Partition existing dataset directory into grouped subsets</span>
+drum-ml<span class="w"> </span>partition<span class="w"> </span>--dataset-dir<span class="w"> </span>./dataset<span class="w"> </span>--viewer
+</pre></div>
+</div>
+</section>
+<section id="interactive-html-dataset-browser">
+<h2>Interactive HTML Dataset Browser<a class="headerlink" href="#interactive-html-dataset-browser" title="Link to this heading">¶</a></h2>
+<p>DRUM-ML includes a standalone, zero-dependency interactive HTML dataset browser designed for reviewing, searching, and auditing fine-tuning and benchmark datasets:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch the Interactive Dataset Browser in the default web browser</span>
+drum-ml<span class="w"> </span>view-dataset<span class="w"> </span>--dataset-dir<span class="w"> </span>./dataset
+
+<span class="c1"># Or specify sample limit and output file:</span>
+drum-ml<span class="w"> </span>view-dataset<span class="w"> </span>--dataset-dir<span class="w"> </span>./dataset<span class="w"> </span>--max-samples<span class="w"> </span><span class="m">5000</span><span class="w"> </span>--output-html<span class="w"> </span>./dataset/dataset_viewer.html
+</pre></div>
+</div>
+<p>Key Browser Features:
+- <strong>Instant Search &amp; Real-Time Highlighting:</strong> Filter across prompts, assistant answers, ontology URIs, and equations.
+- <strong>Multi-Dimensional Filters:</strong> Filter simultaneously by Split (<code class="docutils literal notranslate"><span class="pre">Train</span></code>, <code class="docutils literal notranslate"><span class="pre">Val</span></code>, <code class="docutils literal notranslate"><span class="pre">Test</span></code>, <code class="docutils literal notranslate"><span class="pre">DPO</span></code>), Persona (35+ scientific unions), Archetype (6 archetypes), and Category.
+- <strong>Multi-Format View Switcher:</strong> Toggle between Rendered Markdown + KaTeX LaTeX math, OpenAI Chat messages, ShareGPT conversation turns, and Raw JSON.
+- <strong>DPO Preference Arena:</strong> Side-by-side comparison of Prompt, Chosen (Passed), and Rejected (Failed) responses with exact diagnostic reason badges.
+- <strong>Persona Matrix &amp; Archetype Hub:</strong> Visual overview of all scientific unions and pedagogical archetypes with 1-click filtering.
+- <strong>Local File Drag &amp; Drop:</strong> Drop any local <code class="docutils literal notranslate"><span class="pre">.jsonl</span></code> or <code class="docutils literal notranslate"><span class="pre">.json</span></code> file directly into the browser to explore it instantly.</p>
 </section>
 <section id="training-recipes">
 <h2>Training Recipes<a class="headerlink" href="#training-recipes" title="Link to this heading">¶</a></h2>
 <section id="local-fine-tuning-on-mac-apple-mlx">
 <h3>1. Local Fine-Tuning on Mac (Apple MLX)<a class="headerlink" href="#local-fine-tuning-on-mac-apple-mlx" title="Link to this heading">¶</a></h3>
 <p>Using <code class="docutils literal notranslate"><span class="pre">mlx-lm</span></code> for LoRA SFT and DPO alignment on Apple Silicon:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Supervised Fine-Tuning (SFT)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Supervised Fine-Tuning (SFT) on master split</span>
 python<span class="w"> </span>-m<span class="w"> </span>mlx_lm.lora<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--model<span class="w"> </span>mlx-community/Qwen2.5-14B-Instruct-4bit<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--data<span class="w"> </span>./dataset/<span class="w"> </span><span class="se">\</span>
@@ -267,6 +320,13 @@ python<span class="w"> </span>-m<span class="w"> </span>mlx_lm.lora<span class="
 <span class="w">    </span>--batch-size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--iters<span class="w"> </span><span class="m">1000</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--adapter-path<span class="w"> </span>./adapters/drum-sft-qwen14b
+
+<span class="c1"># Or fine-tune on a specific persona subset (e.g. IUPAP Physicist):</span>
+python<span class="w"> </span>-m<span class="w"> </span>mlx_lm.lora<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model<span class="w"> </span>mlx-community/Qwen2.5-14B-Instruct-4bit<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span>./dataset/by_persona/<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--train<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--adapter-path<span class="w"> </span>./adapters/drum-sft-iupap
 
 <span class="c1"># 2. Direct Preference Optimization (DPO)</span>
 python<span class="w"> </span>-m<span class="w"> </span>mlx_lm.dpo<span class="w"> </span><span class="se">\</span>
@@ -284,14 +344,13 @@ python<span class="w"> </span>-m<span class="w"> </span>mlx_lm.dpo<span class="w
 <span class="kn">from</span><span class="w"> </span><span class="nn">trl</span><span class="w"> </span><span class="kn">import</span> <span class="n">SFTTrainer</span><span class="p">,</span> <span class="n">DPOTrainer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrainingArguments</span>
 
-<span class="c1"># Load local DRUM-ML splits</span>
-<span class="n">train_ds</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">"json"</span><span class="p">,</span> <span class="n">data_files</span><span class="o">=</span><span class="p">{</span><span class="s2">"train"</span><span class="p">:</span> <span class="s2">"./dataset/train.jsonl"</span><span class="p">,</span> <span class="s2">"validation"</span><span class="p">:</span> <span class="s2">"./dataset/val.jsonl"</span><span class="p">})</span>
+<span class="c1"># Load specific persona subset or full master split</span>
+<span class="n">train_ds</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">"json"</span><span class="p">,</span> <span class="n">data_files</span><span class="o">=</span><span class="p">{</span><span class="s2">"train"</span><span class="p">:</span> <span class="s2">"./dataset/by_persona/academic_metrologist_train.jsonl"</span><span class="p">})</span>
 
 <span class="c1"># SFT Fine-Tuning</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">SFTTrainer</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s2">"meta-llama/Llama-3.1-8B-Instruct"</span><span class="p">,</span>
     <span class="n">train_dataset</span><span class="o">=</span><span class="n">train_ds</span><span class="p">[</span><span class="s2">"train"</span><span class="p">],</span>
-    <span class="n">eval_dataset</span><span class="o">=</span><span class="n">train_ds</span><span class="p">[</span><span class="s2">"validation"</span><span class="p">],</span>
     <span class="n">dataset_text_field</span><span class="o">=</span><span class="s2">"messages"</span><span class="p">,</span>
     <span class="n">max_seq_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
     <span class="n">args</span><span class="o">=</span><span class="n">TrainingArguments</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">"./drum-llama3-sft"</span><span class="p">,</span> <span class="n">per_device_train_batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_train_epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
@@ -330,7 +389,7 @@ python<span class="w"> </span>-m<span class="w"> </span>mlx_lm.dpo<span class="w
 6. <strong>Metrological Uncertainty (GUM) &amp; Sig-Figs</strong> (<code class="docutils literal notranslate"><span class="pre">uncertainty</span></code>)</p>
 <section id="synthesize-benchmark-datasets">
 <h3>1. Synthesize Benchmark Datasets<a class="headerlink" href="#synthesize-benchmark-datasets" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate 50 samples per task (total 250+ balanced questions)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate 50 samples per task (total 300 balanced questions)</span>
 drum-ml<span class="w"> </span>build-benchmark<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--entities-file<span class="w"> </span>./data/entities.json<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--output-dir<span class="w"> </span>./dataset/benchmark<span class="w"> </span><span class="se">\</span>
@@ -372,7 +431,7 @@ lm_eval<span class="w"> </span>--model<span class="w"> </span>hf<span class="w">
 </section>
 <section id="publishing-to-hugging-face-hub">
 <h2>Publishing to Hugging Face Hub<a class="headerlink" href="#publishing-to-hugging-face-hub" title="Link to this heading">¶</a></h2>
-<p>DRUM-ML includes built-in commands to publish generated dataset splits (<code class="docutils literal notranslate"><span class="pre">train.jsonl</span></code>, <code class="docutils literal notranslate"><span class="pre">val.jsonl</span></code>, <code class="docutils literal notranslate"><span class="pre">test.jsonl</span></code>), DPO preference pairs (<code class="docutils literal notranslate"><span class="pre">dpo_preferences.jsonl</span></code>), and dataset cards directly to Hugging Face:</p>
+<p>DRUM-ML includes built-in commands to publish generated dataset splits, grouped subsets, DPO preference pairs, and dataset cards directly to Hugging Face:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Login to Hugging Face</span>
 huggingface-cli<span class="w"> </span>login
 
@@ -445,7 +504,9 @@ huggingface-cli<span class="w"> </span>upload<span class="w"> </span>codata/drum
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Training &amp; Evaluation Guide</a><ul>
-<li><a class="reference internal" href="#local-storage-git-exclusion">Local Storage &amp; Git Exclusion</a></li>
+<li><a class="reference internal" href="#local-storage-partitioned-file-hierarchy">Local Storage &amp; Partitioned File Hierarchy</a></li>
+<li><a class="reference internal" href="#dataset-partitioning-cli">Dataset Partitioning CLI</a></li>
+<li><a class="reference internal" href="#interactive-html-dataset-browser">Interactive HTML Dataset Browser</a></li>
 <li><a class="reference internal" href="#training-recipes">Training Recipes</a><ul>
 <li><a class="reference internal" href="#local-fine-tuning-on-mac-apple-mlx">1. Local Fine-Tuning on Mac (Apple MLX)</a></li>
 <li><a class="reference internal" href="#gpu-cluster-training-hugging-face-trl">2. GPU Cluster Training (Hugging Face TRL)</a></li>

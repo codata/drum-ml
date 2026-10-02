@@ -59,6 +59,18 @@ class MetrologyExtractor:
         codata_constants = self.codata_client.extract_canonical_constants()
         store.constants.update(codata_constants)
 
+        # Filter out placeholder/dummy entities (e.g. QUDT UNKNOWN unit placeholder)
+        store.units = {
+            uri: u
+            for uri, u in store.units.items()
+            if not (uri.endswith("/UNKNOWN") or (u.symbol == "Unknown" and u.label == "Unknown"))
+        }
+        store.quantity_kinds = {
+            uri: qk
+            for uri, qk in store.quantity_kinds.items()
+            if not (uri.endswith("/Unknown") or qk.label == "Unknown")
+        }
+
         return store
 
     def save_to_json(

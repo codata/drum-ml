@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -234,7 +237,6 @@
 <span></span><span class="sd">"""LaTeX Tokenizer, Sanitizer &amp; Expression Normalizer for Metrology."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
 <div class="viewcode-block" id="sanitize_latex_units">
@@ -281,7 +283,7 @@
 
 <div class="viewcode-block" id="check_latex_math_balance">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.symbolic.latex_parser.check_latex_math_balance">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">check_latex_math_balance</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_latex_math_balance</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">"""Verifies that math delimiters ($ and $$), curly braces, and brackets are properly balanced."""</span>
     <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -295,7 +297,9 @@
     <span class="n">open_braces</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;!</span><span class="se">\\</span><span class="s2">)\{"</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span>
     <span class="n">close_braces</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;!</span><span class="se">\\</span><span class="s2">)\}"</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">open_braces</span> <span class="o">!=</span> <span class="n">close_braces</span><span class="p">:</span>
-        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unbalanced curly braces '</span><span class="se">{{}}</span><span class="s2">' (open: </span><span class="si">{</span><span class="n">open_braces</span><span class="si">}</span><span class="s2">, close: </span><span class="si">{</span><span class="n">close_braces</span><span class="si">}</span><span class="s2">)."</span><span class="p">)</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Unbalanced curly braces '</span><span class="se">{{}}</span><span class="s2">' (open: </span><span class="si">{</span><span class="n">open_braces</span><span class="si">}</span><span class="s2">, close: </span><span class="si">{</span><span class="n">close_braces</span><span class="si">}</span><span class="s2">)."</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
 

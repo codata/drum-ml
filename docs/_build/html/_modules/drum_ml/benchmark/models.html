@@ -234,51 +234,54 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for drum_ml.benchmark.models</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""Data Models for the DRUM Metrology Benchmark (M-Eval) Suite."""</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
 
 <div class="viewcode-block" id="BenchmarkTask">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.models.BenchmarkTask">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BenchmarkTask</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BenchmarkTask</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The 6 Core Metrology Benchmark Tasks."""</span>
-    <span class="n">CONSTANTS</span> <span class="o">=</span> <span class="s2">"constants"</span>               <span class="c1"># Task 1: Fundamental Physical Constants &amp; SI 2019</span>
-    <span class="n">DIMENSIONS</span> <span class="o">=</span> <span class="s2">"dimensions"</span>             <span class="c1"># Task 2: Dimensional Decomposition &amp; Base SI</span>
-    <span class="n">CONVERSIONS</span> <span class="o">=</span> <span class="s2">"conversions"</span>           <span class="c1"># Task 3: Unit Conversions &amp; Affine Transformations</span>
-    <span class="n">HOMOGENEITY</span> <span class="o">=</span> <span class="s2">"homogeneity"</span>           <span class="c1"># Task 4: Error Detection &amp; Dimensional Homogeneity</span>
-    <span class="n">CONVENTIONS</span> <span class="o">=</span> <span class="s2">"conventions"</span>           <span class="c1"># Task 5: SI Typography &amp; Metrological Conventions</span>
-    <span class="n">UNCERTAINTY</span> <span class="o">=</span> <span class="s2">"uncertainty"</span>           <span class="c1"># Task 6: Metrological Uncertainty (GUM) &amp; Sig-Figs</span></div>
+
+    <span class="n">CONSTANTS</span> <span class="o">=</span> <span class="s2">"constants"</span>  <span class="c1"># Task 1: Fundamental Physical Constants &amp; SI 2019</span>
+    <span class="n">DIMENSIONS</span> <span class="o">=</span> <span class="s2">"dimensions"</span>  <span class="c1"># Task 2: Dimensional Decomposition &amp; Base SI</span>
+    <span class="n">CONVERSIONS</span> <span class="o">=</span> <span class="s2">"conversions"</span>  <span class="c1"># Task 3: Unit Conversions &amp; Affine Transformations</span>
+    <span class="n">HOMOGENEITY</span> <span class="o">=</span> <span class="s2">"homogeneity"</span>  <span class="c1"># Task 4: Error Detection &amp; Dimensional Homogeneity</span>
+    <span class="n">CONVENTIONS</span> <span class="o">=</span> <span class="s2">"conventions"</span>  <span class="c1"># Task 5: SI Typography &amp; Metrological Conventions</span>
+    <span class="n">UNCERTAINTY</span> <span class="o">=</span> <span class="s2">"uncertainty"</span>  <span class="c1"># Task 6: Metrological Uncertainty (GUM) &amp; Sig-Figs</span></div>
 
 
 
 <div class="viewcode-block" id="BenchmarkFormat">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.models.BenchmarkFormat">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BenchmarkFormat</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BenchmarkFormat</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Evaluation formats."""</span>
-    <span class="n">MCQ</span> <span class="o">=</span> <span class="s2">"mcq"</span>                           <span class="c1"># 4-option multiple choice (A, B, C, D)</span>
-    <span class="n">FREE_FORM</span> <span class="o">=</span> <span class="s2">"free_form"</span>               <span class="c1"># Open-ended reasoning and exact symbolic calculation</span></div>
+
+    <span class="n">MCQ</span> <span class="o">=</span> <span class="s2">"mcq"</span>  <span class="c1"># 4-option multiple choice (A, B, C, D)</span>
+    <span class="n">FREE_FORM</span> <span class="o">=</span> <span class="s2">"free_form"</span>  <span class="c1"># Open-ended reasoning and exact symbolic calculation</span></div>
 
 
 
 <div class="viewcode-block" id="DifficultyTier">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.models.DifficultyTier">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">DifficultyTier</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="n">INTRODUCTORY</span> <span class="o">=</span> <span class="s2">"introductory"</span>         <span class="c1"># High school / basic scientific lookup</span>
-    <span class="n">INTERMEDIATE</span> <span class="o">=</span> <span class="s2">"intermediate"</span>         <span class="c1"># Undergraduate STEM / applied engineering</span>
-    <span class="n">ADVANCED</span> <span class="o">=</span> <span class="s2">"advanced"</span>                 <span class="c1"># Metrology lab / standards / GUM level</span></div>
+<span class="k">class</span><span class="w"> </span><span class="nc">DifficultyTier</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">INTRODUCTORY</span> <span class="o">=</span> <span class="s2">"introductory"</span>  <span class="c1"># High school / basic scientific lookup</span>
+    <span class="n">INTERMEDIATE</span> <span class="o">=</span> <span class="s2">"intermediate"</span>  <span class="c1"># Undergraduate STEM / applied engineering</span>
+    <span class="n">ADVANCED</span> <span class="o">=</span> <span class="s2">"advanced"</span>  <span class="c1"># Metrology lab / standards / GUM level</span></div>
 
 
 
 <div class="viewcode-block" id="MCQOption">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.benchmark.models.MCQOption">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MCQOption</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>                              <span class="c1"># "A", "B", "C", "D"</span>
-    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>                             <span class="c1"># Option description / formula</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "A", "B", "C", "D"</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Option description / formula</span>
     <span class="n">is_correct</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">distractor_rationale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Why this distractor was crafted</span></div>
+    <span class="n">distractor_rationale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Why this distractor was crafted</span></div>
 
 
 
@@ -290,13 +293,13 @@
     <span class="nb">format</span><span class="p">:</span> <span class="n">BenchmarkFormat</span>
     <span class="n">difficulty</span><span class="p">:</span> <span class="n">DifficultyTier</span> <span class="o">=</span> <span class="n">DifficultyTier</span><span class="o">.</span><span class="n">INTERMEDIATE</span>
     <span class="n">question</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">MCQOption</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># For MCQ</span>
-    <span class="n">correct_option_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># "A", "B", "C", "D"</span>
-    <span class="n">ground_truth_answer</span><span class="p">:</span> <span class="nb">str</span>                  <span class="c1"># Canonical target string or formula</span>
-    <span class="n">entity_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># Provenance URI (BIPM, CODATA, QUDT)</span>
-    <span class="n">explanation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>         <span class="c1"># Complete derivation / metrological explanation</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MCQOption</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># For MCQ</span>
+    <span class="n">correct_option_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># "A", "B", "C", "D"</span>
+    <span class="n">ground_truth_answer</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Canonical target string or formula</span>
+    <span class="n">entity_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Provenance URI (BIPM, CODATA, QUDT)</span>
+    <span class="n">explanation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Complete derivation / metrological explanation</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
 
@@ -317,10 +320,10 @@
     <span class="n">total_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">passed_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">overall_accuracy_pct</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">task_breakdown</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TaskScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">format_breakdown</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TaskScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">difficulty_breakdown</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TaskScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">detailed_results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+    <span class="n">task_breakdown</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TaskScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">format_breakdown</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TaskScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">difficulty_breakdown</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TaskScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">detailed_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

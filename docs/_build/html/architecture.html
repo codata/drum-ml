@@ -196,6 +196,9 @@
 <li class="toctree-l1"><a class="reference internal" href="objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
@@ -262,7 +265,13 @@
 [Agent 5: Stratified Split &amp; Packaging (Agent-Exporter)]
                         │
                         ▼
-[./dataset/ -&gt; train.jsonl, val.jsonl, test.jsonl, dpo_preferences.jsonl]
+[./dataset/]
+    ├── train.jsonl, val.jsonl, test.jsonl, dpo_preferences.jsonl
+    ├── by_persona/          (35+ scientific union &amp; domain subsets)
+    ├── by_archetype/        (6 pedagogical metrology archetypes)
+    ├── by_category/         (units vs constants vs quantity kinds)
+    ├── manifest.json        (SHA-256 checksums, token geometry, counts)
+    └── dataset_viewer.html  (Standalone Interactive HTML Dataset Browser)
 </pre></div>
 </div>
 <section id="agent-details">
@@ -286,21 +295,27 @@
 <h3>3. Agent 3: Linguistic Diversity &amp; Persona Augmentation<a class="headerlink" href="#agent-3-linguistic-diversity-persona-augmentation" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">drum_ml.pipeline.augmenter</span></code></p></li>
-<li><p><strong>Function:</strong> Leverages cloud frontier LLMs (Anthropic Claude 3.5 Sonnet, OpenAI GPT-4o via LiteLLM) or local models (MLX, LM Studio, Ollama) with SQLite semantic caching to generate diverse persona-conditioned user queries.</p></li>
+<li><p><strong>Function:</strong> Leverages cloud frontier LLMs (Anthropic Claude 3.7 Sonnet, OpenAI GPT-4.5/GPT-4o, Google Gemini via LiteLLM) or local models (Nemotron, Qwen, Ollama, LM Studio) with SQLite semantic caching to generate diverse persona-conditioned user queries across 35+ International Scientific Unions.</p></li>
 </ul>
 </section>
 <section id="agent-4-4-tier-automated-validation-gate">
 <h3>4. Agent 4: 4-Tier Automated Validation Gate<a class="headerlink" href="#agent-4-4-tier-automated-validation-gate" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">drum_ml.pipeline.validator</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">drum_ml.pipeline.dpo_miner</span></code></p></li>
-<li><p><strong>Function:</strong> Deterministically verifies LaTeX syntax, Pint/SymPy algebraic equivalence, Decimal precision, and SPARQL/Python code execution. Mines high-quality negative pairs for DPO.</p></li>
+<li><p><strong>Function:</strong> Deterministically verifies LaTeX syntax, Pint/SymPy algebraic equivalence, Decimal precision, and SPARQL/Python code execution. Mines high-quality negative pairs for Direct Preference Optimization (DPO).</p></li>
 </ul>
 </section>
-<section id="agent-5-deduplication-partitioning-packaging">
-<h3>5. Agent 5: Deduplication, Partitioning &amp; Packaging<a class="headerlink" href="#agent-5-deduplication-partitioning-packaging" title="Link to this heading">¶</a></h3>
+<section id="agent-5-deduplication-grouped-partitioning-packaging">
+<h3>5. Agent 5: Deduplication, Grouped Partitioning &amp; Packaging<a class="headerlink" href="#agent-5-deduplication-grouped-partitioning-packaging" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">drum_ml.pipeline.exporter</span></code></p></li>
-<li><p><strong>Function:</strong> Executes MinHash LSH deduplication, entity-isolated stratified splitting (85% Train / 10% Val / 5% Test), and exports into standard OpenAI, ShareGPT, and DPO JSONL formats.</p></li>
+<li><p><strong>Module:</strong> <code class="docutils literal notranslate"><span class="pre">drum_ml.pipeline.exporter</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">drum_ml.dataset_viewer</span></code></p></li>
+<li><p><strong>Function:</strong>
+- Executes MinHash LSH fuzzy deduplication and exact SHA-256 hash pruning.
+- Applies entity-isolated stratified splitting (85% Train / 10% Val / 5% Test).
+- Partitions dataset into organized modular files (<code class="docutils literal notranslate"><span class="pre">by_persona/</span></code>, <code class="docutils literal notranslate"><span class="pre">by_archetype/</span></code>, <code class="docutils literal notranslate"><span class="pre">by_category/</span></code>).
+- Exports standard OpenAI Chat, ShareGPT, and DPO JSONL formats.
+- Generates <code class="docutils literal notranslate"><span class="pre">manifest.json</span></code> with file sizes, counts, and SHA-256 integrity checksums.
+- Compiles the standalone interactive HTML dataset browser (<code class="docutils literal notranslate"><span class="pre">dataset_viewer.html</span></code>).</p></li>
 </ul>
 </section>
 </section>
@@ -367,7 +382,7 @@
 <li><a class="reference internal" href="#agent-2-pedagogical-archetype-generator">2. Agent 2: Pedagogical Archetype Generator</a></li>
 <li><a class="reference internal" href="#agent-3-linguistic-diversity-persona-augmentation">3. Agent 3: Linguistic Diversity &amp; Persona Augmentation</a></li>
 <li><a class="reference internal" href="#agent-4-4-tier-automated-validation-gate">4. Agent 4: 4-Tier Automated Validation Gate</a></li>
-<li><a class="reference internal" href="#agent-5-deduplication-partitioning-packaging">5. Agent 5: Deduplication, Partitioning &amp; Packaging</a></li>
+<li><a class="reference internal" href="#agent-5-deduplication-grouped-partitioning-packaging">5. Agent 5: Deduplication, Grouped Partitioning &amp; Packaging</a></li>
 </ul>
 </li>
 </ul>

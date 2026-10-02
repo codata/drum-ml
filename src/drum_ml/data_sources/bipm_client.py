@@ -96,41 +96,47 @@ class BIPMClient:
         """Dynamically extracts SI defining constants from BIPM SI ontology using SPARQL."""
         constants: dict[str, PhysicalConstantEntity] = {}
         query = """
-        PREFIX si: <https://si-digital-framework.org/SI/ontology/>
+        PREFIX si: <https://si-digital-framework.org/SI#>
+        PREFIX si_ont: <https://si-digital-framework.org/SI/ontology/>
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-        SELECT DISTINCT ?c ?label ?symbol ?value ?unit ?dim
+        SELECT DISTINCT ?c ?label ?symbol ?valStr ?value ?dim
         WHERE {
-          ?c a ?type ;
-             rdfs:label ?label .
-          FILTER (?type IN (si:DefiningConstant, <https://si-digital-framework.org/SI/ontology/DefiningConstant>))
+          ?c a ?type .
+          FILTER (?type IN (si:Constant, si_ont:Constant, si_ont:DefiningConstant, <https://si-digital-framework.org/SI#Constant>, <https://si-digital-framework.org/SI/ontology/DefiningConstant>))
+          OPTIONAL { ?c skos:prefLabel ?label . FILTER (lang(?label) = 'en' || lang(?label) = '') }
+          OPTIONAL { ?c rdfs:label ?label }
           OPTIONAL { ?c si:hasSymbol ?symbol }
-          OPTIONAL { ?c si:hasNumericalValue ?value }
-          OPTIONAL { ?c si:hasUnit ?unit }
+          OPTIONAL { ?c si_ont:hasSymbol ?symbol }
+          OPTIONAL { ?c si:hasValueAsString ?valStr }
+          OPTIONAL { ?c si:hasValue ?value }
+          OPTIONAL { ?c si_ont:hasNumericalValue ?value }
           OPTIONAL { ?c si:hasDimension ?dim }
+          OPTIONAL { ?c si_ont:hasDimension ?dim }
         }
         """
         for row in graph.query(query):
             uri = str(row.c)
-            sym = str(row.symbol) if row.symbol else str(row.label)
-            val = str(row.value) if row.value else "0"
-            u_sym = str(row.unit) if row.unit else "1"
+            label = str(row.label) if row.label else uri.split("/")[-1]
+            sym = str(row.symbol) if row.symbol else label
+            raw_val = str(row.valStr) if row.valStr else (str(row.value) if row.value else "0")
             dim_str = str(row.dim).split("/")[-1] if row.dim else ""
             dim_vec = parse_qudt_dimension_string(dim_str)
 
             constants[uri] = PhysicalConstantEntity(
                 uri=uri,
-                name=str(row.label),
+                name=label,
                 symbol=sym,
                 latex_symbol=sym,
                 category=ConstantCategory.EXACT_SI_DEFINING,
-                numeric_value=val,
+                numeric_value=raw_val,
                 standard_uncertainty="0",
                 relative_uncertainty="0",
-                unit_symbol=u_sym,
+                unit_symbol="",
                 dimension_vector=dim_vec,
                 defining_year=2019,
-                description=f"BIPM SI Defining Constant: {row.label}",
+                description=f"BIPM SI Defining Constant: {label}",
             )
 
         return constants

@@ -83,32 +83,67 @@ class CODATAClient:
         if not json_path.exists():
             return constants
 
-        target_year = str(year or self.default_evaluation_year)
+        target_year = year or self.default_evaluation_year
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
         # Handle list of constants or history dictionary
-        items = data if isinstance(data, list) else data.get("constants", data.get(target_year, []))
+        items = (
+            data
+            if isinstance(data, list)
+            else data.get("constants", data.get(str(target_year), []))
+        )
         for item in items:
-            name = item.get("name", item.get("label", "Unknown"))
-            sym = item.get("symbol", "")
-            lsym = item.get("latex_symbol", sym)
-            raw_val = str(item.get("value", item.get("numeric_value", "0")))
-            val, std_u = parse_codata_value_uncertainty(raw_val)
-            rel_u = str(item.get("relative_uncertainty", item.get("rel_uncertainty", "")))
-            u_sym = item.get("unit", item.get("unit_symbol", "1"))
             eval_year = int(item.get("year", item.get("defining_year", target_year)))
-            is_exact = item.get("is_exact", False) or (std_u == "0" or not std_u)
+            if target_year and eval_year != int(target_year):
+                continue
 
-            uri = item.get("uri", f"https://codata.org/constants/{eval_year}/{sym or name}")
+            name = item.get("name", item.get("label", item.get("quantity", "Unknown")))
+            sym = item.get("symbol", item.get("nist_id", ""))
+            lsym = item.get("latex_symbol", sym)
+            raw_val = str(item.get("str_value", item.get("value", item.get("numeric_value", "0"))))
+            raw_u = str(
+                item.get(
+                    "str_uncertainty", item.get("uncertainty", item.get("numeric_uncertainty", ""))
+                )
+            )
+            val, parsed_u = parse_codata_value_uncertainty(raw_val)
+
+            is_exact = (
+                bool(item.get("is_exact", False))
+                or raw_u in ("(exact)", "0", "None", "")
+                or not raw_u
+            )
+            std_u = "0" if is_exact else (raw_u if raw_u and raw_u != "(exact)" else parsed_u)
+            rel_u = str(item.get("relative_uncertainty", item.get("rel_uncertainty", "0")))
+            u_sym = item.get("unit", item.get("unit_symbol", ""))
+
+            # Map known standard SI 7 defining constants
+            if name.lower() in (
+                "planck constant",
+                "speed of light in vacuum",
+                "elementary charge",
+                "boltzmann constant",
+                "avogadro constant",
+                "hyperfine transition frequency of cs-133",
+                "luminous efficacy",
+            ):
+                is_exact = True
+
+            category = (
+                ConstantCategory.EXACT_SI_DEFINING
+                if is_exact
+                else ConstantCategory.CODATA_RECOMMENDED
+            )
+
+            slug = item.get("nist_id") or sym or name.replace(" ", "_").replace("/", "_")
+            uri = item.get("uri", f"https://codata.org/constants/{eval_year}/{slug}")
             constants[uri] = PhysicalConstantEntity(
                 uri=uri,
                 name=name,
                 symbol=sym,
                 latex_symbol=lsym,
-                category=ConstantCategory.EXACT_SI_DEFINING
-                if is_exact
-                else ConstantCategory.CODATA_RECOMMENDED,
+                category=category,
                 numeric_value=val,
                 standard_uncertainty=std_u if not is_exact else "0",
                 relative_uncertainty=rel_u if not is_exact else "0",

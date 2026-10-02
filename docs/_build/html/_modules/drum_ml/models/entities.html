@@ -195,6 +195,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
@@ -239,22 +240,23 @@
 <span class="sd">alongside PhysicalConstant and DimensionVector according to VIM3, ISO 80000, and QUDT 2.1.</span>
 <span class="sd">"""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
 
 <div class="viewcode-block" id="BaseDimension">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.entities.BaseDimension">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BaseDimension</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseDimension</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The 7 base dimensions of the International System of Quantities (ISQ)."""</span>
-    <span class="n">LENGTH</span> <span class="o">=</span> <span class="s2">"L"</span>                 <span class="c1"># Length (meter, m)</span>
-    <span class="n">MASS</span> <span class="o">=</span> <span class="s2">"M"</span>                   <span class="c1"># Mass (kilogram, kg)</span>
-    <span class="n">TIME</span> <span class="o">=</span> <span class="s2">"T"</span>                   <span class="c1"># Time (second, s)</span>
-    <span class="n">ELECTRIC_CURRENT</span> <span class="o">=</span> <span class="s2">"I"</span>       <span class="c1"># Electric Current (ampere, A)</span>
-    <span class="n">THERMODYNAMIC_TEMP</span> <span class="o">=</span> <span class="s2">"Theta"</span> <span class="c1"># Thermodynamic Temperature (kelvin, K)</span>
-    <span class="n">AMOUNT_OF_SUBSTANCE</span> <span class="o">=</span> <span class="s2">"N"</span>    <span class="c1"># Amount of Substance (mole, mol)</span>
-    <span class="n">LUMINOUS_INTENSITY</span> <span class="o">=</span> <span class="s2">"J"</span>     <span class="c1"># Luminous Intensity (candela, cd)</span></div>
+
+    <span class="n">LENGTH</span> <span class="o">=</span> <span class="s2">"L"</span>  <span class="c1"># Length (meter, m)</span>
+    <span class="n">MASS</span> <span class="o">=</span> <span class="s2">"M"</span>  <span class="c1"># Mass (kilogram, kg)</span>
+    <span class="n">TIME</span> <span class="o">=</span> <span class="s2">"T"</span>  <span class="c1"># Time (second, s)</span>
+    <span class="n">ELECTRIC_CURRENT</span> <span class="o">=</span> <span class="s2">"I"</span>  <span class="c1"># Electric Current (ampere, A)</span>
+    <span class="n">THERMODYNAMIC_TEMP</span> <span class="o">=</span> <span class="s2">"Theta"</span>  <span class="c1"># Thermodynamic Temperature (kelvin, K)</span>
+    <span class="n">AMOUNT_OF_SUBSTANCE</span> <span class="o">=</span> <span class="s2">"N"</span>  <span class="c1"># Amount of Substance (mole, mol)</span>
+    <span class="n">LUMINOUS_INTENSITY</span> <span class="o">=</span> <span class="s2">"J"</span>  <span class="c1"># Luminous Intensity (candela, cd)</span></div>
 
 
 
@@ -262,10 +264,11 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.entities.DimensionVector">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DimensionVector</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""SI base dimensional representation [L, M, T, I, Theta, N, J] with integer/rational exponents."""</span>
+
     <span class="n">L</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">M</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">T</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">I</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">I</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># noqa: E741</span>
     <span class="n">Theta</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">J</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -356,14 +359,15 @@
 <span class="sd">    Note: Distinct QuantityKinds can share identical DimensionVectors (e.g. Torque vs Energy both [L^2 M T^-2]),</span>
 <span class="sd">    making QuantityKind a mandatory discriminator in metrological reasoning.</span>
 <span class="sd">    """</span>
+
     <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">symbol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">dimension_vector</span><span class="p">:</span> <span class="n">DimensionVector</span>
-    <span class="n">applicable_units</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span> <span class="c1"># Unit URIs</span>
-    <span class="n">broader_quantity_kinds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
-    <span class="n">exact_match_uris</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+    <span class="n">applicable_units</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># Unit URIs</span>
+    <span class="n">broader_quantity_kinds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">exact_match_uris</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 
 
@@ -373,10 +377,11 @@
 <span class="w">    </span><span class="sd">"""Conversion relationship from a unit to its SI coherent derived/base equivalent:</span>
 <span class="sd">    SI_val = (val * multiplier) + offset.</span>
 <span class="sd">    """</span>
+
     <span class="n">multiplier</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">exact</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">conversion_formula</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">conversion_formula</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -384,28 +389,29 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.entities.UnitEntity">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnitEntity</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""VIM3 Unit: A real scalar quantity adopted by convention to express values of quantities of the same kind."""</span>
+
     <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">is_si_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">is_si_derived</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">is_coherent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">dimension_vector</span><span class="p">:</span> <span class="n">DimensionVector</span>
-    <span class="n">has_quantity_kinds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span> <span class="c1"># QuantityKind URIs</span>
-    <span class="n">ucum_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">iec_symbol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">latex_symbol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">conversion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConversionRelation</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">exact_match_uris</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+    <span class="n">has_quantity_kinds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># QuantityKind URIs</span>
+    <span class="n">ucum_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">iec_symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">latex_symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">conversion</span><span class="p">:</span> <span class="n">ConversionRelation</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">exact_match_uris</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="ConstantCategory">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.entities.ConstantCategory">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ConstantCategory</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="n">EXACT_SI_DEFINING</span> <span class="o">=</span> <span class="s2">"exact_si_defining"</span> <span class="c1"># e.g. c, h, e, k, N_A, Delta_nu_Cs, K_cd</span>
-    <span class="n">CODATA_RECOMMENDED</span> <span class="o">=</span> <span class="s2">"codata_recommended"</span> <span class="c1"># e.g. G, alpha, m_e, R_inf</span></div>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConstantCategory</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">EXACT_SI_DEFINING</span> <span class="o">=</span> <span class="s2">"exact_si_defining"</span>  <span class="c1"># e.g. c, h, e, k, N_A, Delta_nu_Cs, K_cd</span>
+    <span class="n">CODATA_RECOMMENDED</span> <span class="o">=</span> <span class="s2">"codata_recommended"</span>  <span class="c1"># e.g. G, alpha, m_e, R_inf</span></div>
 
 
 
@@ -413,20 +419,21 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.entities.PhysicalConstantEntity">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PhysicalConstantEntity</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""CODATA / BIPM Fundamental Physical Constant representation with exact SI flags &amp; uncertainty budgets."""</span>
+
     <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">latex_symbol</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">category</span><span class="p">:</span> <span class="n">ConstantCategory</span>
-    <span class="n">numeric_value</span><span class="p">:</span> <span class="nb">str</span>                      <span class="c1"># String to preserve arbitrary precision without float truncation</span>
-    <span class="n">standard_uncertainty</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># None for exact defining constants</span>
-    <span class="n">relative_uncertainty</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">numeric_value</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># String to preserve arbitrary precision without float truncation</span>
+    <span class="n">standard_uncertainty</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># None for exact defining constants</span>
+    <span class="n">relative_uncertainty</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">unit_symbol</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">unit_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">quantity_kind_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">unit_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">quantity_kind_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">dimension_vector</span><span class="p">:</span> <span class="n">DimensionVector</span>
     <span class="n">defining_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2019</span>
-    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -434,9 +441,10 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.entities.CanonicalEntityStore">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CanonicalEntityStore</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Container for all canonical ingested metrological entities."""</span>
-    <span class="n">units</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">quantity_kinds</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QuantityKindEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">constants</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+    <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">quantity_kinds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QuantityKindEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">constants</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PhysicalConstantEntity</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

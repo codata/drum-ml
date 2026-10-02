@@ -195,6 +195,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
@@ -236,15 +237,82 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">concurrent.futures</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">litellm</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tenacity</span><span class="w"> </span><span class="kn">import</span> <span class="n">retry</span><span class="p">,</span> <span class="n">stop_after_attempt</span><span class="p">,</span> <span class="n">wait_exponential</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">AugmentedRecord</span><span class="p">,</span> <span class="n">PersonaType</span><span class="p">,</span> <span class="n">ScaffoldRecord</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.prompts.templates_personas</span><span class="w"> </span><span class="kn">import</span> <span class="n">PERSONA_SYSTEM_PROMPTS</span>
+
+
+<div class="viewcode-block" id="extract_clean_queries">
+<a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.augmenter.extract_clean_queries">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_clean_queries</span><span class="p">(</span>
+    <span class="n">raw_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fallback_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">persona_type</span><span class="p">:</span> <span class="n">PersonaType</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Extracts pristine user queries from LLM responses, stripping reasoning/think tags and prompt leakage."""</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">raw_text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">"&lt;/think&gt;"</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"&lt;/think&gt;"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="s2">"&lt;think&gt;"</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;think&gt;.*?&lt;/think&gt;"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s2">"```json"</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"```json\s*(.*?)\s*```"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="s2">"```"</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"```\s*(.*?)\s*```"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># Try finding JSON array</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">"\[\s*(?:</span><span class="se">\"</span><span class="s2">[^</span><span class="se">\"</span><span class="s2">]*</span><span class="se">\"</span><span class="s2">|\'[^\']*\'|</span><span class="se">\"</span><span class="s2">[^</span><span class="se">\"</span><span class="s2">]*</span><span class="se">\"</span><span class="s2">|\'[^\']*\')(?:\s*,\s*(?:</span><span class="se">\"</span><span class="s2">[^</span><span class="se">\"</span><span class="s2">]*</span><span class="se">\"</span><span class="s2">|\'[^\']*\'))*\s*\]"</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">,</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">s</span>
+                        <span class="ow">and</span> <span class="s2">"We need to"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span>
+                        <span class="ow">and</span> <span class="s2">"JSON array"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span>
+                        <span class="ow">and</span> <span class="s2">"paraphrase"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                    <span class="p">):</span>
+                        <span class="n">valid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">valid</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># If it is a clean single question or persona prefix</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">"?"</span> <span class="ow">in</span> <span class="n">text</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="s2">"We need to"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">text</span>
+        <span class="ow">and</span> <span class="s2">"JSON array"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">text</span>
+        <span class="ow">and</span> <span class="s2">"Paraphrase"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">text</span>
+        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">text</span><span class="p">]</span>
+
+    <span class="n">fallback</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">fallback_query</span>
+        <span class="k">if</span> <span class="n">persona_type</span> <span class="o">==</span> <span class="n">PersonaType</span><span class="o">.</span><span class="n">GENERAL_USER</span>
+        <span class="k">else</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">persona_type</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'_'</span><span class="p">,</span><span class="w"> </span><span class="s1">' '</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">fallback_query</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">fallback</span><span class="p">]</span></div>
+
 
 
 <div class="viewcode-block" id="MetrologyAugmenter">
@@ -258,15 +326,15 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"google"</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gemini/gemini-2.5-flash"</span><span class="p">,</span>
-        <span class="n">api_base</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">api_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">cache_db_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./data/cache/llm_cache.sqlite"</span><span class="p">,</span>
         <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
         <span class="n">concurrency_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">concurrency_limit</span> <span class="o">=</span> <span class="n">concurrency_limit</span>
-        
+
         <span class="c1"># Normalize model identifier for LiteLLM providers</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"google"</span><span class="p">,</span> <span class="s2">"gemini"</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"gemini/"</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"gemini/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span>
@@ -295,7 +363,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">api_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cache_db_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cache_db_path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"live_llm"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -327,7 +395,7 @@
             <span class="p">)</span>
             <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_db_path</span><span class="p">))</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
             <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
             <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT response FROM prompt_cache WHERE cache_key = ?"</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,))</span>
@@ -355,13 +423,13 @@
         <span class="c1"># Default clean single-line error</span>
         <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_call_llm_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_call_llm_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Calls configured LLM (Gemini, Claude, GPT, or local) via LiteLLM."""</span>
         <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">litellm</span><span class="o">.</span><span class="n">suppress_debug_info</span> <span class="o">=</span> <span class="kc">True</span>
-            
-            <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+
+            <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">"model"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
                 <span class="s2">"messages"</span><span class="p">:</span> <span class="p">[</span>
                     <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">},</span>
@@ -403,43 +471,36 @@
         <span class="n">scaffold</span><span class="p">:</span> <span class="n">ScaffoldRecord</span><span class="p">,</span>
         <span class="n">persona</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="n">variations_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Synchronously augments a scaffold for a specific persona."""</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">p_type</span> <span class="o">=</span> <span class="n">PersonaType</span><span class="p">(</span><span class="n">persona</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">persona</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">persona</span>
-        <span class="n">cache_key</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">scaffold</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">p_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">cache_key</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">scaffold</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">p_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 
         <span class="c1"># Check cache</span>
         <span class="n">cached_resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cache</span><span class="p">(</span><span class="n">cache_key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cached_resp</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s2">"cache_hits"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">augmented_queries</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cached_resp</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">augmented_queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">cached_resp</span><span class="p">]</span>
+            <span class="n">augmented_queries</span> <span class="o">=</span> <span class="n">extract_clean_queries</span><span class="p">(</span><span class="n">cached_resp</span><span class="p">,</span> <span class="n">scaffold</span><span class="o">.</span><span class="n">canonical_query</span><span class="p">,</span> <span class="n">p_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">system_prompt</span> <span class="o">=</span> <span class="n">PERSONA_SYSTEM_PROMPTS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="n">p_type</span><span class="p">,</span> <span class="s2">"You are a domain expert asking precise questions about units of measurement."</span>
+                <span class="n">p_type</span><span class="p">,</span>
+                <span class="s2">"You are a domain expert asking precise questions about units of measurement."</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">user_prompt</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"Paraphrase the following metrological question into </span><span class="si">{</span><span class="n">variations_count</span><span class="si">}</span><span class="s2"> distinct, realistic questions "</span>
-                <span class="sa">f</span><span class="s2">"from your persona's perspective:</span><span class="se">\n\n\"</span><span class="si">{</span><span class="n">scaffold</span><span class="o">.</span><span class="n">canonical_query</span><span class="si">}</span><span class="se">\"\n\n</span><span class="s2">"</span>
-                <span class="sa">f</span><span class="s2">"Output only a JSON array of strings: [</span><span class="se">\"</span><span class="s2">variation 1</span><span class="se">\"</span><span class="s2">, ...]"</span>
+                <span class="sa">f</span><span class="s1">'from your persona</span><span class="se">\'</span><span class="s1">s perspective:</span><span class="se">\n\n</span><span class="s1">"</span><span class="si">{</span><span class="n">scaffold</span><span class="o">.</span><span class="n">canonical_query</span><span class="si">}</span><span class="s1">"</span><span class="se">\n\n</span><span class="s1">'</span>
+                <span class="sa">f</span><span class="s1">'Output only a JSON array of strings: ["variation 1", ...]'</span>
             <span class="p">)</span>
 
             <span class="n">llm_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_llm_api</span><span class="p">(</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">llm_output</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s2">"live_llm"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="c1"># Strip markdown code blocks if returned</span>
-                    <span class="n">clean_output</span> <span class="o">=</span> <span class="n">llm_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">clean_output</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"```json"</span><span class="p">):</span>
-                        <span class="n">clean_output</span> <span class="o">=</span> <span class="n">clean_output</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="k">elif</span> <span class="n">clean_output</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"```"</span><span class="p">):</span>
-                        <span class="n">clean_output</span> <span class="o">=</span> <span class="n">clean_output</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="n">augmented_queries</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">clean_output</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="n">augmented_queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">llm_output</span><span class="p">]</span>
+                <span class="n">augmented_queries</span> <span class="o">=</span> <span class="n">extract_clean_queries</span><span class="p">(</span>
+                    <span class="n">llm_output</span><span class="p">,</span> <span class="n">scaffold</span><span class="o">.</span><span class="n">canonical_query</span><span class="p">,</span> <span class="n">p_type</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s2">"offline_fallbacks"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="c1"># Deterministic fallback when no API key or offline</span>
@@ -475,26 +536,32 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.augmenter.MetrologyAugmenter.augment_all">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">augment_all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">scaffolds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">],</span>
-        <span class="n">personas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PersonaType</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scaffolds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">],</span>
+        <span class="n">personas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PersonaType</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">variations_per_archetype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="n">progress_callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]:</span>
+        <span class="n">progress_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Augments a collection of scaffolds concurrently across all designated personas."""</span>
-        <span class="k">if</span> <span class="n">personas</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">personas</span> <span class="o">==</span> <span class="s2">"all"</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">personas</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"all"</span> <span class="ow">in</span> <span class="n">personas</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">personas</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">personas</span> <span class="o">==</span> <span class="s2">"all"</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">personas</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"all"</span> <span class="ow">in</span> <span class="n">personas</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="n">personas</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">PersonaType</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">personas</span> <span class="o">=</span> <span class="p">[</span><span class="n">PersonaType</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">personas</span><span class="p">]</span>
 
         <span class="n">t_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
         <span class="n">work_items</span> <span class="o">=</span> <span class="p">[(</span><span class="n">scaffold</span><span class="p">,</span> <span class="n">persona</span><span class="p">)</span> <span class="k">for</span> <span class="n">scaffold</span> <span class="ow">in</span> <span class="n">scaffolds</span> <span class="k">for</span> <span class="n">persona</span> <span class="ow">in</span> <span class="n">personas</span><span class="p">]</span>
-        <span class="n">augmented_records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">augmented_records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">max_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concurrency_limit</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">work_items</span><span class="p">)))</span>
         <span class="n">executor</span> <span class="o">=</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">augment_scaffold_sync</span><span class="p">,</span> <span class="n">scaffold</span><span class="p">,</span> <span class="n">persona</span><span class="p">,</span> <span class="n">variations_per_archetype</span><span class="p">)</span>
+                <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">augment_scaffold_sync</span><span class="p">,</span> <span class="n">scaffold</span><span class="p">,</span> <span class="n">persona</span><span class="p">,</span> <span class="n">variations_per_archetype</span>
+                <span class="p">)</span>
                 <span class="k">for</span> <span class="n">scaffold</span><span class="p">,</span> <span class="n">persona</span> <span class="ow">in</span> <span class="n">work_items</span>
             <span class="p">]</span>
             <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
@@ -503,7 +570,9 @@
                     <span class="n">augmented_records</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
                         <span class="n">p_val</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">persona</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">persona</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">persona</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s2">"persona_counts"</span><span class="p">][</span><span class="n">p_val</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s2">"persona_counts"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p_val</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s2">"persona_counts"</span><span class="p">][</span><span class="n">p_val</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s2">"persona_counts"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p_val</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">if</span> <span class="n">progress_callback</span><span class="p">:</span>
@@ -522,7 +591,9 @@
 
 <div class="viewcode-block" id="MetrologyAugmenter.save_to_json">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.augmenter.MetrologyAugmenter.save_to_json">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./data/augmented.json"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AugmentedRecord</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./data/augmented.json"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Serializes augmented records to JSON with UTF-8 encoding for cross-platform compatibility."""</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

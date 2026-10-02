@@ -195,6 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -235,7 +238,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">CanonicalEntityStore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.models.scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScaffoldRecord</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">drum_ml.prompts.templates_archetypes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -249,7 +252,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">MetrologyScaffolder</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Agent 2: Generates canonical ground-truth instruction-response scaffolds across all 6 archetypes."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entities_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">entities_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">entities_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">entities_path</span> <span class="k">else</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="MetrologyScaffolder.generate_all">
@@ -257,38 +260,43 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">store</span><span class="p">:</span> <span class="n">CanonicalEntityStore</span><span class="p">,</span>
-        <span class="n">limit_per_category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">]:</span>
+        <span class="n">limit_per_category</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"all"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Generates canonical scaffolds for units and constants in the store.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            store: The canonical entity store.</span>
-<span class="sd">            limit_per_category: Optional maximum number of units and constants to scaffold (for quick sample generation).</span>
+<span class="sd">            limit_per_category: Optional maximum number of entities to scaffold.</span>
+<span class="sd">            category: 'all', 'constants', or 'units'.</span>
 <span class="sd">        """</span>
-        <span class="n">scaffolds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">scaffolds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cat</span> <span class="o">=</span> <span class="n">category</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="c1"># 1. Generate scaffolds for units</span>
-        <span class="n">unit_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">limit_per_category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">unit_items</span> <span class="o">=</span> <span class="n">unit_items</span><span class="p">[:</span><span class="n">limit_per_category</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">unit_items</span><span class="p">:</span>
-            <span class="n">scaffolds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generate_scaffolds_for_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">store</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">cat</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"all"</span><span class="p">,</span> <span class="s2">"units"</span><span class="p">):</span>
+            <span class="n">unit_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">limit_per_category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">unit_items</span> <span class="o">=</span> <span class="n">unit_items</span><span class="p">[:</span><span class="n">limit_per_category</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">unit_items</span><span class="p">:</span>
+                <span class="n">scaffolds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generate_scaffolds_for_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">store</span><span class="p">))</span>
 
         <span class="c1"># 2. Generate scaffolds for constants</span>
-        <span class="n">const_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">limit_per_category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">const_items</span> <span class="o">=</span> <span class="n">const_items</span><span class="p">[:</span><span class="n">limit_per_category</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">const</span> <span class="ow">in</span> <span class="n">const_items</span><span class="p">:</span>
-            <span class="n">scaffolds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generate_scaffolds_for_constant</span><span class="p">(</span><span class="n">const</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">cat</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"all"</span><span class="p">,</span> <span class="s2">"constants"</span><span class="p">):</span>
+            <span class="n">const_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">limit_per_category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">const_items</span> <span class="o">=</span> <span class="n">const_items</span><span class="p">[:</span><span class="n">limit_per_category</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">const</span> <span class="ow">in</span> <span class="n">const_items</span><span class="p">:</span>
+                <span class="n">scaffolds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generate_scaffolds_for_constant</span><span class="p">(</span><span class="n">const</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">scaffolds</span></div>
 
 
 <div class="viewcode-block" id="MetrologyScaffolder.save_to_json">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.pipeline.scaffolder.MetrologyScaffolder.save_to_json">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaffolds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./data/scaffolds.json"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">scaffolds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScaffoldRecord</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./data/scaffolds.json"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Serializes scaffolds list to JSON with UTF-8 encoding."""</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

@@ -21,30 +21,33 @@ class MetrologyScaffolder:
         self,
         store: CanonicalEntityStore,
         limit_per_category: int | None = None,
+        category: str = "all",
     ) -> list[ScaffoldRecord]:
         """Generates canonical scaffolds for units and constants in the store.
 
         Args:
             store: The canonical entity store.
-            limit_per_category: Optional maximum number of units and constants to scaffold (for quick sample generation).
+            limit_per_category: Optional maximum number of entities to scaffold.
+            category: 'all', 'constants', or 'units'.
         """
         scaffolds: list[ScaffoldRecord] = []
+        cat = category.lower()
 
         # 1. Generate scaffolds for units
-        unit_items = list(store.units.values())
-        if limit_per_category is not None:
-            unit_items = unit_items[:limit_per_category]
-
-        for unit in unit_items:
-            scaffolds.extend(generate_scaffolds_for_unit(unit, store))
+        if cat in ("all", "units"):
+            unit_items = list(store.units.values())
+            if limit_per_category is not None:
+                unit_items = unit_items[:limit_per_category]
+            for unit in unit_items:
+                scaffolds.extend(generate_scaffolds_for_unit(unit, store))
 
         # 2. Generate scaffolds for constants
-        const_items = list(store.constants.values())
-        if limit_per_category is not None:
-            const_items = const_items[:limit_per_category]
-
-        for const in const_items:
-            scaffolds.extend(generate_scaffolds_for_constant(const))
+        if cat in ("all", "constants"):
+            const_items = list(store.constants.values())
+            if limit_per_category is not None:
+                const_items = const_items[:limit_per_category]
+            for const in const_items:
+                scaffolds.extend(generate_scaffolds_for_constant(const))
 
         return scaffolds
 

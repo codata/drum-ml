@@ -352,6 +352,17 @@ drum-ml<span class="w"> </span>evaluate<span class="w"> </span><span class="se">
 </pre></div>
 </div>
 </section>
+<section id="interactive-benchmark-browser-dashboard">
+<h3>Interactive Benchmark Browser Dashboard<a class="headerlink" href="#interactive-benchmark-browser-dashboard" title="Link to this heading">¶</a></h3>
+<p>DRUM-ML provides a standalone, interactive HTML browser dashboard to visually explore, inspect, filter, and audit benchmark questions across all 6 tasks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch interactive benchmark explorer in default web browser</span>
+drum-ml<span class="w"> </span>view-benchmark<span class="w"> </span>--benchmark-file<span class="w"> </span>./dataset/benchmark/drum_benchmark_all.jsonl
+
+<span class="c1"># Or export HTML file to a custom path:</span>
+drum-ml<span class="w"> </span>view-benchmark<span class="w"> </span>--benchmark-file<span class="w"> </span>./dataset/benchmark/drum_benchmark_all.jsonl<span class="w"> </span>--output-html<span class="w"> </span>./dataset/benchmark/benchmark_viewer.html
+</pre></div>
+</div>
+</section>
 <section id="terminal-output-scorecard">
 <h3>Terminal Output Scorecard<a class="headerlink" href="#terminal-output-scorecard" title="Link to this heading">¶</a></h3>
 <p>Evaluation renders a formatted Rich table with stratified category scores:</p>
@@ -572,6 +583,7 @@ lm_eval<span class="w"> </span>--model<span class="w"> </span>hf<span class="w">
 <li><a class="reference internal" href="#cli-usage-workflow">3. CLI Usage &amp; Workflow</a><ul>
 <li><a class="reference internal" href="#synthesizing-the-benchmark-datasets">Synthesizing the Benchmark Datasets</a></li>
 <li><a class="reference internal" href="#running-benchmark-evaluations">Running Benchmark Evaluations</a></li>
+<li><a class="reference internal" href="#interactive-benchmark-browser-dashboard">Interactive Benchmark Browser Dashboard</a></li>
 <li><a class="reference internal" href="#terminal-output-scorecard">Terminal Output Scorecard</a></li>
 </ul>
 </li>

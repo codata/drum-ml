@@ -3,7 +3,7 @@
 project:
   name: "drum-ml-metrology-corpus"
   version: "0.1.0"
-  output_dir: "./datasets"
+  output_dir: "./dataset"
   cache_db: "./data/cache/llm_cache.sqlite"
 
 sources:
@@ -142,6 +142,11 @@ exporter:
   test_ratio: 0.05
   dedup_jaccard_threshold: 0.85
   target_volume_stage: "mvp" # "mvp" (~5k-10k) | "production" (~50k+)
+  export_by_persona: true # Break down dataset into per-persona files (e.g. by_persona/)
+  export_by_archetype: true # Break down dataset into per-archetype files (by_archetype/)
+  export_by_category: true # Break down dataset into units vs constants (by_category/)
+  generate_viewer: true # Generate standalone interactive HTML dataset browser
+  viewer_sample_limit: 5000 # Stratified sample limit for the interactive browser
   formats:
     - "openai"
     - "sharegpt"

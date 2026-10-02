@@ -195,7 +195,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../objectives.html">Project Objectives &amp; Scientific Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Multi-Agent Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../methodology.html">Methodology &amp; Metrological Foundations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">DRUM Metrology Benchmark (M-Eval) Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../personas.html">Scientific Unions &amp; Domain Personas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">LLM Model Selection, Recommendations &amp; Performance Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Scientific Assumptions &amp; Invariants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_and_eval.html">Training &amp; Evaluation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
@@ -234,28 +236,33 @@
           <h1>Source code for drum_ml.models.scaffolds</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""Scaffold and Augmented Instruction-Response Data Models."""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
 
 <div class="viewcode-block" id="ArchetypeType">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.scaffolds.ArchetypeType">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ArchetypeType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchetypeType</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The 6 Pedagogical Metrology Archetypes."""</span>
-    <span class="n">DIRECT_IDENTIFICATION</span> <span class="o">=</span> <span class="s2">"direct_identification"</span>       <span class="c1"># Unit &lt;-&gt; Symbol, QuantityKind &lt;-&gt; SI Unit</span>
-    <span class="n">DIMENSIONAL_DECOMPOSITION</span> <span class="o">=</span> <span class="s2">"dimensional_decomposition"</span> <span class="c1"># Base SI decomposition &amp; derivation</span>
-    <span class="n">CONVERSION_SCALING</span> <span class="o">=</span> <span class="s2">"conversion_scaling"</span>             <span class="c1"># Multipliers, offsets, compound units</span>
-    <span class="n">DIMENSIONAL_ERROR_DETECTION</span> <span class="o">=</span> <span class="s2">"error_detection"</span>        <span class="c1"># Homogeneity violation, invalid sum, bad prefix</span>
-    <span class="n">SEMANTIC_TOOL_USE</span> <span class="o">=</span> <span class="s2">"semantic_tool_use"</span>               <span class="c1"># SPARQL, QUDT queries, Pint code execution</span>
+
+    <span class="n">DIRECT_IDENTIFICATION</span> <span class="o">=</span> <span class="s2">"direct_identification"</span>  <span class="c1"># Unit &lt;-&gt; Symbol, QuantityKind &lt;-&gt; SI Unit</span>
+    <span class="n">DIMENSIONAL_DECOMPOSITION</span> <span class="o">=</span> <span class="s2">"dimensional_decomposition"</span>  <span class="c1"># Base SI decomposition &amp; derivation</span>
+    <span class="n">CONVERSION_SCALING</span> <span class="o">=</span> <span class="s2">"conversion_scaling"</span>  <span class="c1"># Multipliers, offsets, compound units</span>
+    <span class="n">DIMENSIONAL_ERROR_DETECTION</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"error_detection"</span>  <span class="c1"># Homogeneity violation, invalid sum, bad prefix</span>
+    <span class="p">)</span>
+    <span class="n">SEMANTIC_TOOL_USE</span> <span class="o">=</span> <span class="s2">"semantic_tool_use"</span>  <span class="c1"># SPARQL, QUDT queries, Pint code execution</span>
     <span class="n">METROLOGICAL_UNCERTAINTY</span> <span class="o">=</span> <span class="s2">"metrological_uncertainty"</span>  <span class="c1"># GUM uncertainty propagation, sig-figs</span></div>
 
 
 
 <div class="viewcode-block" id="PersonaType">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.scaffolds.PersonaType">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">PersonaType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PersonaType</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Linguistic and domain persona profiles representing CODATA DRUM Scientific Unions &amp; NMIs."""</span>
+
     <span class="c1"># General &amp; Engineering Baseline</span>
     <span class="n">GENERAL_USER</span> <span class="o">=</span> <span class="s2">"general_user"</span>
     <span class="n">PHYSICS_STUDENT</span> <span class="o">=</span> <span class="s2">"physics_student"</span>
@@ -265,56 +272,68 @@
     <span class="n">ACADEMIC_METROLOGIST</span> <span class="o">=</span> <span class="s2">"academic_metrologist"</span>
 
     <span class="c1"># National Metrology Institutes &amp; Global Science Council</span>
-    <span class="n">NIST_METROLOGIST</span> <span class="o">=</span> <span class="s2">"nist_metrologist"</span>                       <span class="c1"># National Institute of Standards and Technology (NIST)</span>
-    <span class="n">NRC_METROLOGIST</span> <span class="o">=</span> <span class="s2">"nrc_metrologist"</span>                         <span class="c1"># National Research Council Canada (NRC)</span>
-    <span class="n">ISC_SCIENCE_POLICY</span> <span class="o">=</span> <span class="s2">"isc_science_policy"</span>                   <span class="c1"># International Science Council (ISC)</span>
+    <span class="n">NIST_METROLOGIST</span> <span class="o">=</span> <span class="s2">"nist_metrologist"</span>  <span class="c1"># National Institute of Standards and Technology (NIST)</span>
+    <span class="n">NRC_METROLOGIST</span> <span class="o">=</span> <span class="s2">"nrc_metrologist"</span>  <span class="c1"># National Research Council Canada (NRC)</span>
+    <span class="n">ISC_SCIENCE_POLICY</span> <span class="o">=</span> <span class="s2">"isc_science_policy"</span>  <span class="c1"># International Science Council (ISC)</span>
 
     <span class="c1"># Physical, Chemical &amp; Mathematical Sciences</span>
-    <span class="n">IUPAP_PHYSICIST</span> <span class="o">=</span> <span class="s2">"iupap_physicist"</span>                         <span class="c1"># International Union of Pure and Applied Physics (IUPAP)</span>
-    <span class="n">IUPAC_CHEMIST</span> <span class="o">=</span> <span class="s2">"iupac_chemist"</span>                             <span class="c1"># International Union of Pure and Applied Chemistry (IUPAC)</span>
-    <span class="n">IAU_ASTRONOMER</span> <span class="o">=</span> <span class="s2">"iau_astronomer"</span>                           <span class="c1"># International Astronomical Union (IAU)</span>
-    <span class="n">IUCR_CRYSTALLOGRAPHER</span> <span class="o">=</span> <span class="s2">"iucr_crystallographer"</span>             <span class="c1"># International Union of Crystallography (IUCr)</span>
-    <span class="n">IMU_MATHEMATICIAN</span> <span class="o">=</span> <span class="s2">"imu_mathematician"</span>                     <span class="c1"># International Mathematical Union (IMU)</span>
-    <span class="n">URSI_RADIO_SCIENTIST</span> <span class="o">=</span> <span class="s2">"ursi_radio_scientist"</span>               <span class="c1"># Union Radio Scientifique Internationale (URSI)</span>
-    <span class="n">IUTAM_MECHANICS_ENGINEER</span> <span class="o">=</span> <span class="s2">"iutam_mechanics_engineer"</span>       <span class="c1"># International Union of Theoretical and Applied Mechanics (IUTAM)</span>
+    <span class="n">IUPAP_PHYSICIST</span> <span class="o">=</span> <span class="s2">"iupap_physicist"</span>  <span class="c1"># International Union of Pure and Applied Physics (IUPAP)</span>
+    <span class="n">IUPAC_CHEMIST</span> <span class="o">=</span> <span class="s2">"iupac_chemist"</span>  <span class="c1"># International Union of Pure and Applied Chemistry (IUPAC)</span>
+    <span class="n">IAU_ASTRONOMER</span> <span class="o">=</span> <span class="s2">"iau_astronomer"</span>  <span class="c1"># International Astronomical Union (IAU)</span>
+    <span class="n">IUCR_CRYSTALLOGRAPHER</span> <span class="o">=</span> <span class="s2">"iucr_crystallographer"</span>  <span class="c1"># International Union of Crystallography (IUCr)</span>
+    <span class="n">IMU_MATHEMATICIAN</span> <span class="o">=</span> <span class="s2">"imu_mathematician"</span>  <span class="c1"># International Mathematical Union (IMU)</span>
+    <span class="n">URSI_RADIO_SCIENTIST</span> <span class="o">=</span> <span class="s2">"ursi_radio_scientist"</span>  <span class="c1"># Union Radio Scientifique Internationale (URSI)</span>
+    <span class="n">IUTAM_MECHANICS_ENGINEER</span> <span class="o">=</span> <span class="s2">"iutam_mechanics_engineer"</span>  <span class="c1"># International Union of Theoretical and Applied Mechanics (IUTAM)</span>
     <span class="n">AEROSPACE_PROPULSION_ENGINEER</span> <span class="o">=</span> <span class="s2">"aerospace_propulsion_engineer"</span>
     <span class="n">PARTICLE_PHYSICIST</span> <span class="o">=</span> <span class="s2">"particle_physicist"</span>
 
     <span class="c1"># Earth, Space, Geo &amp; Environmental Sciences</span>
-    <span class="n">IUGG_GEODESIST_GEOPHYSICIST</span> <span class="o">=</span> <span class="s2">"iugg_geodesist_geophysicist"</span> <span class="c1"># International Union of Geodesy and Geophysics (IUGG)</span>
-    <span class="n">IGU_GEOGRAPHER</span> <span class="o">=</span> <span class="s2">"igu_geographer"</span>                           <span class="c1"># International Geographical Union (IGU)</span>
-    <span class="n">ISPRS_PHOTOGRAMMETRIST</span> <span class="o">=</span> <span class="s2">"isprs_photogrammetrist"</span>           <span class="c1"># International Society for Photogrammetry and Remote Sensing (ISPRS)</span>
-    <span class="n">ISDE_DIGITAL_EARTH</span> <span class="o">=</span> <span class="s2">"isde_digital_earth"</span>                   <span class="c1"># International Society for Digital Earth (ISDE)</span>
-    <span class="n">IUSS_SOIL_SCIENTIST</span> <span class="o">=</span> <span class="s2">"iuss_soil_scientist"</span>                 <span class="c1"># International Union of Soil Science (IUSS)</span>
+    <span class="n">IUGG_GEODESIST_GEOPHYSICIST</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"iugg_geodesist_geophysicist"</span>  <span class="c1"># International Union of Geodesy and Geophysics (IUGG)</span>
+    <span class="p">)</span>
+    <span class="n">IGU_GEOGRAPHER</span> <span class="o">=</span> <span class="s2">"igu_geographer"</span>  <span class="c1"># International Geographical Union (IGU)</span>
+    <span class="n">ISPRS_PHOTOGRAMMETRIST</span> <span class="o">=</span> <span class="s2">"isprs_photogrammetrist"</span>  <span class="c1"># International Society for Photogrammetry and Remote Sensing (ISPRS)</span>
+    <span class="n">ISDE_DIGITAL_EARTH</span> <span class="o">=</span> <span class="s2">"isde_digital_earth"</span>  <span class="c1"># International Society for Digital Earth (ISDE)</span>
+    <span class="n">IUSS_SOIL_SCIENTIST</span> <span class="o">=</span> <span class="s2">"iuss_soil_scientist"</span>  <span class="c1"># International Union of Soil Science (IUSS)</span>
     <span class="n">ENERGY_ENVIRONMENTAL_SCIENTIST</span> <span class="o">=</span> <span class="s2">"energy_environmental_scientist"</span>
 
     <span class="c1"># Biological, Medical &amp; Health Sciences</span>
-    <span class="n">IUBS_BIOLOGIST</span> <span class="o">=</span> <span class="s2">"iubs_biologist"</span>                           <span class="c1"># International Union of Biological Sciences (IUBS)</span>
-    <span class="n">IUIS_IMMUNOLOGIST</span> <span class="o">=</span> <span class="s2">"iuis_immunologist"</span>                     <span class="c1"># International Union of Immunological Societies (IUIS)</span>
-    <span class="n">IUPHAR_PHARMACOLOGIST</span> <span class="o">=</span> <span class="s2">"iuphar_pharmacologist"</span>             <span class="c1"># International Union of Basic and Clinical Pharmacology (IUPHAR)</span>
-    <span class="n">IUPS_PHYSIOLOGIST</span> <span class="o">=</span> <span class="s2">"iups_physiologist"</span>                     <span class="c1"># International Union of Physiological Sciences (IUPS)</span>
-    <span class="n">IUTOX_TOXICOLOGIST</span> <span class="o">=</span> <span class="s2">"iutox_toxicologist"</span>                   <span class="c1"># International Union of Toxicology (IUTOX)</span>
-    <span class="n">IUNS_NUTRITIONIST</span> <span class="o">=</span> <span class="s2">"iuns_nutritionist"</span>                     <span class="c1"># International Union of Nutritional Sciences (IUNS)</span>
-    <span class="n">IUFOST_FOOD_SCIENTIST</span> <span class="o">=</span> <span class="s2">"iufost_food_scientist"</span>             <span class="c1"># International Union of Food Science and Technology (IUFoST)</span>
-    <span class="n">IOMP_MEDICAL_PHYSICIST</span> <span class="o">=</span> <span class="s2">"iomp_medical_physicist"</span>           <span class="c1"># IUPESM / IOMP (Medical Physics)</span>
-    <span class="n">IFMBE_BIOMEDICAL_ENGINEER</span> <span class="o">=</span> <span class="s2">"ifmbe_biomedical_engineer"</span>     <span class="c1"># IUPESM / IFMBE (Biomedical Engineering)</span>
+    <span class="n">IUBS_BIOLOGIST</span> <span class="o">=</span> <span class="s2">"iubs_biologist"</span>  <span class="c1"># International Union of Biological Sciences (IUBS)</span>
+    <span class="n">IUIS_IMMUNOLOGIST</span> <span class="o">=</span> <span class="s2">"iuis_immunologist"</span>  <span class="c1"># International Union of Immunological Societies (IUIS)</span>
+    <span class="n">IUPHAR_PHARMACOLOGIST</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"iuphar_pharmacologist"</span>  <span class="c1"># International Union of Basic and Clinical Pharmacology (IUPHAR)</span>
+    <span class="p">)</span>
+    <span class="n">IUPS_PHYSIOLOGIST</span> <span class="o">=</span> <span class="s2">"iups_physiologist"</span>  <span class="c1"># International Union of Physiological Sciences (IUPS)</span>
+    <span class="n">IUTOX_TOXICOLOGIST</span> <span class="o">=</span> <span class="s2">"iutox_toxicologist"</span>  <span class="c1"># International Union of Toxicology (IUTOX)</span>
+    <span class="n">IUNS_NUTRITIONIST</span> <span class="o">=</span> <span class="s2">"iuns_nutritionist"</span>  <span class="c1"># International Union of Nutritional Sciences (IUNS)</span>
+    <span class="n">IUFOST_FOOD_SCIENTIST</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"iufost_food_scientist"</span>  <span class="c1"># International Union of Food Science and Technology (IUFoST)</span>
+    <span class="p">)</span>
+    <span class="n">IOMP_MEDICAL_PHYSICIST</span> <span class="o">=</span> <span class="s2">"iomp_medical_physicist"</span>  <span class="c1"># IUPESM / IOMP (Medical Physics)</span>
+    <span class="n">IFMBE_BIOMEDICAL_ENGINEER</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"ifmbe_biomedical_engineer"</span>  <span class="c1"># IUPESM / IFMBE (Biomedical Engineering)</span>
+    <span class="p">)</span>
 
     <span class="c1"># Social, Behavioral &amp; Human Sciences</span>
-    <span class="n">IUPSYS_PSYCHOLOGIST</span> <span class="o">=</span> <span class="s2">"iupsys_psychologist"</span>                 <span class="c1"># International Union of Psychological Science (IUPsyS)</span>
-    <span class="n">ISA_SOCIOLOGIST</span> <span class="o">=</span> <span class="s2">"isa_sociologist"</span>                         <span class="c1"># International Sociological Association (ISA)</span>
-    <span class="n">IUSSP_DEMOGRAPHER</span> <span class="o">=</span> <span class="s2">"iussp_demographer"</span>                     <span class="c1"># International Union for the Scientific Study of Population (IUSSP)</span>
-    <span class="n">WAU_ANTHROPOLOGIST</span> <span class="o">=</span> <span class="s2">"wau_anthropologist"</span>                   <span class="c1"># World Anthropological Union (WAU)</span>
-    <span class="n">FOUR_S_SCIENCE_STUDIES</span> <span class="o">=</span> <span class="s2">"four_s_science_studies"</span>           <span class="c1"># Society for Social Studies of Science (4S)</span>
-    <span class="n">IUHPST_HISTORIAN_PHILOSOPHER</span> <span class="o">=</span> <span class="s2">"iuhpst_historian_philosopher"</span> <span class="c1"># International Union for History and Philosophy of Science and Technology (IUHPST)</span></div>
+    <span class="n">IUPSYS_PSYCHOLOGIST</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"iupsys_psychologist"</span>  <span class="c1"># International Union of Psychological Science (IUPsyS)</span>
+    <span class="p">)</span>
+    <span class="n">ISA_SOCIOLOGIST</span> <span class="o">=</span> <span class="s2">"isa_sociologist"</span>  <span class="c1"># International Sociological Association (ISA)</span>
+    <span class="n">IUSSP_DEMOGRAPHER</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"iussp_demographer"</span>  <span class="c1"># International Union for the Scientific Study of Population (IUSSP)</span>
+    <span class="p">)</span>
+    <span class="n">WAU_ANTHROPOLOGIST</span> <span class="o">=</span> <span class="s2">"wau_anthropologist"</span>  <span class="c1"># World Anthropological Union (WAU)</span>
+    <span class="n">FOUR_S_SCIENCE_STUDIES</span> <span class="o">=</span> <span class="s2">"four_s_science_studies"</span>  <span class="c1"># Society for Social Studies of Science (4S)</span>
+    <span class="n">IUHPST_HISTORIAN_PHILOSOPHER</span> <span class="o">=</span> <span class="s2">"iuhpst_historian_philosopher"</span>  <span class="c1"># International Union for History and Philosophy of Science and Technology (IUHPST)</span></div>
 
 
 
 <div class="viewcode-block" id="DifficultyTier">
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.scaffolds.DifficultyTier">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">DifficultyTier</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="n">INTRODUCTORY</span> <span class="o">=</span> <span class="s2">"introductory"</span>   <span class="c1"># High school / basic lookup</span>
-    <span class="n">INTERMEDIATE</span> <span class="o">=</span> <span class="s2">"intermediate"</span>   <span class="c1"># Undergraduate physics / engineering calculation</span>
-    <span class="n">ADVANCED</span> <span class="o">=</span> <span class="s2">"advanced"</span>           <span class="c1"># Formal metrology / standards lab level</span></div>
+<span class="k">class</span><span class="w"> </span><span class="nc">DifficultyTier</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">INTRODUCTORY</span> <span class="o">=</span> <span class="s2">"introductory"</span>  <span class="c1"># High school / basic lookup</span>
+    <span class="n">INTERMEDIATE</span> <span class="o">=</span> <span class="s2">"intermediate"</span>  <span class="c1"># Undergraduate physics / engineering calculation</span>
+    <span class="n">ADVANCED</span> <span class="o">=</span> <span class="s2">"advanced"</span>  <span class="c1"># Formal metrology / standards lab level</span></div>
 
 
 
@@ -322,15 +341,16 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.scaffolds.ScaffoldRecord">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScaffoldRecord</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Canonical ground-truth template record generated from metrological entities."""</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">archetype</span><span class="p">:</span> <span class="n">ArchetypeType</span>
     <span class="n">entity_uri</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">quantity_kind_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">quantity_kind_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">canonical_query</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ground_truth_answer</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">context_facts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">latex_expressions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
-    <span class="n">numerical_constants</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">context_facts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">latex_expressions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">numerical_constants</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">difficulty</span><span class="p">:</span> <span class="n">DifficultyTier</span> <span class="o">=</span> <span class="n">DifficultyTier</span><span class="o">.</span><span class="n">INTERMEDIATE</span></div>
 
 
@@ -339,6 +359,7 @@
 <a class="viewcode-back" href="../../../api_reference.html#drum_ml.models.scaffolds.AugmentedRecord">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AugmentedRecord</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Augmented dataset candidate generated via LLM persona prompting."""</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">scaffold_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">archetype</span><span class="p">:</span> <span class="n">ArchetypeType</span>
@@ -346,10 +367,10 @@
     <span class="n">user_query</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ground_truth_answer</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">entity_uri</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">quantity_kind_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">quantity_kind_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
     <span class="n">llm_generator</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

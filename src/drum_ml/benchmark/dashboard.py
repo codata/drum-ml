@@ -766,13 +766,19 @@ def generate_leaderboard_html(
 
   <!-- Top Navbar -->
   <header class="navbar">
-    <a href="#" class="navbar-brand">
-      <div class="brand-icon">D</div>
-      <div class="brand-title">
-        <span>DRUM-ML</span>
-        <span class="brand-badge">Leaderboard & Profiles</span>
-      </div>
-    </a>
+    <div style="display:flex; align-items:center; gap:0.6rem;">
+      <a href="../index.html" class="btn" title="Return to DRUM-ML Main Portal Home" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-secondary); font-size:0.75rem; font-weight:700; padding:0.35rem 0.65rem; border-radius:var(--radius-sm); background:var(--bg-subtle); border:1px solid var(--border-color); transition:all 0.2s;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="../index.html" class="navbar-brand" style="text-decoration:none;">
+        <div class="brand-icon">D</div>
+        <div class="brand-title">
+          <span>DRUM-ML</span>
+          <span class="brand-badge">Leaderboard & Profiles</span>
+        </div>
+      </a>
+    </div>
 
     <!-- Navigation Tabs -->
     <nav class="nav-tabs">
@@ -792,14 +798,17 @@ def generate_leaderboard_html(
 
     <!-- Global Actions -->
     <div class="nav-actions">
-      <a href="benchmark_viewer.html" class="btn" title="Open Single Model Benchmark Reviewer" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-        <span>🔍</span> Benchmark Viewer
+      <a href="../dataset_viewer.html" class="btn" title="Open Dataset Browser & Explorer" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:0.75rem;">
+        <span>📂</span> Dataset Browser
       </a>
-      <label class="btn" title="Upload additional scorecard JSON files" style="cursor:pointer;">
+      <a href="benchmark_viewer.html" class="btn" title="Open Single Model Benchmark Reviewer" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:0.75rem;">
+        <span>🎯</span> Benchmark Viewer
+      </a>
+      <label class="btn" title="Upload additional scorecard JSON files" style="cursor:pointer; font-size:0.75rem;">
         <span>📂</span> Add Scorecard
         <input type="file" id="scorecardFileInput" multiple accept=".json" style="display:none;">
       </label>
-      <button class="btn btn-primary" id="btnExportMarkdown" title="Export Leaderboard Markdown Table">
+      <button class="btn btn-primary" id="btnExportMarkdown" title="Export Leaderboard Markdown Table" style="font-size:0.75rem;">
         <span>📋</span> Copy Table
       </button>
     </div>

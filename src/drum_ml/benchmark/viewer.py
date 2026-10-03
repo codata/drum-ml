@@ -1525,11 +1525,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <!-- Top App Header -->
   <header class="app-header">
     <div class="logo-container">
-      <div class="brand-icon">M</div>
-      <div class="brand-text">
-        <h1>DRUM Metrology Benchmark</h1>
-        <p>CODATA Digital Representation of Units of Measurement (M-Eval)</p>
-      </div>
+      <a href="../index.html" class="btn" title="Return to DRUM-ML Main Portal Home" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-secondary); margin-right:0.6rem; font-size:0.75rem; font-weight:700; padding:0.35rem 0.65rem; border-radius:var(--radius-sm); background:var(--bg-subtle); border:1px solid var(--border-color); transition:all 0.2s;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="../index.html" style="text-decoration:none; display:flex; align-items:center; gap:0.65rem; color:inherit;">
+        <div class="brand-icon">M</div>
+        <div class="brand-text">
+          <h1>DRUM Metrology Benchmark</h1>
+          <p>CODATA Digital Representation of Units of Measurement (M-Eval)</p>
+        </div>
+      </a>
     </div>
 
     <!-- View Navigation Tabs -->
@@ -1564,7 +1570,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </button>
       </div>
 
-      <a href="leaderboard.html" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15)); border-color:rgba(56,189,248,0.4); color:#38bdf8;" title="Open Multi-Model Leaderboard & Profiles Dashboard">
+      <a href="../dataset_viewer.html" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-size:0.75rem;" title="Open Dataset Browser & Explorer">
+        <span>📂</span> Dataset Browser
+      </a>
+      <a href="leaderboard.html" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15)); border-color:rgba(56,189,248,0.4); color:#38bdf8; font-size:0.75rem;" title="Open Multi-Model Leaderboard & Profiles Dashboard">
         <span>🏆</span> Leaderboard
       </a>
       <button class="btn" id="btnLoadFile" title="Load custom benchmark JSONL / Scorecard JSON">

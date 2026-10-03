@@ -1018,6 +1018,12 @@ def evaluate(
         "-o",
         help="Output path for evaluation report.",
     ),
+    target: str = typer.Option(
+        "auto",
+        "--target",
+        "-t",
+        help="Execution target classification: 'auto' (detect from endpoint/model), 'local', or 'cloud'.",
+    ),
     resume: bool = typer.Option(
         True, "--resume/--no-resume", help="Automatically resume from checkpoint if an in-progress evaluation exists."
     ),
@@ -1160,12 +1166,14 @@ def evaluate(
         )
         raise typer.Exit(code=130)
 
+    exec_override = None if target == "auto" else target
     total_eval_duration = accumulated_duration + (time.perf_counter() - session_start_time)
     scorecard = evaluator.compute_scorecard(
         model_name=model_name,
         results=results,
         total_duration_seconds=total_eval_duration,
         endpoint=model_endpoint if not is_baseline else None,
+        execution_type=exec_override,
     )
     evaluator.print_scorecard(scorecard, console=console)
 

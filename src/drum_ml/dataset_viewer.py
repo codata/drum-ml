@@ -1254,11 +1254,17 @@ DATASET_VIEWER_HTML_TEMPLATE = """<!DOCTYPE html>
   <!-- Header -->
   <header>
     <div class="brand-section">
-      <div class="logo-badge">DRUM-ML</div>
-      <div class="brand-title">
-        Dataset Explorer & Review Tool
-        <span class="version">v0.1.0</span>
-      </div>
+      <a href="index.html" class="btn" title="Return to DRUM-ML Main Portal Home" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; color:var(--text-secondary); margin-right:0.6rem; font-size:0.75rem; font-weight:700; padding:0.35rem 0.65rem; border-radius:var(--radius-sm); background:var(--bg-input); border:1px solid var(--border-color); transition:all 0.2s;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </a>
+      <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:0.65rem;">
+        <div class="logo-badge">DRUM-ML</div>
+        <div class="brand-title">
+          Dataset Explorer & Review Tool
+          <span class="version">v0.1.0</span>
+        </div>
+      </a>
     </div>
 
     <!-- Navigation Tabs -->
@@ -1287,6 +1293,12 @@ DATASET_VIEWER_HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- Header Actions -->
     <div class="header-actions">
+      <a href="benchmark/leaderboard.html" class="btn" title="Open Multi-Model Leaderboard Dashboard" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-size:0.75rem;">
+        <span>🏆</span> Leaderboard
+      </a>
+      <a href="benchmark/benchmark_viewer.html" class="btn" title="Open Benchmark Viewer & Quiz Reviewer" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-size:0.75rem;">
+        <span>🎯</span> Benchmark
+      </a>
       <button class="btn" onclick="app.pickRandomSample()" title="Jump to Random Sample (Shortcut: r)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
         Random

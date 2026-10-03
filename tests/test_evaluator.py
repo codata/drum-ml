@@ -246,11 +246,28 @@ def test_anonymous_environment():
 def test_classify_endpoint():
     from drum_ml.pipeline.evaluator import classify_endpoint
 
-    # Local Ollama
-    t, prov, _ep, is_loc = classify_endpoint("http://localhost:11434/v1", "gemma")
+    # Local Ollama (local model)
+    t, prov, _ep, is_loc = classify_endpoint("http://localhost:11434/v1", "gemma4:e2b-mlx")
     assert t == "local"
     assert is_loc is True
     assert "Ollama" in prov
+
+    # Ollama proxying a cloud-hosted model (e.g. gemma4:31b-cloud)
+    t, prov, _ep, is_loc = classify_endpoint("http://localhost:11434/v1", "gemma4:31b-cloud")
+    assert t == "cloud"
+    assert is_loc is False
+    assert "Ollama Cloud" in prov
+
+    # Ollama with tagged cloud model (e.g. deepseek-r1:cloud)
+    t, prov, _ep, is_loc = classify_endpoint("http://localhost:11434/v1", "deepseek-r1:cloud")
+    assert t == "cloud"
+    assert is_loc is False
+    assert "Ollama Cloud" in prov
+
+    # Explicit override via execution_type='cloud'
+    t, prov, _ep, is_loc = classify_endpoint("http://localhost:11434/v1", "gemma4:e2b", execution_type="cloud")
+    assert t == "cloud"
+    assert is_loc is False
 
     # Local vLLM
     t, prov, _ep, is_loc = classify_endpoint("http://127.0.0.1:8000/v1", "llama3")

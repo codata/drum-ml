@@ -86,9 +86,19 @@ def detect_gpu_info() -> tuple[str | None, int | None, float | None]:
 
 
 def classify_endpoint(
-    endpoint: str | None = None, model_name: str = ""
+    endpoint: str | None = None,
+    model_name: str = "",
+    execution_type: str | None = None,
 ) -> tuple[str, str, str | None, bool]:
-    """Classifies an inference endpoint into (execution_type, provider_name, sanitized_endpoint, is_local)."""
+    """Classifies an inference endpoint into (execution_type, provider_name, sanitized_endpoint, is_local).
+
+    Intelligently detects:
+    1. Ground truth baselines.
+    2. Explicit execution_type overrides ('local', 'cloud').
+    3. Cloud-hosted models proxied through local daemons (e.g. model names with '-cloud', ':cloud', etc.).
+    4. Local inference daemons (Ollama, LM Studio, vLLM, llama.cpp).
+    5. Direct remote cloud provider APIs (OpenAI, Anthropic, Groq, Together, DeepSeek, OpenRouter, etc.).
+    """
     if model_name in ["ground_truth_baseline", "baseline", "gold"]:
         return "baseline", "In-Memory Deterministic Baseline", None, True
 
@@ -106,10 +116,40 @@ def classify_endpoint(
         sanitized = ep
         host = ep.lower()
 
-    local_hosts = {"localhost", "127.0.0.1", "0.0.0.0", "::1", "0:0:0:0:0:0:0:1"}
-    is_local = host in local_hosts or "127.0.0.1" in ep or "localhost" in ep
+    model_lower = model_name.lower()
+    has_cloud_tag = any(
+        tag in model_lower
+        for tag in ["-cloud", ":cloud", "/cloud", "_cloud", "cloud/"]
+    ) or model_lower.endswith("cloud")
 
-    if is_local:
+    local_hosts = {"localhost", "127.0.0.1", "0.0.0.0", "::1", "0:0:0:0:0:0:0:1"}
+    is_local_host = host in local_hosts or "127.0.0.1" in ep or "localhost" in ep
+
+    # Explicit override handling
+    if execution_type and execution_type.lower() in ["cloud", "remote"]:
+        provider = (
+            "Ollama Cloud (Proxy via Local Host)"
+            if (is_local_host and "11434" in ep)
+            else (f"Cloud API ({host or model_name})")
+        )
+        return "cloud", provider, sanitized, False
+
+    if execution_type and execution_type.lower() in ["local"]:
+        provider = "Ollama (Local Host)" if "11434" in ep else "Local Server"
+        return "local", provider, sanitized, True
+
+    # Automatic classification
+    if is_local_host:
+        # Check if local daemon is running a cloud-hosted / offloaded model
+        if has_cloud_tag:
+            if "11434" in ep:
+                provider = "Ollama Cloud (Proxy via Local Host)"
+            elif "1234" in ep:
+                provider = "LM Studio Cloud Proxy"
+            else:
+                provider = "Local Proxy (Cloud-Hosted Model)"
+            return "cloud", provider, sanitized, False
+
         if "11434" in ep:
             provider = "Ollama (Local Host)"
         elif "1234" in ep:
@@ -150,7 +190,9 @@ def classify_endpoint(
 
 
 def get_anonymous_environment(
-    endpoint: str | None = None, model_name: str = ""
+    endpoint: str | None = None,
+    model_name: str = "",
+    execution_type: str | None = None,
 ) -> EnvironmentProfile:
     """Collects an anonymized system, hardware, GPU accelerator, and model execution profile."""
     os_sys = platform.system()
@@ -182,7 +224,9 @@ def get_anonymous_environment(
         pass
 
     gpu_name, gpu_cnt, gpu_vram = detect_gpu_info()
-    exec_type, provider, sanitized_ep, is_local = classify_endpoint(endpoint, model_name)
+    exec_type, provider, sanitized_ep, is_local = classify_endpoint(
+        endpoint=endpoint, model_name=model_name, execution_type=execution_type
+    )
 
     return EnvironmentProfile(
         execution_type=exec_type,
@@ -743,6 +787,7 @@ class MEvalBenchmark:
         total_duration_seconds: float = 0.0,
         environment: EnvironmentProfile | dict[str, Any] | None = None,
         endpoint: str | None = None,
+        execution_type: str | None = None,
     ) -> BenchmarkScorecard:
         """Computes stratified scores across all 6 tasks, formats, difficulties, token telemetry, and environment profile."""
         total = len(results)
@@ -826,7 +871,9 @@ class MEvalBenchmark:
         elif isinstance(environment, dict):
             env_prof = EnvironmentProfile(**environment)
         else:
-            env_prof = get_anonymous_environment(endpoint=endpoint, model_name=model_name)
+            env_prof = get_anonymous_environment(
+                endpoint=endpoint, model_name=model_name, execution_type=execution_type
+            )
 
         ver = benchmark_version or compute_file_sha256(self.benchmark_file)
 

@@ -137,13 +137,13 @@ def generate_scaffolds_for_unit(
         f"ureg = pint.UnitRegistry()\n\n"
         f"# Define quantity in {unit.label}\n"
         f"try:\n"
-        f"    quantity = 1.0 * ureg(\"{unit.symbol}\")\n"
+        f'    quantity = 1.0 * ureg("{unit.symbol}")\n'
         f"    si_quantity = quantity.to_base_units()\n"
-        f"    print(f\"Original: {{quantity}}\")\n"
-        f"    print(f\"SI Base: {{si_quantity}}\")\n"
-        f"    print(f\"Dimensionality: {{quantity.dimensionality}}\")\n"
+        f'    print(f"Original: {{quantity}}")\n'
+        f'    print(f"SI Base: {{si_quantity}}")\n'
+        f'    print(f"Dimensionality: {{quantity.dimensionality}}")\n'
         f"except Exception:\n"
-        f"    print(f\"Unit: {unit.label} ({unit.symbol})\")\n"
+        f'    print(f"Unit: {unit.label} ({unit.symbol})")\n'
         f"```\n\n"
         f"### 2. SPARQL 1.1 Query (QUDT Ontology)\n\n"
         f"```sparql\n"

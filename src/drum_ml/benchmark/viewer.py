@@ -4027,7 +4027,9 @@ def save_benchmark_viewer(
     seen = set()
 
     if active_scorecard and "model_name" in active_scorecard:
-        active_scorecard["_file_name"] = Path(scorecard_file).name if scorecard_file else "active_scorecard.json"
+        active_scorecard["_file_name"] = (
+            Path(scorecard_file).name if scorecard_file else "active_scorecard.json"
+        )
         all_scorecards.append(active_scorecard)
         seen.add(active_scorecard["_file_name"])
 
@@ -4036,7 +4038,14 @@ def save_benchmark_viewer(
             if p.name in seen or p.name in ["manifest.json", "entities.json", "scaffolds.json"]:
                 continue
             sc = load_json_file(p)
-            if sc and isinstance(sc, dict) and "model_name" in sc and ("task_breakdown" in sc or "overall_accuracy_pct" in sc or "passed_samples" in sc):
+            if (
+                sc
+                and isinstance(sc, dict)
+                and "model_name" in sc
+                and (
+                    "task_breakdown" in sc or "overall_accuracy_pct" in sc or "passed_samples" in sc
+                )
+            ):
                 sc["_file_name"] = p.name
                 all_scorecards.append(sc)
                 seen.add(p.name)

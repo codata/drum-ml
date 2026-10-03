@@ -30,11 +30,36 @@ class TestLeaderboardDashboard(unittest.TestCase):
             },
             "task_breakdown": {
                 "constants": {"task": "constants", "total": 20, "passed": 18, "accuracy_pct": 90.0},
-                "dimensions": {"task": "dimensions", "total": 20, "passed": 16, "accuracy_pct": 80.0},
-                "conversions": {"task": "conversions", "total": 20, "passed": 14, "accuracy_pct": 70.0},
-                "homogeneity": {"task": "homogeneity", "total": 20, "passed": 15, "accuracy_pct": 75.0},
-                "conventions": {"task": "conventions", "total": 10, "passed": 8, "accuracy_pct": 80.0},
-                "uncertainty": {"task": "uncertainty", "total": 10, "passed": 4, "accuracy_pct": 40.0},
+                "dimensions": {
+                    "task": "dimensions",
+                    "total": 20,
+                    "passed": 16,
+                    "accuracy_pct": 80.0,
+                },
+                "conversions": {
+                    "task": "conversions",
+                    "total": 20,
+                    "passed": 14,
+                    "accuracy_pct": 70.0,
+                },
+                "homogeneity": {
+                    "task": "homogeneity",
+                    "total": 20,
+                    "passed": 15,
+                    "accuracy_pct": 75.0,
+                },
+                "conventions": {
+                    "task": "conventions",
+                    "total": 10,
+                    "passed": 8,
+                    "accuracy_pct": 80.0,
+                },
+                "uncertainty": {
+                    "task": "uncertainty",
+                    "total": 10,
+                    "passed": 4,
+                    "accuracy_pct": 40.0,
+                },
             },
             "detailed_results": [
                 {
@@ -68,12 +93,42 @@ class TestLeaderboardDashboard(unittest.TestCase):
                 "python_version": "3.13.0",
             },
             "task_breakdown": {
-                "constants": {"task": "constants", "total": 20, "passed": 20, "accuracy_pct": 100.0},
-                "dimensions": {"task": "dimensions", "total": 20, "passed": 19, "accuracy_pct": 95.0},
-                "conversions": {"task": "conversions", "total": 20, "passed": 18, "accuracy_pct": 90.0},
-                "homogeneity": {"task": "homogeneity", "total": 20, "passed": 18, "accuracy_pct": 90.0},
-                "conventions": {"task": "conventions", "total": 10, "passed": 9, "accuracy_pct": 90.0},
-                "uncertainty": {"task": "uncertainty", "total": 10, "passed": 8, "accuracy_pct": 80.0},
+                "constants": {
+                    "task": "constants",
+                    "total": 20,
+                    "passed": 20,
+                    "accuracy_pct": 100.0,
+                },
+                "dimensions": {
+                    "task": "dimensions",
+                    "total": 20,
+                    "passed": 19,
+                    "accuracy_pct": 95.0,
+                },
+                "conversions": {
+                    "task": "conversions",
+                    "total": 20,
+                    "passed": 18,
+                    "accuracy_pct": 90.0,
+                },
+                "homogeneity": {
+                    "task": "homogeneity",
+                    "total": 20,
+                    "passed": 18,
+                    "accuracy_pct": 90.0,
+                },
+                "conventions": {
+                    "task": "conventions",
+                    "total": 10,
+                    "passed": 9,
+                    "accuracy_pct": 90.0,
+                },
+                "uncertainty": {
+                    "task": "uncertainty",
+                    "total": 10,
+                    "passed": 8,
+                    "accuracy_pct": 80.0,
+                },
             },
             "detailed_results": [
                 {
@@ -116,8 +171,16 @@ class TestLeaderboardDashboard(unittest.TestCase):
                 "correct_option_key": "B",
                 "ground_truth_answer": "\\text{L}\\cdot\\text{M}\\cdot\\text{T}^{-2}",
                 "options": [
-                    {"key": "A", "text": "\\text{L}^2\\cdot\\text{M}\\cdot\\text{T}^{-2}", "is_correct": False},
-                    {"key": "B", "text": "\\text{L}\\cdot\\text{M}\\cdot\\text{T}^{-2}", "is_correct": True},
+                    {
+                        "key": "A",
+                        "text": "\\text{L}^2\\cdot\\text{M}\\cdot\\text{T}^{-2}",
+                        "is_correct": False,
+                    },
+                    {
+                        "key": "B",
+                        "text": "\\text{L}\\cdot\\text{M}\\cdot\\text{T}^{-2}",
+                        "is_correct": True,
+                    },
                 ],
             },
         ]
@@ -134,9 +197,7 @@ class TestLeaderboardDashboard(unittest.TestCase):
                 json.dumps(self.sample_scorecard_b), encoding="utf-8"
             )
             # Write a non-scorecard json file that should be skipped
-            (tmp_path / "manifest.json").write_text(
-                json.dumps({"count": 2}), encoding="utf-8"
-            )
+            (tmp_path / "manifest.json").write_text(json.dumps({"count": 2}), encoding="utf-8")
 
             scorecards = collect_scorecards_from_dir(tmp_path)
             self.assertEqual(len(scorecards), 2)
@@ -208,4 +269,3 @@ class TestLeaderboardDashboard(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

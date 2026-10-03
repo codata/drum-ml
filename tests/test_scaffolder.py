@@ -107,7 +107,9 @@ def test_generate_scaffolds_for_constant():
     assert ArchetypeType.METROLOGICAL_UNCERTAINTY in c_archetypes
 
     # Uncertainty should state exact
-    unc_scaffold = next(s for s in c_scaffolds if s.archetype == ArchetypeType.METROLOGICAL_UNCERTAINTY)
+    unc_scaffold = next(
+        s for s in c_scaffolds if s.archetype == ArchetypeType.METROLOGICAL_UNCERTAINTY
+    )
     assert "exact" in unc_scaffold.ground_truth_answer.lower()
 
     # Measured Constant

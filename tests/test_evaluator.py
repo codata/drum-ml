@@ -228,7 +228,9 @@ def test_scorecard_computation():
 def test_anonymous_environment():
     from drum_ml.pipeline.evaluator import detect_gpu_info, get_anonymous_environment
 
-    env = get_anonymous_environment(endpoint="http://localhost:11434/v1", model_name="gemma4:e2b-mlx")
+    env = get_anonymous_environment(
+        endpoint="http://localhost:11434/v1", model_name="gemma4:e2b-mlx"
+    )
     assert env.os != ""
     assert env.architecture != ""
     assert env.python_version != ""
@@ -265,7 +267,9 @@ def test_classify_endpoint():
     assert "Ollama Cloud" in prov
 
     # Explicit override via execution_type='cloud'
-    t, prov, _ep, is_loc = classify_endpoint("http://localhost:11434/v1", "gemma4:e2b", execution_type="cloud")
+    t, prov, _ep, is_loc = classify_endpoint(
+        "http://localhost:11434/v1", "gemma4:e2b", execution_type="cloud"
+    )
     assert t == "cloud"
     assert is_loc is False
 
@@ -350,4 +354,3 @@ def test_checkpoint_save_and_load(tmp_path):
     assert evaluator.remove_checkpoint(ckpt_path) is True
     assert not ckpt_path.exists()
     assert evaluator.remove_checkpoint(ckpt_path) is False
-

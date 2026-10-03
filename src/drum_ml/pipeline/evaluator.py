@@ -42,11 +42,15 @@ def detect_gpu_info() -> tuple[str | None, int | None, float | None]:
     try:
         import subprocess
 
-        out = subprocess.check_output(
-            ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"],
-            timeout=2,
-            stderr=subprocess.DEVNULL,
-        ).decode().strip()
+        out = (
+            subprocess.check_output(
+                ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"],
+                timeout=2,
+                stderr=subprocess.DEVNULL,
+            )
+            .decode()
+            .strip()
+        )
         lines = [line.strip() for line in out.splitlines() if line.strip()]
         if lines:
             cnt = len(lines)
@@ -118,8 +122,7 @@ def classify_endpoint(
 
     model_lower = model_name.lower()
     has_cloud_tag = any(
-        tag in model_lower
-        for tag in ["-cloud", ":cloud", "/cloud", "_cloud", "cloud/"]
+        tag in model_lower for tag in ["-cloud", ":cloud", "/cloud", "_cloud", "cloud/"]
     ) or model_lower.endswith("cloud")
 
     local_hosts = {"localhost", "127.0.0.1", "0.0.0.0", "::1", "0:0:0:0:0:0:0:1"}
@@ -211,7 +214,9 @@ def get_anonymous_environment(
         if os_sys == "Darwin":
             import subprocess
 
-            out = subprocess.check_output(["sysctl", "-n", "hw.memsize"], timeout=2).decode().strip()
+            out = (
+                subprocess.check_output(["sysctl", "-n", "hw.memsize"], timeout=2).decode().strip()
+            )
             mem_gb = round(int(out) / (1024**3), 1)
         elif os_sys == "Linux":
             with open("/proc/meminfo") as f:
@@ -294,7 +299,7 @@ class MEvalBenchmark:
                 f"Question: {question}\n\n"
                 f"Options:\n{opts_str}\n\n"
                 f"Instructions: Analyze the options carefully and select the single correct letter (A, B, C, or D).\n"
-                f"Respond in valid JSON format with keys \"answer\" (the single uppercase letter) and \"explanation\" (brief justification).\n\n"
+                f'Respond in valid JSON format with keys "answer" (the single uppercase letter) and "explanation" (brief justification).\n\n'
                 f"Example response format:\n"
                 f"```json\n"
                 f'{{\n  "answer": "A",\n  "explanation": "Brief explanation of the metrological rationale."\n}}\n'
@@ -303,7 +308,7 @@ class MEvalBenchmark:
         return (
             f"Question: {question}\n\n"
             f"Instructions: Provide the exact numerical value and unit for the answer.\n"
-            f"Respond in valid JSON format with keys \"answer\" (the exact value and unit) and \"explanation\" (brief justification).\n\n"
+            f'Respond in valid JSON format with keys "answer" (the exact value and unit) and "explanation" (brief justification).\n\n'
             f"Example response format:\n"
             f"```json\n"
             f'{{\n  "answer": "1.054571817e-34 J s",\n  "explanation": "Exact by the 2019 SI definition."\n}}\n'
@@ -334,7 +339,9 @@ class MEvalBenchmark:
             if completion_toks <= 0 and content:
                 completion_toks = max(1, len(content) // 4)
             tot_toks = prompt_toks + completion_toks
-            tok_per_sec = (completion_toks / duration) if duration > 0 and completion_toks > 0 else 0.0
+            tok_per_sec = (
+                (completion_toks / duration) if duration > 0 and completion_toks > 0 else 0.0
+            )
 
             return ModelQueryResult(
                 content=content,
@@ -383,7 +390,9 @@ class MEvalBenchmark:
             if choices:
                 msg = choices[0].message
                 content = getattr(msg, "content", "") or ""
-                reasoning = getattr(msg, "reasoning_content", None) or getattr(msg, "thinking_content", None)
+                reasoning = getattr(msg, "reasoning_content", None) or getattr(
+                    msg, "thinking_content", None
+                )
                 final_content = str(content).strip()
                 if not final_content and reasoning:
                     final_content = str(reasoning).strip()
@@ -394,7 +403,9 @@ class MEvalBenchmark:
                 p_toks = getattr(usage, "prompt_tokens", 0) if usage else 0
                 c_toks = getattr(usage, "completion_tokens", 0) if usage else 0
 
-                return make_result(final_content, p_toks, c_toks, reasoning=str(reasoning) if reasoning else None)
+                return make_result(
+                    final_content, p_toks, c_toks, reasoning=str(reasoning) if reasoning else None
+                )
         except Exception:
             pass
 
@@ -448,7 +459,12 @@ class MEvalBenchmark:
                     p_toks = usage.get("prompt_tokens", 0)
                     c_toks = usage.get("completion_tokens", 0)
 
-                    return make_result(final_content, p_toks, c_toks, reasoning=str(reasoning) if reasoning else None)
+                    return make_result(
+                        final_content,
+                        p_toks,
+                        c_toks,
+                        reasoning=str(reasoning) if reasoning else None,
+                    )
                 return make_result("")
         except Exception as e:
             return make_result(f"ERROR_CALLING_MODEL: {e}")
@@ -669,7 +685,9 @@ class MEvalBenchmark:
             cleaned_text = re.sub(r"<think>[\s\S]*?</think>", "", cleaned_text).strip()
 
         # Tier 1: JSON extraction
-        json_candidates = re.findall(r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", cleaned_text, flags=re.IGNORECASE)
+        json_candidates = re.findall(
+            r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", cleaned_text, flags=re.IGNORECASE
+        )
         if not json_candidates:
             raw_match = re.search(r"(\{[\s\S]*\})", cleaned_text)
             if raw_match:
@@ -773,7 +791,9 @@ class MEvalBenchmark:
             "extracted_answer": pred_ans or predicted_text,
             "exact_match": exact_match,
             "symbolic_match": is_sym_eq,
-            "error": None if passed else (sym_err or f"Expected '{gt_answer}', got '{pred_ans or predicted_text}'"),
+            "error": None
+            if passed
+            else (sym_err or f"Expected '{gt_answer}', got '{pred_ans or predicted_text}'"),
         }
         if pred_exp:
             grade_dict["predicted_explanation"] = pred_exp
@@ -850,7 +870,9 @@ class MEvalBenchmark:
         avg_p_toks = (prompt_toks / total) if total > 0 else 0.0
         avg_c_toks = (comp_toks / total) if total > 0 else 0.0
         sum_inference_time = sum(latencies) if latencies else dur
-        avg_tps = (comp_toks / sum_inference_time) if (sum_inference_time > 0 and comp_toks > 0) else 0.0
+        avg_tps = (
+            (comp_toks / sum_inference_time) if (sum_inference_time > 0 and comp_toks > 0) else 0.0
+        )
 
         perf_metrics = BenchmarkPerformanceMetrics(
             total_duration_seconds=round(dur, 2),
@@ -927,7 +949,9 @@ class MEvalBenchmark:
         if scorecard.environment:
             env = scorecard.environment
             if env.execution_type == "local":
-                meta_table.add_row("Execution Target", f"💻 Local Inference Engine ({env.provider})")
+                meta_table.add_row(
+                    "Execution Target", f"💻 Local Inference Engine ({env.provider})"
+                )
                 if env.endpoint:
                     meta_table.add_row("Local Endpoint", env.endpoint)
                 host_str = f"{env.os} | {env.architecture}"
@@ -957,7 +981,9 @@ class MEvalBenchmark:
         con.print(meta_table)
 
         # 2. Performance & Telemetry Table (if metrics present)
-        if scorecard.metrics and (scorecard.metrics.total_tokens > 0 or scorecard.metrics.total_duration_seconds > 0):
+        if scorecard.metrics and (
+            scorecard.metrics.total_tokens > 0 or scorecard.metrics.total_duration_seconds > 0
+        ):
             m = scorecard.metrics
             perf_table = Table(
                 title="⚡ Runtime & Inference Throughput Telemetry",
@@ -969,7 +995,11 @@ class MEvalBenchmark:
 
             mins = int(m.total_duration_seconds // 60)
             secs = m.total_duration_seconds % 60
-            dur_str = f"{mins}m {secs:.1f}s ({m.total_duration_seconds:.2f}s)" if mins > 0 else f"{m.total_duration_seconds:.2f}s"
+            dur_str = (
+                f"{mins}m {secs:.1f}s ({m.total_duration_seconds:.2f}s)"
+                if mins > 0
+                else f"{m.total_duration_seconds:.2f}s"
+            )
 
             perf_table.add_row("Total Evaluation Duration", dur_str)
             perf_table.add_row(
@@ -980,7 +1010,9 @@ class MEvalBenchmark:
                 "Total Tokens Processed",
                 f"{m.total_tokens:,} (Prompt: {m.total_prompt_tokens:,}, Output: {m.total_completion_tokens:,})",
             )
-            perf_table.add_row("Avg Output Tokens per Sample", f"{m.avg_completion_tokens:.1f} tokens")
+            perf_table.add_row(
+                "Avg Output Tokens per Sample", f"{m.avg_completion_tokens:.1f} tokens"
+            )
             perf_table.add_row(
                 "Generation Speed (Throughput)",
                 f"[bold green]{m.avg_tokens_per_second:.2f} tokens/sec[/bold green]"

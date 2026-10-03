@@ -31,7 +31,15 @@ def collect_scorecards_from_dir(benchmark_dir: Path | str) -> list[dict[str, Any
         try:
             with open(p, encoding="utf-8") as f:
                 data = json.load(f)
-                if isinstance(data, dict) and "model_name" in data and ("task_breakdown" in data or "overall_accuracy_pct" in data or "passed_samples" in data):
+                if (
+                    isinstance(data, dict)
+                    and "model_name" in data
+                    and (
+                        "task_breakdown" in data
+                        or "overall_accuracy_pct" in data
+                        or "passed_samples" in data
+                    )
+                ):
                     data["_file_name"] = p.name
                     data["_file_path"] = str(p)
                     # Use unique identifier if duplicate model names

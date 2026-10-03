@@ -819,7 +819,12 @@ def dashboard(
     ),
 ):
     """Alias for 'leaderboard': Generate and launch the Multi-Model Leaderboard & Profiles Dashboard."""
-    leaderboard(benchmark_dir=benchmark_dir, benchmark_file=benchmark_file, output_html=output_html, no_open=no_open)
+    leaderboard(
+        benchmark_dir=benchmark_dir,
+        benchmark_file=benchmark_file,
+        output_html=output_html,
+        no_open=no_open,
+    )
 
 
 @app.command()
@@ -1007,10 +1012,16 @@ def evaluate(
         help="OpenAI-compatible model endpoint URI (e.g. http://localhost:11434/v1 for Ollama, http://localhost:8000/v1 for vLLM).",
     ),
     model_name: str = typer.Option(
-        "ground_truth_baseline", "--model-name", "-m", help="Target model identifier (or 'ground_truth_baseline' for gold verification)."
+        "ground_truth_baseline",
+        "--model-name",
+        "-m",
+        help="Target model identifier (or 'ground_truth_baseline' for gold verification).",
     ),
     api_key: str | None = typer.Option(
-        None, "--api-key", "-k", help="API key for authentication if querying a remote or secured endpoint."
+        None,
+        "--api-key",
+        "-k",
+        help="API key for authentication if querying a remote or secured endpoint.",
     ),
     output: str = typer.Option(
         "./dataset/benchmark/benchmark_report.json",
@@ -1025,19 +1036,30 @@ def evaluate(
         help="Execution target classification: 'auto' (detect from endpoint/model), 'local', or 'cloud'.",
     ),
     resume: bool = typer.Option(
-        True, "--resume/--no-resume", help="Automatically resume from checkpoint if an in-progress evaluation exists."
+        True,
+        "--resume/--no-resume",
+        help="Automatically resume from checkpoint if an in-progress evaluation exists.",
     ),
     reset_checkpoint: bool = typer.Option(
-        False, "--reset-checkpoint", help="Discard any existing checkpoint for this output path and start from scratch."
+        False,
+        "--reset-checkpoint",
+        help="Discard any existing checkpoint for this output path and start from scratch.",
     ),
     viewer: bool = typer.Option(
-        False, "--viewer", "-v", help="Automatically generate and open the interactive scorecard HTML browser."
+        False,
+        "--viewer",
+        "-v",
+        help="Automatically generate and open the interactive scorecard HTML browser.",
     ),
     max_tokens: int | None = typer.Option(
-        None, "--max-tokens", help="Maximum generation tokens per question (default: None, unconstrained / model native context)."
+        None,
+        "--max-tokens",
+        help="Maximum generation tokens per question (default: None, unconstrained / model native context).",
     ),
     timeout: float = typer.Option(
-        120.0, "--timeout", help="Timeout in seconds per query (default: 120s for reasoning models)."
+        120.0,
+        "--timeout",
+        help="Timeout in seconds per query (default: 120s for reasoning models).",
     ),
 ):
     """Evaluate a local or remote model against the DRUM Metrology Benchmark with live progress, auto-checkpointing & category scorecards."""
@@ -1205,7 +1227,9 @@ def evaluate(
     )
 
     if viewer:
-        console.print(f"[bold green]✓ Interactive Scorecard Browser launched at [cyan]{viewer_html}[/cyan][/bold green]")
+        console.print(
+            f"[bold green]✓ Interactive Scorecard Browser launched at [cyan]{viewer_html}[/cyan][/bold green]"
+        )
 
 
 @app.command()
@@ -1345,9 +1369,7 @@ def serve(
         "-p",
         help="Port for local HTTP server.",
     ),
-    no_open: bool = typer.Option(
-        False, "--no-open", help="Do not open browser automatically."
-    ),
+    no_open: bool = typer.Option(False, "--no-open", help="Do not open browser automatically."),
 ):
     """Start a lightweight local HTTP server hosting the DRUM-ML dataset portal and interactive applications."""
     import http.server

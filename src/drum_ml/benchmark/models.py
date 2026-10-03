@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
 
@@ -59,12 +60,50 @@ class TaskScore(BaseModel):
     accuracy_pct: float = 0.0
 
 
+class EnvironmentProfile(BaseModel):
+    """Anonymous hardware, OS, accelerator/GPU, runtime, and model execution environment."""
+
+    execution_type: str = "local"  # "local" | "cloud" | "baseline"
+    provider: str = "Local Engine"  # e.g. "Ollama (Local)", "OpenAI (Cloud)", "vLLM (Local)"
+    endpoint: str | None = None  # Sanitized endpoint URI (no secrets)
+    is_local_inference: bool = True  # True if model inference runs locally on the host
+    os: str = "Unknown"
+    architecture: str = "Unknown"
+    cpu_count: int | None = None
+    total_memory_gb: float | None = None
+    gpu: str | None = None
+    gpu_count: int | None = None
+    gpu_memory_gb: float | None = None
+    python_version: str = "Unknown"
+    platform: str = "Unknown"
+
+
+class BenchmarkPerformanceMetrics(BaseModel):
+    """Runtime latency, token generation, and throughput metrics."""
+
+    total_duration_seconds: float = 0.0
+    avg_latency_seconds: float = 0.0
+    p50_latency_seconds: float = 0.0
+    p95_latency_seconds: float = 0.0
+    total_prompt_tokens: int = 0
+    total_completion_tokens: int = 0
+    total_tokens: int = 0
+    avg_prompt_tokens: float = 0.0
+    avg_completion_tokens: float = 0.0
+    avg_tokens_per_second: float = 0.0
+
+
 class BenchmarkScorecard(BaseModel):
     model_name: str
+    benchmark_version: str = "unknown"
+    benchmark_file: str | None = None
+    timestamp: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
     total_samples: int = 0
     passed_samples: int = 0
     overall_accuracy_pct: float = 0.0
     task_breakdown: dict[str, TaskScore] = Field(default_factory=dict)
     format_breakdown: dict[str, TaskScore] = Field(default_factory=dict)
     difficulty_breakdown: dict[str, TaskScore] = Field(default_factory=dict)
+    environment: EnvironmentProfile | None = None
+    metrics: BenchmarkPerformanceMetrics | None = None
     detailed_results: list[dict[str, Any]] = Field(default_factory=list)

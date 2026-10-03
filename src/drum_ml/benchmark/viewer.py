@@ -1550,7 +1550,24 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- Header Actions -->
     <div class="header-actions">
-      <button class="btn" id="btnLoadFile" title="Load custom benchmark JSONL / JSON">
+      <!-- Active Profile Dropdown Selector -->
+      <div class="profile-select-control" style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-subtle); padding:3px 8px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+        <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Profile:</span>
+        <select id="profileSelect" class="select-sm" style="background:transparent; border:none; color:var(--text-primary); font-weight:600; outline:none; cursor:pointer; min-width:140px; max-width:220px;" title="Switch Active Evaluation Profile">
+          <option value="none">No Profile (Dataset Only)</option>
+        </select>
+        <button class="btn btn-sm" id="btnProfileStats" title="View Profile Environment & Telemetry Statistics" style="display:none; padding:2px 7px; font-size:0.72rem; border-color:rgba(56,189,248,0.4); color:var(--accent-blue);">
+          📊 Stats
+        </button>
+        <button class="btn btn-sm" id="btnClearProfile" title="Unload Scorecard / Clear Profile Data" style="display:none; padding:2px 7px; font-size:0.72rem; border-color:rgba(244,63,94,0.4); color:var(--accent-rose);">
+          ✕ Clear
+        </button>
+      </div>
+
+      <a href="leaderboard.html" class="btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15)); border-color:rgba(56,189,248,0.4); color:#38bdf8;" title="Open Multi-Model Leaderboard & Profiles Dashboard">
+        <span>🏆</span> Leaderboard
+      </a>
+      <button class="btn" id="btnLoadFile" title="Load custom benchmark JSONL / Scorecard JSON">
         <span>📁</span> Load Data
       </button>
       <button class="btn" id="btnExport" title="Export review annotations & data">
@@ -1596,9 +1613,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
           <!-- Scorecard / Model Grade Filter Bar (Shown when scorecard is loaded) -->
           <div id="scorecardSidebarBar" class="scorecard-sidebar-bar" style="display:none;">
-            <div class="scorecard-sidebar-title">
-              <span>🤖 <strong id="sidebarModelName">Model Evaluation</strong></span>
-              <span id="sidebarScoreBadge" class="tag tag-eval-pass">0/0</span>
+            <div class="scorecard-sidebar-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:150px;">🤖 <strong id="sidebarModelName">Model Evaluation</strong></span>
+              <div style="display:inline-flex; align-items:center; gap:4px;">
+                <span id="sidebarScoreBadge" class="tag tag-eval-pass">0/0</span>
+                <button class="icon-btn" id="btnSidebarProfileStats" title="View Profile Environment & Telemetry" style="padding:2px 5px; font-size:0.75rem; height:auto; width:auto; border-radius:4px;">📊</button>
+              </div>
             </div>
             <div class="eval-filter-pills" id="evalFilterPills">
               <button class="eval-filter-pill active" data-eval="all">All (<span id="countEvalAll">0</span>)</button>
@@ -1917,6 +1937,39 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           </div>
         </div>
 
+        <!-- Telemetry & Environment Banner -->
+        <div class="card" id="scorecardMetaCard" style="display:none; margin-bottom:1.5rem; background:linear-gradient(135deg, rgba(30,41,59,0.7), rgba(15,23,42,0.8)); border:1px solid rgba(56,189,248,0.2);">
+          <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <span>⚡ Evaluation Telemetry & Environment Profile</span>
+            <span class="tag tag-eval-pass" id="scorecardThroughputTag" style="font-size:0.8rem; font-weight:700;">-- tok/s</span>
+          </div>
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top:0.75rem; gap:0.75rem;" id="scorecardStatsGrid">
+            <div class="stat-card" style="padding:0.75rem;">
+              <div class="stat-value" id="scTotalTokens" style="font-size:1.25rem;">-</div>
+              <div class="stat-label">Total Tokens</div>
+            </div>
+            <div class="stat-card" style="padding:0.75rem;">
+              <div class="stat-value" id="scAvgSpeed" style="font-size:1.25rem; color:#10b981;">-</div>
+              <div class="stat-label">Throughput (tok/s)</div>
+            </div>
+            <div class="stat-card" style="padding:0.75rem;">
+              <div class="stat-value" id="scAvgLatency" style="font-size:1.25rem;">-</div>
+              <div class="stat-label">Avg Latency (P50/P95)</div>
+            </div>
+            <div class="stat-card" style="padding:0.75rem;">
+              <div class="stat-value" id="scDuration" style="font-size:1.25rem;">-</div>
+              <div class="stat-label">Total Duration</div>
+            </div>
+          </div>
+          <div style="margin-top:0.85rem; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.08); font-size:0.8rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:0.35rem;">
+            <div><strong>Environment:</strong> <span id="scEnvProfile" style="color:var(--text-primary);">-</span></div>
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+              <div><strong>Benchmark Version:</strong> <span id="scBenchmarkVersion" style="font-family:var(--font-mono); color:#7dd3fc;">-</span></div>
+              <div><strong>Timestamp:</strong> <span id="scTimestamp" style="color:var(--text-primary);">-</span></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Baseline Evaluation Scorecard -->
         <div class="card" id="scorecardCard">
           <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -1987,24 +2040,109 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <!-- Load File Modal -->
   <div class="modal-overlay" id="loadFileModal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width: 580px;">
       <div class="modal-header">
-        <h3 class="modal-title">Load Benchmark Dataset</h3>
+        <h3 class="modal-title">Load Evaluation Profile or Dataset</h3>
         <button class="icon-btn" id="btnCloseModal">✕</button>
       </div>
-      <p style="font-size:0.85rem; color:var(--text-secondary);">
-        Select a local JSONL or JSON benchmark file to browse and evaluate in the interactive inspector.
-      </p>
+
+      <!-- Quick Switch Available Profiles -->
+      <div id="modalAvailableProfilesSection" style="margin-bottom:1rem;">
+        <label style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; display:block; margin-bottom:0.4rem;">
+          Available Evaluation Profiles:
+        </label>
+        <div id="modalProfileButtons" style="display:flex; flex-direction:column; gap:6px; max-height:160px; overflow-y:auto;">
+          <!-- Dynamically populated profile list buttons -->
+        </div>
+      </div>
+
+      <div style="margin: 0.75rem 0; border-top: 1px solid var(--border-color); text-align:center; position:relative;">
+        <span style="position:relative; top:-10px; background:var(--bg-card); padding:0 8px; font-size:0.72rem; color:var(--text-muted); font-weight:600;">OR UPLOAD CUSTOM FILE</span>
+      </div>
 
       <div class="dropzone" id="fileDropzone">
         <span style="font-size:2rem;">📄</span>
-        <strong style="font-size:0.95rem;">Drag & drop benchmark .jsonl or .json file here</strong>
+        <strong style="font-size:0.95rem;">Drag & drop scorecard .json or benchmark .jsonl here</strong>
         <span style="font-size:0.75rem; color:var(--text-muted);">or click to browse from disk</span>
         <input type="file" id="fileInput" accept=".jsonl,.json" style="display:none;" />
       </div>
 
-      <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
-        <button class="btn" id="btnCancelModal">Cancel</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem;">
+        <button class="btn" id="modalBtnUnloadScorecard" style="color:var(--accent-rose); border-color:rgba(244,63,94,0.3);">🗑️ Clear / Unload Profile</button>
+        <button class="btn" id="btnCancelModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Environment & Telemetry Statistics Modal -->
+  <div class="modal-overlay" id="profileStatsModal">
+    <div class="modal-card" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <h3 class="modal-title" id="statsModalTitle">Evaluation Profile & Telemetry</h3>
+          <span id="statsModalBadge" class="tag tag-eval-pass">79.1%</span>
+        </div>
+        <button class="icon-btn" id="btnCloseProfileStats">✕</button>
+      </div>
+
+      <!-- Quick KPI Stats -->
+      <div class="stats-overview-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 1rem;">
+        <div class="stat-card" style="padding: 0.75rem;">
+          <span class="stat-card-title">Accuracy</span>
+          <span class="stat-card-value" id="modalAccuracyVal" style="color:var(--accent-emerald); font-size:1.4rem;">-</span>
+          <span class="stat-card-sub" id="modalPassedCount">-</span>
+        </div>
+        <div class="stat-card" style="padding: 0.75rem;">
+          <span class="stat-card-title">Throughput</span>
+          <span class="stat-card-value" id="modalThroughputVal" style="color:var(--accent-cyan); font-size:1.4rem;">-</span>
+          <span class="stat-card-sub">Tokens / second</span>
+        </div>
+        <div class="stat-card" style="padding: 0.75rem;">
+          <span class="stat-card-title">Avg Latency</span>
+          <span class="stat-card-value" id="modalLatencyVal" style="font-size:1.4rem;">-</span>
+          <span class="stat-card-sub" id="modalDurationVal">Total time</span>
+        </div>
+      </div>
+
+      <!-- Environment Profile -->
+      <div style="background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:0.85rem; margin-bottom:1rem; font-size:0.825rem;">
+        <h4 style="font-size:0.85rem; font-weight:700; margin-bottom:0.5rem; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+          <span>💻</span> System, Hardware & Execution Environment
+        </h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; color:var(--text-secondary);">
+          <div><strong>Execution Target:</strong> <span id="modalExecTarget" style="color:var(--text-primary);">-</span></div>
+          <div><strong>Hardware Device / GPU:</strong> <span id="modalDeviceGpu" style="color:var(--text-primary);">-</span></div>
+          <div><strong>Operating System:</strong> <span id="modalHostOs" style="color:var(--text-primary);">-</span></div>
+          <div><strong>Python Runtime:</strong> <span id="modalPythonVer" style="color:var(--text-primary);">-</span></div>
+          <div style="grid-column: span 2;"><strong>Endpoint / Provider:</strong> <span id="modalEndpoint" style="color:var(--text-primary); font-family:var(--font-mono); font-size:0.75rem;">-</span></div>
+          <div style="grid-column: span 2;"><strong>Benchmark Version:</strong> <span id="modalBenchVer" style="color:var(--accent-blue); font-family:var(--font-mono); font-size:0.75rem;">-</span></div>
+          <div style="grid-column: span 2;"><strong>Evaluation Timestamp:</strong> <span id="modalTimestamp" style="color:var(--text-primary); font-size:0.75rem;">-</span></div>
+        </div>
+      </div>
+
+      <!-- Sub-Discipline Scorecard Breakdown -->
+      <div class="card" style="padding:0.75rem; margin-bottom:0.75rem;">
+        <h4 style="font-size:0.85rem; font-weight:700; margin-bottom:0.5rem; color:var(--text-primary);">Sub-Discipline Performance Breakdown</h4>
+        <div class="table-container" style="max-height:200px; overflow-y:auto;">
+          <table class="data-table" style="font-size:0.8rem;">
+            <thead>
+              <tr>
+                <th>Sub-Discipline</th>
+                <th>Passed</th>
+                <th>Total</th>
+                <th>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody id="modalScorecardBody">
+              <!-- Injected dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem;">
+        <button class="btn" id="modalBtnClearProfile" style="color:var(--accent-rose); border-color:rgba(244,63,94,0.3);">🗑️ Unload Profile</button>
+        <button class="btn btn-primary" id="modalBtnClose">Close</button>
       </div>
     </div>
   </div>
@@ -2051,6 +2189,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     __SCORECARD_JSON__
   </script>
 
+  <!-- Embedded All Available Profiles Data -->
+  <script id="embeddedAllScorecardsData" type="application/json">
+    __ALL_SCORECARDS_JSON__
+  </script>
+
   <!-- Core Interactive Application Logic -->
   <script>
     (function() {
@@ -2063,6 +2206,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       let selectedIndex = 0;
       let activeView = "explorer";
       let scorecardData = null;
+      let allScorecards = [];
+      let activeScorecardIndex = "none";
       let evalResultsMap = {}; // sample.id -> grade object
       let evalFilter = "all";  // 'all' | 'passed' | 'failed'
 
@@ -2079,6 +2224,47 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         loadEmbeddedData();
         setupEventListeners();
         renderActiveView();
+        checkHttpLiveSync();
+      }
+
+      async function checkHttpLiveSync() {
+        if (!window.location.protocol.startsWith("http")) return;
+        try {
+          const filesToCheck = [
+            "gemma4_e2b_scorecard.json",
+            "gemma4_12b_scorecard.json",
+            "benchmark_report.json"
+          ];
+          let updated = false;
+          for (const f of filesToCheck) {
+            try {
+              const resp = await fetch(f, { cache: "no-store" });
+              if (resp.ok) {
+                const data = await resp.json();
+                if (data && data.model_name) {
+                  data._file_name = f;
+                  const idx = allScorecards.findIndex(s => s.model_name === data.model_name || s._file_name === f);
+                  if (idx >= 0) {
+                    allScorecards[idx] = data;
+                  } else {
+                    allScorecards.push(data);
+                  }
+                  if (scorecardData && (scorecardData.model_name === data.model_name || scorecardData._file_name === f)) {
+                    scorecardData = data;
+                  }
+                  updated = true;
+                }
+              }
+            } catch (e) {}
+          }
+          if (updated) {
+            populateProfileDropdown();
+            updateEvalResultsMap();
+            updateProfileUI();
+            applyFilters();
+            renderActiveView();
+          }
+        } catch (e) {}
       }
 
       function loadSavedTheme() {
@@ -2123,6 +2309,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }
 
         try {
+          const allScEl = document.getElementById("embeddedAllScorecardsData");
+          if (allScEl && allScEl.textContent.trim() && allScEl.textContent.trim() !== "null") {
+            allScorecards = JSON.parse(allScEl.textContent) || [];
+          }
+        } catch (e) {
+          console.error("Failed to parse all scorecards data", e);
+          allScorecards = [];
+        }
+
+        try {
           const scEl = document.getElementById("embeddedScorecardData");
           if (scEl && scEl.textContent.trim() && scEl.textContent.trim() !== "null") {
             scorecardData = JSON.parse(scEl.textContent);
@@ -2131,16 +2327,233 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           console.error("Failed to parse scorecard data", e);
         }
 
+        if (scorecardData) {
+          const idx = allScorecards.findIndex(s => s.model_name === scorecardData.model_name || (s._file_name && s._file_name === scorecardData._file_name));
+          if (idx >= 0) {
+            allScorecards[idx] = scorecardData;
+            activeScorecardIndex = idx;
+          } else {
+            allScorecards.unshift(scorecardData);
+            activeScorecardIndex = 0;
+          }
+        } else if (allScorecards.length > 0) {
+          scorecardData = allScorecards[0];
+          activeScorecardIndex = 0;
+        }
+
+        populateProfileDropdown();
         updateEvalResultsMap();
+        updateProfileUI();
         applyFilters();
+      }
+
+      function populateProfileDropdown() {
+        const select = document.getElementById("profileSelect");
+        const listDiv = document.getElementById("modalProfileButtons");
+        if (!select) return;
+
+        select.innerHTML = '<option value="none">No Profile (Dataset Only)</option>';
+        if (listDiv) listDiv.innerHTML = "";
+
+        // Add 'No Profile' option to modal list
+        if (listDiv) {
+          const noBtn = document.createElement("button");
+          noBtn.className = `btn ${!scorecardData ? 'btn-primary' : ''}`;
+          noBtn.style.cssText = "justify-content:flex-start; text-align:left; padding:6px 10px; font-size:0.8rem; width:100%;";
+          noBtn.innerHTML = "<strong>📁 Baseline Dataset Only</strong> &nbsp;<span style='color:var(--text-muted); font-size:0.75rem;'>(No model evaluation overlay)</span>";
+          noBtn.addEventListener("click", () => {
+            selectProfile("none");
+            closeLoadModal();
+          });
+          listDiv.appendChild(noBtn);
+        }
+
+        allScorecards.forEach((sc, idx) => {
+          const opt = document.createElement("option");
+          opt.value = idx;
+          const acc = sc.overall_accuracy_pct !== undefined ? sc.overall_accuracy_pct.toFixed(1) + "%" : (sc.passed_samples ? `${sc.passed_samples}/${sc.total_samples}` : "");
+          opt.textContent = `${sc.model_name || "Model " + (idx+1)} (${acc})`;
+          if (scorecardData && (scorecardData === sc || scorecardData.model_name === sc.model_name)) {
+            opt.selected = true;
+          }
+          select.appendChild(opt);
+
+          if (listDiv) {
+            const isAct = scorecardData && (scorecardData === sc || scorecardData.model_name === sc.model_name);
+            const pBtn = document.createElement("button");
+            pBtn.className = `btn ${isAct ? 'btn-primary' : ''}`;
+            pBtn.style.cssText = "justify-content:space-between; align-items:center; text-align:left; padding:6px 10px; font-size:0.8rem; width:100%;";
+            const isLoc = sc.environment ? (sc.environment.execution_type === 'local' || sc.environment.is_local_inference) : true;
+            const badge = isLoc ? '<span class="tag tag-local">💻 Local</span>' : '<span class="tag tag-cloud">☁️ Cloud</span>';
+            pBtn.innerHTML = `
+              <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:300px;">
+                <strong>${escapeHtml(sc.model_name || "Model")}</strong>
+                <span style="font-size:0.75rem; color:var(--text-secondary); display:block;">${escapeHtml(sc._file_name || "")}</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                ${badge}
+                <strong style="color:${sc.overall_accuracy_pct >= 70 ? '#34d399' : (sc.overall_accuracy_pct >= 30 ? '#fbbf24' : '#f87171')};">${acc}</strong>
+              </div>
+            `;
+            pBtn.addEventListener("click", () => {
+              selectProfile(idx);
+              closeLoadModal();
+            });
+            listDiv.appendChild(pBtn);
+          }
+        });
+
+        if (!scorecardData) {
+          select.value = "none";
+        }
+      }
+
+      function selectProfile(idxOrKey) {
+        if (idxOrKey === "none" || idxOrKey === null || idxOrKey === undefined || idxOrKey < 0) {
+          scorecardData = null;
+          activeScorecardIndex = "none";
+        } else {
+          const idx = parseInt(idxOrKey, 10);
+          scorecardData = allScorecards[idx] || null;
+          activeScorecardIndex = idx;
+        }
+
+        updateEvalResultsMap();
+        updateProfileUI();
+        populateProfileDropdown();
+        applyFilters();
+        renderActiveView();
+
+        if (scorecardData) {
+          showToast(`Active Profile: ${scorecardData.model_name}`);
+        } else {
+          showToast("Profile cleared. Viewing raw benchmark dataset.");
+        }
+      }
+
+      function clearProfile() {
+        selectProfile("none");
+      }
+
+      function updateProfileUI() {
+        const statsBtn = document.getElementById("btnProfileStats");
+        const clearBtn = document.getElementById("btnClearProfile");
+        const unloadModalBtn = document.getElementById("modalBtnUnloadScorecard");
+        const select = document.getElementById("profileSelect");
+
+        if (scorecardData) {
+          if (statsBtn) statsBtn.style.display = "inline-flex";
+          if (clearBtn) clearBtn.style.display = "inline-flex";
+          if (unloadModalBtn) unloadModalBtn.style.display = "inline-block";
+          const idx = allScorecards.indexOf(scorecardData);
+          if (select && idx >= 0) select.value = idx;
+        } else {
+          if (statsBtn) statsBtn.style.display = "none";
+          if (clearBtn) clearBtn.style.display = "none";
+          if (unloadModalBtn) unloadModalBtn.style.display = "none";
+          if (select) select.value = "none";
+        }
+      }
+
+      function openProfileStatsModal() {
+        if (!scorecardData) {
+          showToast("No evaluation profile loaded.");
+          return;
+        }
+
+        document.getElementById("statsModalTitle").textContent = scorecardData.model_name || "Evaluation Profile";
+        const acc = scorecardData.overall_accuracy_pct !== undefined ? scorecardData.overall_accuracy_pct.toFixed(1) + "%" : "-%";
+        const passed = scorecardData.passed_samples || 0;
+        const total = scorecardData.total_samples || 0;
+
+        const badgeEl = document.getElementById("statsModalBadge");
+        badgeEl.textContent = acc;
+        badgeEl.className = `tag ${scorecardData.overall_accuracy_pct >= 70 ? 'tag-eval-pass' : (scorecardData.overall_accuracy_pct >= 30 ? 'tag-diff-intermediate' : 'tag-eval-fail')}`;
+
+        document.getElementById("modalAccuracyVal").textContent = acc;
+        document.getElementById("modalPassedCount").textContent = `${passed} of ${total} passed`;
+
+        const m = scorecardData.metrics || {};
+        document.getElementById("modalThroughputVal").textContent = m.avg_tokens_per_second ? `${m.avg_tokens_per_second.toFixed(1)} tok/s` : "-";
+        document.getElementById("modalLatencyVal").textContent = m.avg_latency_seconds ? `${m.avg_latency_seconds.toFixed(2)}s` : "-";
+
+        const durSec = m.total_duration_seconds || 0;
+        const mins = Math.floor(durSec / 60);
+        const secs = (durSec % 60).toFixed(1);
+        document.getElementById("modalDurationVal").textContent = durSec > 0 ? (mins > 0 ? `${mins}m ${secs}s` : `${secs}s`) : "Duration N/A";
+
+        // Environment
+        const env = scorecardData.environment || {};
+        const isLoc = env.execution_type === 'local' || env.is_local_inference;
+        document.getElementById("modalExecTarget").innerHTML = isLoc
+          ? `<span class="tag tag-local">💻 Local Inference</span> (${escapeHtml(env.provider || "Local Host")})`
+          : (env.execution_type === 'cloud' ? `<span class="tag tag-cloud">☁️ Cloud API</span> (${escapeHtml(env.provider || "Remote")})` : `<span class="tag tag-baseline">🎯 Baseline</span>`);
+
+        document.getElementById("modalDeviceGpu").textContent = env.gpu ? `${env.gpu}${env.gpu_memory_gb ? ` (${env.gpu_memory_gb} GB VRAM)` : ''}` : (env.hardware_device || "CPU / Standard Host");
+        document.getElementById("modalHostOs").textContent = `${env.os || "Unknown"} (${env.architecture || ""}${env.cpu_count ? `, ${env.cpu_count} CPUs` : ''}${env.total_memory_gb ? `, ${env.total_memory_gb} GB RAM` : ''})`;
+        document.getElementById("modalPythonVer").textContent = env.python_version ? `Python ${env.python_version}` : "-";
+        document.getElementById("modalEndpoint").textContent = env.endpoint || "N/A";
+        document.getElementById("modalBenchVer").textContent = scorecardData.benchmark_version || "sha256:unknown";
+        document.getElementById("modalTimestamp").textContent = scorecardData.timestamp ? new Date(scorecardData.timestamp).toUTCString() : "-";
+
+        // Scorecard Task breakdown
+        const scTbody = document.getElementById("modalScorecardBody");
+        scTbody.innerHTML = "";
+        const tb = scorecardData.task_breakdown || {};
+        const taskLabels = {
+          constants: "1. Fundamental Constants & SI 2019",
+          dimensions: "2. Dimensional Decomposition & Base SI",
+          conversions: "3. Unit Conversions & Affine Offsets",
+          homogeneity: "4. Error Detection & Homogeneity",
+          conventions: "5. SI Typography & Metrological Rules",
+          uncertainty: "6. Metrological Uncertainty (GUM)",
+        };
+
+        Object.entries(tb).forEach(([k, v]) => {
+          const tr = document.createElement("tr");
+          const taskAcc = v.accuracy_pct !== undefined ? v.accuracy_pct.toFixed(1) + "%" : "-";
+          const col = v.accuracy_pct >= 70 ? '#34d399' : (v.accuracy_pct >= 30 ? '#fbbf24' : '#f87171');
+          tr.innerHTML = `
+            <td><strong>${escapeHtml(taskLabels[k] || k)}</strong></td>
+            <td>${v.passed}</td>
+            <td>${v.total}</td>
+            <td><strong style="color:${col};">${taskAcc}</strong></td>
+          `;
+          scTbody.appendChild(tr);
+        });
+
+        document.getElementById("profileStatsModal").classList.add("active");
+      }
+
+      function closeProfileStatsModal() {
+        document.getElementById("profileStatsModal").classList.remove("active");
       }
 
       function updateEvalResultsMap() {
         evalResultsMap = {};
         if (scorecardData && Array.isArray(scorecardData.detailed_results)) {
+          const knownIds = new Set(currentRecords.map(r => r.id));
           scorecardData.detailed_results.forEach(res => {
             if (res && res.id) {
               evalResultsMap[res.id] = res.grade || res;
+              if (!knownIds.has(res.id)) {
+                const g = res.grade || {};
+                const synth = {
+                  id: res.id,
+                  task: res.task || "general",
+                  format: res.format || (g.predicted_key ? "mcq" : "free_form"),
+                  difficulty: res.difficulty || "intermediate",
+                  question: res.question || `[Sample ${res.id}]`,
+                  ground_truth_answer: g.expected_key || res.ground_truth_answer || "",
+                  explanation: res.explanation || "",
+                  options: res.options || null,
+                  correct_option_key: g.expected_key || null,
+                  entity_uri: res.entity_uri || "",
+                  metadata: res.metadata || {}
+                };
+                currentRecords.push(synth);
+                knownIds.add(res.id);
+              }
             }
           });
         }
@@ -2292,6 +2705,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         document.getElementById("btnCancelModal").addEventListener("click", closeLoadModal);
         document.getElementById("btnShortcuts").addEventListener("click", openShortcutsModal);
         document.getElementById("btnCloseShortcuts").addEventListener("click", closeShortcutsModal);
+
+        // Profile Selection & Stats Triggers
+        document.getElementById("profileSelect")?.addEventListener("change", (e) => selectProfile(e.target.value));
+        document.getElementById("btnProfileStats")?.addEventListener("click", openProfileStatsModal);
+        document.getElementById("btnClearProfile")?.addEventListener("click", clearProfile);
+        document.getElementById("btnSidebarProfileStats")?.addEventListener("click", openProfileStatsModal);
+        document.getElementById("btnCloseProfileStats")?.addEventListener("click", closeProfileStatsModal);
+        document.getElementById("modalBtnClose")?.addEventListener("click", closeProfileStatsModal);
+        document.getElementById("modalBtnClearProfile")?.addEventListener("click", () => { clearProfile(); closeProfileStatsModal(); });
+        document.getElementById("modalBtnUnloadScorecard")?.addEventListener("click", () => { clearProfile(); closeLoadModal(); });
 
         // Export Actions
         document.getElementById("btnExport").addEventListener("click", exportDataMenu);
@@ -2550,6 +2973,22 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                </div>`
             : '';
 
+          let metricsBadgeHtml = '';
+          if (evalRecord && evalRecord.metrics) {
+            const m = evalRecord.metrics;
+            const lat = (m.latency_seconds !== undefined && m.latency_seconds > 0) ? `${m.latency_seconds.toFixed(2)}s` : '';
+            const tps = (m.tokens_per_second !== undefined && m.tokens_per_second > 0) ? `${m.tokens_per_second.toFixed(1)} tok/s` : '';
+            const toks = m.total_tokens ? `Tokens: ${m.total_tokens}` : (m.completion_tokens ? `Out: ${m.completion_tokens}` : '');
+            const parts = [
+              lat ? `⏱️ Latency: ${lat}` : '',
+              toks ? `📝 ${toks}` : '',
+              tps ? `⚡ Speed: ${tps}` : '',
+            ].filter(Boolean);
+            if (parts.length > 0) {
+              metricsBadgeHtml = `<div style="margin-top:0.4rem; padding:0.35rem 0.6rem; background:rgba(0,0,0,0.25); border-radius:var(--radius-sm); font-size:0.75rem; color:var(--text-secondary); display:flex; gap:0.85rem; flex-wrap:wrap;">${parts.map(p => `<span>${escapeHtml(p)}</span>`).join('')}</div>`;
+            }
+          }
+
           if (grade.passed) {
             evalBannerEl.className = "eval-banner eval-banner-pass";
             evalBannerEl.innerHTML = `
@@ -2562,6 +3001,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                   <strong>Model Prediction:</strong> Option <span class="eval-exp-key">${escapeHtml(grade.predicted_key || "Correct")}</span> matches canonical ground truth!
                 </div>
                 ${expHtml}
+                ${metricsBadgeHtml}
                 ${jsonSectionHtml}
                 ${rawSectionHtml}
               </div>
@@ -2583,6 +3023,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </div>
                 ${grade.error ? `<div class="eval-error-msg">⚠️ ${escapeHtml(grade.error)}</div>` : ''}
                 ${expHtml}
+                ${metricsBadgeHtml}
                 ${jsonSectionHtml}
                 ${rawSectionHtml}
               </div>
@@ -3059,6 +3500,77 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         const scBody = document.getElementById("scorecardBody");
         scBody.innerHTML = "";
 
+        const metaCard = document.getElementById("scorecardMetaCard");
+        if (scorecardData) {
+          if (metaCard) metaCard.style.display = "block";
+
+          // Environment
+          const env = scorecardData.environment;
+          if (env) {
+            let envStr = "";
+            const isLocal = env.execution_type === "local" || env.is_local_inference;
+            const targetBadge = isLocal
+              ? `<span style="color:#10b981; font-weight:700;">💻 Local Inference Engine (${escapeHtml(env.provider || "Local Host")})</span>`
+              : (env.execution_type === "cloud"
+                  ? `<span style="color:#38bdf8; font-weight:700;">☁️ Remote Cloud API (${escapeHtml(env.provider || "Cloud Provider")})</span>`
+                  : `<span style="color:#a78bfa; font-weight:700;">🎯 ${escapeHtml(env.provider || "Baseline")}</span>`);
+
+            if (isLocal) {
+              envStr = `${targetBadge} &nbsp;|&nbsp; <strong>Host:</strong> ${escapeHtml(env.os || "Unknown")} (${escapeHtml(env.architecture || "")}`;
+              if (env.cpu_count) envStr += `, ${env.cpu_count} CPUs`;
+              if (env.total_memory_gb) envStr += `, ${env.total_memory_gb} GB RAM`;
+              envStr += `)`;
+              if (env.gpu) {
+                envStr += ` &nbsp;|&nbsp; <strong>GPU:</strong> ${escapeHtml(env.gpu)}`;
+                if (env.gpu_memory_gb) envStr += ` (${env.gpu_memory_gb} GB VRAM)`;
+              }
+              if (env.python_version) envStr += ` &nbsp;|&nbsp; Python ${escapeHtml(env.python_version)}`;
+            } else if (env.execution_type === "cloud") {
+              envStr = `${targetBadge}`;
+              if (env.endpoint) envStr += ` &nbsp;|&nbsp; <strong>Endpoint:</strong> <code>${escapeHtml(env.endpoint)}</code>`;
+              envStr += ` &nbsp;|&nbsp; <strong>Client Runner:</strong> ${escapeHtml(env.os || "")} (${escapeHtml(env.architecture || "")}, Python ${escapeHtml(env.python_version || "")})`;
+            } else {
+              envStr = `${targetBadge} &nbsp;|&nbsp; ${escapeHtml(env.os || "")} | Python ${escapeHtml(env.python_version || "")}`;
+            }
+
+            const envEl = document.getElementById("scEnvProfile");
+            if (envEl) envEl.innerHTML = envStr;
+          }
+
+          // Version & Timestamp
+          const verEl = document.getElementById("scBenchmarkVersion");
+          if (verEl) verEl.textContent = scorecardData.benchmark_version || "unknown";
+
+          const tsEl = document.getElementById("scTimestamp");
+          if (tsEl) tsEl.textContent = scorecardData.timestamp ? new Date(scorecardData.timestamp).toUTCString() : "-";
+
+          // Telemetry
+          const m = scorecardData.metrics;
+          if (m) {
+            const tokEl = document.getElementById("scTotalTokens");
+            if (tokEl) tokEl.textContent = `${(m.total_tokens || 0).toLocaleString()} (In: ${(m.total_prompt_tokens || 0).toLocaleString()}, Out: ${(m.total_completion_tokens || 0).toLocaleString()})`;
+
+            const spdEl = document.getElementById("scAvgSpeed");
+            if (spdEl) spdEl.textContent = `${m.avg_tokens_per_second ? m.avg_tokens_per_second.toFixed(1) : "-"} tok/s`;
+
+            const spdTag = document.getElementById("scorecardThroughputTag");
+            if (spdTag) spdTag.textContent = `${m.avg_tokens_per_second ? m.avg_tokens_per_second.toFixed(1) : "-"} tok/s`;
+
+            const latEl = document.getElementById("scAvgLatency");
+            if (latEl) latEl.textContent = `${m.avg_latency_seconds ? m.avg_latency_seconds.toFixed(2) + 's' : '-'} (P50: ${m.p50_latency_seconds !== undefined ? m.p50_latency_seconds + 's' : '-'} / P95: ${m.p95_latency_seconds !== undefined ? m.p95_latency_seconds + 's' : '-'})`;
+
+            const durEl = document.getElementById("scDuration");
+            if (durEl) {
+              const durSec = m.total_duration_seconds || 0;
+              const mins = Math.floor(durSec / 60);
+              const secs = (durSec % 60).toFixed(1);
+              durEl.textContent = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+            }
+          }
+        } else if (metaCard) {
+          metaCard.style.display = "none";
+        }
+
         if (!scorecardData || !scorecardData.task_breakdown) {
           scBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No evaluation baseline scorecard data found. Run <code>drum-ml evaluate</code> to generate a report.</td></tr>`;
           return;
@@ -3274,12 +3786,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
               const j = JSON.parse(text);
               if (Array.isArray(j)) {
                 parsed.push(...j);
-              } else if (j.detailed_results || j.task_breakdown) {
-                scorecardData = j;
-                updateEvalResultsMap();
-                renderAnalytics();
-                applyFilters();
-                showToast(`Loaded evaluation scorecard for '${j.model_name || "model"}'!`);
+              } else if (j.detailed_results || j.task_breakdown || j.overall_accuracy_pct || j.model_name) {
+                let existingIdx = allScorecards.findIndex(s => s.model_name === j.model_name || (s._file_name && s._file_name === file.name));
+                if (existingIdx >= 0) {
+                  allScorecards[existingIdx] = j;
+                } else {
+                  j._file_name = file.name;
+                  allScorecards.push(j);
+                  existingIdx = allScorecards.length - 1;
+                }
+                populateProfileDropdown();
+                selectProfile(existingIdx);
                 closeLoadModal();
                 return;
               }
@@ -3362,6 +3879,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         if (e.key === "Escape") {
           closeLoadModal();
           closeShortcutsModal();
+          closeProfileStatsModal();
           return;
         }
 
@@ -3468,15 +3986,19 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 def generate_benchmark_html(
     benchmark_records: list[dict[str, Any]],
     scorecard: dict[str, Any] | None = None,
+    all_scorecards: list[dict[str, Any]] | None = None,
     dataset_title: str = "DRUM Metrology Benchmark (M-Eval)",
 ) -> str:
     """Generate the complete self-contained HTML page."""
     data_json_str = json.dumps(benchmark_records)
     scorecard_json_str = json.dumps(scorecard) if scorecard else "null"
+    all_sc = all_scorecards if all_scorecards is not None else ([scorecard] if scorecard else [])
+    all_scorecards_json_str = json.dumps(all_sc)
 
     html = HTML_TEMPLATE.replace("__DATASET_TITLE__", dataset_title)
     html = html.replace("__DATA_JSON__", data_json_str)
     html = html.replace("__SCORECARD_JSON__", scorecard_json_str)
+    html = html.replace("__ALL_SCORECARDS_JSON__", all_scorecards_json_str)
     return html
 
 
@@ -3488,11 +4010,32 @@ def save_benchmark_viewer(
 ) -> Path:
     """Compile and save the standalone benchmark viewer HTML file."""
     records = load_jsonl_records(benchmark_file)
-    scorecard = load_json_file(scorecard_file) if scorecard_file else None
+    active_scorecard = load_json_file(scorecard_file) if scorecard_file else None
+
+    # Discover all available scorecards in the directory
+    search_dir = Path(scorecard_file).parent if scorecard_file else Path(benchmark_file).parent
+    all_scorecards: list[dict[str, Any]] = []
+    seen = set()
+
+    if active_scorecard and "model_name" in active_scorecard:
+        active_scorecard["_file_name"] = Path(scorecard_file).name if scorecard_file else "active_scorecard.json"
+        all_scorecards.append(active_scorecard)
+        seen.add(active_scorecard["_file_name"])
+
+    if search_dir.exists():
+        for p in sorted(search_dir.glob("*.json")):
+            if p.name in seen or p.name in ["manifest.json", "entities.json", "scaffolds.json"]:
+                continue
+            sc = load_json_file(p)
+            if sc and isinstance(sc, dict) and "model_name" in sc and ("task_breakdown" in sc or "overall_accuracy_pct" in sc or "passed_samples" in sc):
+                sc["_file_name"] = p.name
+                all_scorecards.append(sc)
+                seen.add(p.name)
 
     html = generate_benchmark_html(
         benchmark_records=records,
-        scorecard=scorecard,
+        scorecard=active_scorecard,
+        all_scorecards=all_scorecards,
         dataset_title="DRUM Metrology Benchmark (M-Eval)",
     )
 

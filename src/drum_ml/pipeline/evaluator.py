@@ -1,25 +1,231 @@
-"""DRUM Metrology Benchmark (M-Eval) Evaluation & Grading Engine.
-
-Evaluates local or frontier models against the held-out DRUM benchmark suite,
-performing dual-track verification (deterministic MCQ extraction + symbolic physics equivalence)
-and generating stratified metrology scorecards across all 6 sub-disciplines.
-"""
-
+import hashlib
 import json
+import os
+import platform
 import re
+import statistics
+import time
 from pathlib import Path
 from typing import Any
 
+from pydantic import BaseModel
 from rich.console import Console
 from rich.table import Table
 
 from drum_ml.benchmark.models import (
     BenchmarkFormat,
+    BenchmarkPerformanceMetrics,
     BenchmarkScorecard,
+    EnvironmentProfile,
     TaskScore,
 )
 from drum_ml.symbolic.latex_parser import sanitize_latex_units
 from drum_ml.symbolic.pint_engine import check_unit_conversion_equivalence
+
+
+def detect_gpu_info() -> tuple[str | None, int | None, float | None]:
+    """Detects available GPU/accelerator name, device count, and VRAM memory (in GB)."""
+    # 1. Check PyTorch CUDA
+    try:
+        import torch
+
+        if torch.cuda.is_available():
+            cnt = torch.cuda.device_count()
+            name = torch.cuda.get_device_name(0)
+            vram = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 1)
+            gpu_name = f"{cnt}x {name}" if cnt > 1 else name
+            return gpu_name, cnt, vram
+    except Exception:
+        pass
+
+    # 2. Check nvidia-smi CLI
+    try:
+        import subprocess
+
+        out = subprocess.check_output(
+            ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"],
+            timeout=2,
+            stderr=subprocess.DEVNULL,
+        ).decode().strip()
+        lines = [line.strip() for line in out.splitlines() if line.strip()]
+        if lines:
+            cnt = len(lines)
+            first_parts = lines[0].split(",")
+            gpu_name = first_parts[0].strip()
+            vram_mb = float(first_parts[1].strip()) if len(first_parts) > 1 else None
+            vram_gb = round(vram_mb / 1024.0, 1) if vram_mb else None
+            display_name = f"{cnt}x {gpu_name}" if cnt > 1 else gpu_name
+            return display_name, cnt, vram_gb
+    except Exception:
+        pass
+
+    # 3. Check macOS Apple Silicon / Metal Display
+    if platform.system() == "Darwin":
+        try:
+            import subprocess
+
+            out = subprocess.check_output(
+                ["system_profiler", "SPDisplaysDataType"],
+                timeout=3,
+                stderr=subprocess.DEVNULL,
+            ).decode()
+            model = None
+            cores = None
+            for line in out.splitlines():
+                if "Chipset Model:" in line:
+                    model = line.split(":", 1)[1].strip()
+                elif "Total Number of Cores:" in line:
+                    cores = line.split(":", 1)[1].strip()
+            if model:
+                gpu_str = f"{model} ({cores} GPU cores)" if cores else model
+                return gpu_str, 1, None
+        except Exception:
+            pass
+
+    return None, None, None
+
+
+def classify_endpoint(
+    endpoint: str | None = None, model_name: str = ""
+) -> tuple[str, str, str | None, bool]:
+    """Classifies an inference endpoint into (execution_type, provider_name, sanitized_endpoint, is_local)."""
+    if model_name in ["ground_truth_baseline", "baseline", "gold"]:
+        return "baseline", "In-Memory Deterministic Baseline", None, True
+
+    if not endpoint:
+        return "local", "Local Inference", None, True
+
+    ep = endpoint.strip()
+    try:
+        from urllib.parse import urlparse
+
+        parsed = urlparse(ep)
+        sanitized = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+        host = (parsed.hostname or "").lower()
+    except Exception:
+        sanitized = ep
+        host = ep.lower()
+
+    local_hosts = {"localhost", "127.0.0.1", "0.0.0.0", "::1", "0:0:0:0:0:0:0:1"}
+    is_local = host in local_hosts or "127.0.0.1" in ep or "localhost" in ep
+
+    if is_local:
+        if "11434" in ep:
+            provider = "Ollama (Local Host)"
+        elif "1234" in ep:
+            provider = "LM Studio (Local Host)"
+        elif "8000" in ep or "vllm" in ep.lower():
+            provider = "vLLM (Local Host)"
+        elif "8080" in ep or "llama" in ep.lower():
+            provider = "llama.cpp (Local Host)"
+        else:
+            provider = "Local OpenAI-Compatible Server"
+        return "local", provider, sanitized, True
+
+    # Cloud endpoints
+    if "openai.com" in host:
+        provider = "OpenAI API (Cloud)"
+    elif "anthropic.com" in host:
+        provider = "Anthropic API (Cloud)"
+    elif "groq.com" in host:
+        provider = "Groq API (Cloud)"
+    elif "together.xyz" in host or "together.ai" in host:
+        provider = "Together AI (Cloud)"
+    elif "deepseek.com" in host:
+        provider = "DeepSeek API (Cloud)"
+    elif "openrouter.ai" in host:
+        provider = "OpenRouter (Cloud)"
+    elif "mistral.ai" in host:
+        provider = "Mistral AI (Cloud)"
+    elif "cohere.com" in host or "cohere.ai" in host:
+        provider = "Cohere (Cloud)"
+    elif "azure.com" in host:
+        provider = "Azure OpenAI (Cloud)"
+    elif "bedrock" in host or "amazonaws.com" in host:
+        provider = "AWS Bedrock (Cloud)"
+    else:
+        provider = f"Remote Cloud Endpoint ({host or 'unknown'})"
+
+    return "cloud", provider, sanitized, False
+
+
+def get_anonymous_environment(
+    endpoint: str | None = None, model_name: str = ""
+) -> EnvironmentProfile:
+    """Collects an anonymized system, hardware, GPU accelerator, and model execution profile."""
+    os_sys = platform.system()
+    os_rel = platform.release()
+    os_str = f"{os_sys} {os_rel}"
+    if os_sys == "Darwin":
+        mac_v = platform.mac_ver()[0]
+        if mac_v:
+            os_str = f"macOS {mac_v} (Darwin {os_rel})"
+
+    arch = platform.machine() or platform.processor() or "unknown"
+    cpu_count = os.cpu_count() or 1
+
+    mem_gb: float | None = None
+    try:
+        if os_sys == "Darwin":
+            import subprocess
+
+            out = subprocess.check_output(["sysctl", "-n", "hw.memsize"], timeout=2).decode().strip()
+            mem_gb = round(int(out) / (1024**3), 1)
+        elif os_sys == "Linux":
+            with open("/proc/meminfo") as f:
+                for line in f:
+                    if "MemTotal" in line:
+                        mem_kb = int(line.split()[1])
+                        mem_gb = round(mem_kb / (1024**2), 1)
+                        break
+    except Exception:
+        pass
+
+    gpu_name, gpu_cnt, gpu_vram = detect_gpu_info()
+    exec_type, provider, sanitized_ep, is_local = classify_endpoint(endpoint, model_name)
+
+    return EnvironmentProfile(
+        execution_type=exec_type,
+        provider=provider,
+        endpoint=sanitized_ep,
+        is_local_inference=is_local,
+        os=os_str,
+        architecture=arch,
+        cpu_count=cpu_count,
+        total_memory_gb=mem_gb,
+        gpu=gpu_name,
+        gpu_count=gpu_cnt,
+        gpu_memory_gb=gpu_vram,
+        python_version=platform.python_version(),
+        platform=platform.platform(terse=True),
+    )
+
+
+def compute_file_sha256(filepath: Path | str) -> str:
+    """Computes the SHA-256 hash of a benchmark dataset file for integrity and versioning."""
+    p = Path(filepath)
+    if not p.exists() or not p.is_file():
+        return "sha256:unknown"
+    sha = hashlib.sha256()
+    with open(p, "rb") as f:
+        while chunk := f.read(65536):
+            sha.update(chunk)
+    return f"sha256:{sha.hexdigest()}"
+
+
+class ModelQueryResult(BaseModel):
+    """Result of querying a model endpoint including token usage and latency."""
+
+    content: str = ""
+    latency_seconds: float = 0.0
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
+    tokens_per_second: float = 0.0
+    reasoning_content: str | None = None
+
+    def __str__(self) -> str:
+        return self.content
 
 
 class MEvalBenchmark:
@@ -50,7 +256,15 @@ class MEvalBenchmark:
                 f'{{\n  "answer": "A",\n  "explanation": "Brief explanation of the metrological rationale."\n}}\n'
                 f"```"
             )
-        return f"Question: {question}\n\nAnswer:"
+        return (
+            f"Question: {question}\n\n"
+            f"Instructions: Provide the exact numerical value and unit for the answer.\n"
+            f"Respond in valid JSON format with keys \"answer\" (the exact value and unit) and \"explanation\" (brief justification).\n\n"
+            f"Example response format:\n"
+            f"```json\n"
+            f'{{\n  "answer": "1.054571817e-34 J s",\n  "explanation": "Exact by the 2019 SI definition."\n}}\n'
+            f"```"
+        )
 
     @staticmethod
     def query_model_api(
@@ -58,9 +272,36 @@ class MEvalBenchmark:
         model_name: str,
         prompt: str,
         api_key: str | None = None,
-        timeout: float = 30.0,
-    ) -> str:
-        """Queries an LLM via LiteLLM or an OpenAI-compatible endpoint."""
+        timeout: float = 120.0,
+        max_tokens: int | None = None,
+    ) -> ModelQueryResult:
+        """Queries an LLM via LiteLLM or an OpenAI-compatible endpoint with telemetry."""
+        start_t = time.perf_counter()
+
+        def make_result(
+            content: str,
+            prompt_toks: int = 0,
+            completion_toks: int = 0,
+            reasoning: str | None = None,
+        ) -> ModelQueryResult:
+            duration = max(time.perf_counter() - start_t, 1e-4)
+            if prompt_toks <= 0 and prompt:
+                prompt_toks = max(1, len(prompt) // 4)
+            if completion_toks <= 0 and content:
+                completion_toks = max(1, len(content) // 4)
+            tot_toks = prompt_toks + completion_toks
+            tok_per_sec = (completion_toks / duration) if duration > 0 and completion_toks > 0 else 0.0
+
+            return ModelQueryResult(
+                content=content,
+                latency_seconds=round(duration, 3),
+                prompt_tokens=prompt_toks,
+                completion_tokens=completion_toks,
+                total_tokens=tot_toks,
+                tokens_per_second=round(tok_per_sec, 2),
+                reasoning_content=reasoning,
+            )
+
         # 1. Try LiteLLM first for robust multi-provider handling (Ollama, OpenAI, Claude, vLLM)
         try:
             import litellm
@@ -73,31 +314,43 @@ class MEvalBenchmark:
                 model_target = f"ollama/{model_name}"
                 api_base = "http://localhost:11434"
 
-            resp = litellm.completion(
-                model=model_target,
-                api_base=api_base,
-                api_key=api_key or "sk-local",
-                messages=[
+            call_kwargs: dict[str, Any] = {
+                "model": model_target,
+                "api_base": api_base,
+                "api_key": api_key or "sk-local",
+                "messages": [
                     {
                         "role": "system",
                         "content": "You are an expert metrologist and physicist. Answer with extreme precision.",
                     },
                     {"role": "user", "content": prompt},
                 ],
-                temperature=0.0,
-                max_tokens=1024,
-                timeout=timeout,
-            )
+                "temperature": 0.0,
+                "timeout": timeout,
+            }
+            if max_tokens and max_tokens > 0:
+                if any(m in model_target.lower() for m in ["o1", "o3", "reasoner"]):
+                    call_kwargs["max_completion_tokens"] = max_tokens
+                else:
+                    call_kwargs["max_tokens"] = max_tokens
+
+            resp = litellm.completion(**call_kwargs)
             choices = resp.choices if hasattr(resp, "choices") else []
             if choices:
                 msg = choices[0].message
                 content = getattr(msg, "content", "") or ""
                 reasoning = getattr(msg, "reasoning_content", None) or getattr(msg, "thinking_content", None)
-                if not content and reasoning:
-                    return str(reasoning).strip()
-                if reasoning and reasoning not in content:
-                    return f"<think>\n{reasoning}\n</think>\n{content}".strip()
-                return str(content).strip()
+                final_content = str(content).strip()
+                if not final_content and reasoning:
+                    final_content = str(reasoning).strip()
+                elif reasoning and reasoning not in final_content:
+                    final_content = f"<think>\n{reasoning}\n</think>\n{final_content}".strip()
+
+                usage = getattr(resp, "usage", None)
+                p_toks = getattr(usage, "prompt_tokens", 0) if usage else 0
+                c_toks = getattr(usage, "completion_tokens", 0) if usage else 0
+
+                return make_result(final_content, p_toks, c_toks, reasoning=str(reasoning) if reasoning else None)
         except Exception:
             pass
 
@@ -113,7 +366,7 @@ class MEvalBenchmark:
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
 
-        payload = {
+        payload: dict[str, Any] = {
             "model": model_name,
             "messages": [
                 {
@@ -123,8 +376,9 @@ class MEvalBenchmark:
                 {"role": "user", "content": prompt},
             ],
             "temperature": 0.0,
-            "max_tokens": 1024,
         }
+        if max_tokens and max_tokens > 0:
+            payload["max_tokens"] = max_tokens
 
         req = urllib.request.Request(
             url,
@@ -140,14 +394,20 @@ class MEvalBenchmark:
                     msg = choices[0].get("message", {})
                     content = msg.get("content", "") or ""
                     reasoning = msg.get("reasoning_content") or msg.get("thinking_content")
-                    if not content and reasoning:
-                        return str(reasoning).strip()
-                    if reasoning and reasoning not in content:
-                        return f"<think>\n{reasoning}\n</think>\n{content}".strip()
-                    return str(content).strip()
-                return ""
+                    final_content = str(content).strip()
+                    if not final_content and reasoning:
+                        final_content = str(reasoning).strip()
+                    elif reasoning and reasoning not in final_content:
+                        final_content = f"<think>\n{reasoning}\n</think>\n{final_content}".strip()
+
+                    usage = data.get("usage", {})
+                    p_toks = usage.get("prompt_tokens", 0)
+                    c_toks = usage.get("completion_tokens", 0)
+
+                    return make_result(final_content, p_toks, c_toks, reasoning=str(reasoning) if reasoning else None)
+                return make_result("")
         except Exception as e:
-            return f"ERROR_CALLING_MODEL: {e}"
+            return make_result(f"ERROR_CALLING_MODEL: {e}")
 
     def load_benchmark_records(self) -> list[dict[str, Any]]:
         """Load benchmark samples from JSONL."""
@@ -159,6 +419,82 @@ class MEvalBenchmark:
                 if line.strip():
                     records.append(json.loads(line))
         return records
+
+    @staticmethod
+    def get_checkpoint_path(output_path: Path | str) -> Path:
+        """Returns the canonical checkpoint file path for a target output scorecard path."""
+        p = Path(output_path)
+        return p.parent / f".{p.stem}.checkpoint.json"
+
+    @staticmethod
+    def load_checkpoint(
+        checkpoint_path: Path | str, expected_model_name: str | None = None
+    ) -> tuple[dict[str, dict[str, Any]], float]:
+        """Loads completed results from an evaluation checkpoint file.
+
+        Returns (results_map_by_id, accumulated_duration_seconds).
+        """
+        ckpt = Path(checkpoint_path)
+        if not ckpt.exists():
+            return {}, 0.0
+
+        try:
+            with open(ckpt, encoding="utf-8") as f:
+                data = json.load(f)
+
+            if not isinstance(data, dict):
+                return {}, 0.0
+
+            if expected_model_name and data.get("model_name") != expected_model_name:
+                return {}, 0.0
+
+            raw_results = data.get("results", [])
+            results_map = {r["id"]: r for r in raw_results if isinstance(r, dict) and "id" in r}
+            accumulated_time = float(data.get("accumulated_duration_seconds", 0.0))
+            return results_map, accumulated_time
+        except Exception:
+            return {}, 0.0
+
+    @staticmethod
+    def save_checkpoint(
+        checkpoint_path: Path | str,
+        model_name: str,
+        benchmark_file: Path | str,
+        total_records: int,
+        results_list: list[dict[str, Any]],
+        accumulated_duration_seconds: float,
+    ) -> Path:
+        """Atomically saves evaluation progress to a checkpoint file."""
+        ckpt = Path(checkpoint_path)
+        ckpt.parent.mkdir(parents=True, exist_ok=True)
+        tmp = ckpt.with_suffix(".tmp")
+
+        payload = {
+            "model_name": model_name,
+            "benchmark_file": str(benchmark_file),
+            "total_records": total_records,
+            "completed_count": len(results_list),
+            "accumulated_duration_seconds": accumulated_duration_seconds,
+            "results": results_list,
+        }
+
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+        tmp.replace(ckpt)
+        return ckpt
+
+    @staticmethod
+    def remove_checkpoint(checkpoint_path: Path | str) -> bool:
+        """Removes the checkpoint file once evaluation completes."""
+        ckpt = Path(checkpoint_path)
+        if ckpt.exists():
+            try:
+                ckpt.unlink()
+                return True
+            except Exception:
+                pass
+        return False
 
     @staticmethod
     def parse_mcq_response(response_text: str) -> tuple[str | None, str | None]:
@@ -267,6 +603,74 @@ class MEvalBenchmark:
 
         return None, None
 
+    @staticmethod
+    def parse_freeform_response(response_text: str) -> tuple[str, str | None]:
+        """Extracts candidate numerical quantity and unit from an LLM free-form response.
+
+        Attempts:
+        1. JSON parsing for keys 'answer', 'value', 'result'.
+        2. Boxed expression \\boxed{...} extraction.
+        3. LaTeX equation / rhs isolation.
+        4. Stripping conversational filler.
+        """
+        text = response_text.strip()
+        if not text:
+            return "", None
+
+        # Strip reasoning tags (<think>...</think>)
+        cleaned_text = text
+        if "</think>" in cleaned_text:
+            cleaned_text = cleaned_text.split("</think>")[-1].strip()
+        elif "<think>" in cleaned_text:
+            cleaned_text = re.sub(r"<think>[\s\S]*?</think>", "", cleaned_text).strip()
+
+        # Tier 1: JSON extraction
+        json_candidates = re.findall(r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", cleaned_text, flags=re.IGNORECASE)
+        if not json_candidates:
+            raw_match = re.search(r"(\{[\s\S]*\})", cleaned_text)
+            if raw_match:
+                json_candidates = [raw_match.group(1)]
+
+        for cand in json_candidates:
+            try:
+                data = json.loads(cand)
+                if isinstance(data, dict):
+                    ans_val = data.get("answer") or data.get("value") or data.get("result")
+                    exp_val = data.get("explanation") or data.get("reasoning")
+                    if ans_val and isinstance(ans_val, (str, int, float)):
+                        return str(ans_val).strip(), str(exp_val).strip() if exp_val else None
+            except Exception:
+                continue
+
+        # Tier 2: Boxed expression \boxed{...} (with nested brace support)
+        idx = cleaned_text.find(r"\boxed{")
+        if idx != -1:
+            start = idx + len(r"\boxed{")
+            depth = 1
+            i = start
+            while i < len(cleaned_text) and depth > 0:
+                if cleaned_text[i] == "{":
+                    depth += 1
+                elif cleaned_text[i] == "}":
+                    depth -= 1
+                i += 1
+            if depth == 0:
+                return cleaned_text[start : i - 1].strip(), None
+
+        # Tier 3: Equation right-hand side (e.g. \hbar = 1.05457... J s)
+        m_eq = re.search(
+            r"(?:=|is\s+defined\s+as|is\s+equal\s+to|is\s+exactly|is)\s*[:=]?\s*([0-9\.\-e\+\^\*\/\s\\a-zA-Z]+(?:\s*[a-zA-Z\^\-\/]+)?)",
+            cleaned_text,
+            re.IGNORECASE,
+        )
+        if m_eq:
+            cand = m_eq.group(1).strip().rstrip(".")
+            if len(cand.split()) <= 6 and not cand.startswith(r"\boxed"):
+                return cand, None
+
+        # Tier 4: Fallback
+        return cleaned_text, None
+
     def extract_mcq_answer(self, response_text: str) -> str | None:
         """Extracts the predicted MCQ option letter (A, B, C, D) from an LLM response."""
         pred_key, _ = self.parse_mcq_response(response_text)
@@ -305,32 +709,42 @@ class MEvalBenchmark:
             return grade_dict
 
         # Track B: Free-Form / Symbolic Physics Equivalence
+        pred_ans, pred_exp = self.parse_freeform_response(predicted_text)
         gt_clean = sanitize_latex_units(gt_answer)
-        pred_clean = sanitize_latex_units(predicted_text)
+        pred_clean = sanitize_latex_units(pred_ans if pred_ans else predicted_text)
 
         exact_match = (gt_clean.lower() == pred_clean.lower()) or (
-            gt_answer.strip().lower() == predicted_text.strip().lower()
+            gt_answer.strip().lower() == (pred_ans or predicted_text).strip().lower()
         )
         is_sym_eq, sym_err = False, None
 
-        if not exact_match:
+        if not exact_match and pred_clean:
             is_sym_eq, sym_err = check_unit_conversion_equivalence(gt_clean, pred_clean)
 
         passed = exact_match or is_sym_eq
-        return {
+        grade_dict = {
             "passed": passed,
             "format": BenchmarkFormat.FREE_FORM.value,
+            "predicted_raw": predicted_text,
+            "extracted_answer": pred_ans or predicted_text,
             "exact_match": exact_match,
             "symbolic_match": is_sym_eq,
-            "error": None if passed else sym_err,
+            "error": None if passed else (sym_err or f"Expected '{gt_answer}', got '{pred_ans or predicted_text}'"),
         }
+        if pred_exp:
+            grade_dict["predicted_explanation"] = pred_exp
+        return grade_dict
 
     def compute_scorecard(
         self,
         model_name: str,
         results: list[dict[str, Any]],
+        benchmark_version: str | None = None,
+        total_duration_seconds: float = 0.0,
+        environment: EnvironmentProfile | dict[str, Any] | None = None,
+        endpoint: str | None = None,
     ) -> BenchmarkScorecard:
-        """Computes stratified scores across all 6 tasks, formats, and difficulties."""
+        """Computes stratified scores across all 6 tasks, formats, difficulties, token telemetry, and environment profile."""
         total = len(results)
         passed = sum(1 for r in results if r["grade"]["passed"])
         overall_pct = (passed / total * 100.0) if total > 0 else 0.0
@@ -339,6 +753,11 @@ class MEvalBenchmark:
         task_stats: dict[str, dict[str, int]] = {}
         fmt_stats: dict[str, dict[str, int]] = {}
         diff_stats: dict[str, dict[str, int]] = {}
+
+        # Performance Telemetry
+        latencies: list[float] = []
+        prompt_toks = 0
+        comp_toks = 0
 
         for r in results:
             t = r.get("task", "unknown")
@@ -364,6 +783,53 @@ class MEvalBenchmark:
             diff_stats[d]["total"] += 1
             diff_stats[d]["passed"] += is_p
 
+            # Metrics
+            m = r.get("metrics")
+            if isinstance(m, dict):
+                lat = m.get("latency_seconds")
+                if isinstance(lat, (int, float)) and lat > 0:
+                    latencies.append(float(lat))
+                prompt_toks += int(m.get("prompt_tokens") or 0)
+                comp_toks += int(m.get("completion_tokens") or 0)
+
+        tot_toks = prompt_toks + comp_toks
+        dur = total_duration_seconds if total_duration_seconds > 0 else sum(latencies)
+        avg_lat = (sum(latencies) / len(latencies)) if latencies else 0.0
+        sorted_lat = sorted(latencies)
+        p50 = statistics.median(sorted_lat) if sorted_lat else 0.0
+        p95 = (
+            sorted_lat[int(len(sorted_lat) * 0.95)]
+            if len(sorted_lat) >= 20
+            else (sorted_lat[-1] if sorted_lat else 0.0)
+        )
+        avg_p_toks = (prompt_toks / total) if total > 0 else 0.0
+        avg_c_toks = (comp_toks / total) if total > 0 else 0.0
+        sum_inference_time = sum(latencies) if latencies else dur
+        avg_tps = (comp_toks / sum_inference_time) if (sum_inference_time > 0 and comp_toks > 0) else 0.0
+
+        perf_metrics = BenchmarkPerformanceMetrics(
+            total_duration_seconds=round(dur, 2),
+            avg_latency_seconds=round(avg_lat, 3),
+            p50_latency_seconds=round(p50, 3),
+            p95_latency_seconds=round(p95, 3),
+            total_prompt_tokens=prompt_toks,
+            total_completion_tokens=comp_toks,
+            total_tokens=tot_toks,
+            avg_prompt_tokens=round(avg_p_toks, 1),
+            avg_completion_tokens=round(avg_c_toks, 1),
+            avg_tokens_per_second=round(avg_tps, 2),
+        )
+
+        env_prof = None
+        if isinstance(environment, EnvironmentProfile):
+            env_prof = environment
+        elif isinstance(environment, dict):
+            env_prof = EnvironmentProfile(**environment)
+        else:
+            env_prof = get_anonymous_environment(endpoint=endpoint, model_name=model_name)
+
+        ver = benchmark_version or compute_file_sha256(self.benchmark_file)
+
         def to_task_score_dict(d_dict: dict[str, dict[str, int]]) -> dict[str, TaskScore]:
             out = {}
             for k, v in d_dict.items():
@@ -373,12 +839,16 @@ class MEvalBenchmark:
 
         return BenchmarkScorecard(
             model_name=model_name,
+            benchmark_version=ver,
+            benchmark_file=str(self.benchmark_file),
             total_samples=total,
             passed_samples=passed,
             overall_accuracy_pct=overall_pct,
             task_breakdown=to_task_score_dict(task_stats),
             format_breakdown=to_task_score_dict(fmt_stats),
             difficulty_breakdown=to_task_score_dict(diff_stats),
+            environment=env_prof,
+            metrics=perf_metrics,
             detailed_results=results,
         )
 
@@ -387,8 +857,95 @@ class MEvalBenchmark:
     ) -> None:
         """Prints a rich, formatted evaluation scorecard to the terminal."""
         con = console or Console()
+
+        # 1. Benchmark & Environment Metadata Table
+        meta_table = Table(
+            title=f"DRUM Metrology Benchmark: {scorecard.model_name}",
+            title_style="bold magenta",
+            header_style="bold cyan",
+            show_header=False,
+        )
+        meta_table.add_column("Property", style="bold")
+        meta_table.add_column("Value", style="cyan")
+
+        meta_table.add_row("Model Name", scorecard.model_name)
+        meta_table.add_row("Evaluation Timestamp (UTC)", scorecard.timestamp)
+        ver_display = scorecard.benchmark_version
+        if len(ver_display) > 28:
+            ver_display = ver_display[:28] + "..."
+        meta_table.add_row("Benchmark Version", ver_display)
+        if scorecard.benchmark_file:
+            meta_table.add_row("Benchmark Dataset File", scorecard.benchmark_file)
+
+        if scorecard.environment:
+            env = scorecard.environment
+            if env.execution_type == "local":
+                meta_table.add_row("Execution Target", f"💻 Local Inference Engine ({env.provider})")
+                if env.endpoint:
+                    meta_table.add_row("Local Endpoint", env.endpoint)
+                host_str = f"{env.os} | {env.architecture}"
+                if env.cpu_count:
+                    host_str += f" ({env.cpu_count} CPUs"
+                    if env.total_memory_gb:
+                        host_str += f", {env.total_memory_gb} GB RAM"
+                    host_str += ")"
+                meta_table.add_row("Host Hardware", host_str)
+                if env.gpu:
+                    gpu_display = env.gpu
+                    if env.gpu_memory_gb:
+                        gpu_display += f" ({env.gpu_memory_gb} GB VRAM)"
+                    meta_table.add_row("Inference GPU", gpu_display)
+            elif env.execution_type == "cloud":
+                meta_table.add_row("Execution Target", f"☁️ Remote Cloud API ({env.provider})")
+                if env.endpoint:
+                    meta_table.add_row("Cloud Endpoint", env.endpoint)
+                client_str = f"{env.os} | {env.architecture} (Client Runner)"
+                meta_table.add_row("Client Runner Host", client_str)
+            else:
+                meta_table.add_row("Execution Target", f"🎯 {env.provider}")
+
+            meta_table.add_row("Python Runtime", f"Python {env.python_version}")
+
+        con.print("\n")
+        con.print(meta_table)
+
+        # 2. Performance & Telemetry Table (if metrics present)
+        if scorecard.metrics and (scorecard.metrics.total_tokens > 0 or scorecard.metrics.total_duration_seconds > 0):
+            m = scorecard.metrics
+            perf_table = Table(
+                title="⚡ Runtime & Inference Throughput Telemetry",
+                title_style="bold yellow",
+                header_style="bold cyan",
+            )
+            perf_table.add_column("Metric", style="bold")
+            perf_table.add_column("Value", justify="right")
+
+            mins = int(m.total_duration_seconds // 60)
+            secs = m.total_duration_seconds % 60
+            dur_str = f"{mins}m {secs:.1f}s ({m.total_duration_seconds:.2f}s)" if mins > 0 else f"{m.total_duration_seconds:.2f}s"
+
+            perf_table.add_row("Total Evaluation Duration", dur_str)
+            perf_table.add_row(
+                "Average Latency per Sample",
+                f"{m.avg_latency_seconds:.3f}s (P50: {m.p50_latency_seconds:.3f}s, P95: {m.p95_latency_seconds:.3f}s)",
+            )
+            perf_table.add_row(
+                "Total Tokens Processed",
+                f"{m.total_tokens:,} (Prompt: {m.total_prompt_tokens:,}, Output: {m.total_completion_tokens:,})",
+            )
+            perf_table.add_row("Avg Output Tokens per Sample", f"{m.avg_completion_tokens:.1f} tokens")
+            perf_table.add_row(
+                "Generation Speed (Throughput)",
+                f"[bold green]{m.avg_tokens_per_second:.2f} tokens/sec[/bold green]"
+                if m.avg_tokens_per_second > 0
+                else "N/A",
+            )
+            con.print("\n")
+            con.print(perf_table)
+
+        # 3. Metrology Accuracy by Category Table
         table = Table(
-            title=f"DRUM Metrology Benchmark Scorecard: {scorecard.model_name}",
+            title=f"🎯 Metrological Accuracy by Sub-Discipline: {scorecard.model_name}",
             title_style="bold magenta",
             header_style="bold cyan",
         )
@@ -397,7 +954,6 @@ class MEvalBenchmark:
         table.add_column("Passed", justify="right")
         table.add_column("Accuracy", justify="right")
 
-        # Task breakdown
         task_names = {
             "constants": "1. Fundamental Constants & SI 2019",
             "dimensions": "2. Dimensional Decomposition & Base SI",

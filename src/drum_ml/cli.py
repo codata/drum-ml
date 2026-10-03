@@ -4,6 +4,7 @@ import json
 import os
 import time
 from pathlib import Path
+from typing import Any
 
 import typer
 from rich.console import Console
@@ -18,6 +19,7 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
+from drum_ml.benchmark.dashboard import save_leaderboard_dashboard
 from drum_ml.benchmark.generator import DRUMBenchmarkGenerator
 from drum_ml.benchmark.viewer import save_benchmark_viewer
 from drum_ml.config import PipelineConfig
@@ -37,6 +39,7 @@ from drum_ml.pipeline.persona_reporter import PersonaReporter
 from drum_ml.pipeline.scaffolder import MetrologyScaffolder
 from drum_ml.pipeline.stats_generator import DatasetStatsGenerator
 from drum_ml.pipeline.validator import MetrologyValidator
+from drum_ml.portal.generator import save_portal_html
 
 app = typer.Typer(
     name="drum-ml",
@@ -744,6 +747,82 @@ def view_benchmark(
 
 
 @app.command()
+def leaderboard(
+    benchmark_dir: str = typer.Option(
+        "./dataset/benchmark",
+        "--benchmark-dir",
+        "-d",
+        help="Path to directory containing benchmark scorecards and datasets.",
+    ),
+    benchmark_file: str | None = typer.Option(
+        None,
+        "--benchmark-file",
+        "-b",
+        help="Path to benchmark questions JSONL for question diffing (optional).",
+    ),
+    output_html: str = typer.Option(
+        "./dataset/benchmark/leaderboard.html",
+        "--output-html",
+        "-o",
+        help="Path for generated standalone leaderboard HTML file.",
+    ),
+    no_open: bool = typer.Option(
+        False, "--no-open", help="Do not open browser automatically after generation."
+    ),
+):
+    """Generate and launch the DRUM Metrology Benchmark Multi-Model Leaderboard & Profiles Dashboard."""
+    console.print(
+        f"[bold green]Generating multi-model leaderboard dashboard from '{benchmark_dir}'...[/bold green]"
+    )
+    b_dir = Path(benchmark_dir)
+    if not b_dir.exists():
+        console.print(f"[bold red]Benchmark directory '{benchmark_dir}' does not exist.[/bold red]")
+        raise typer.Exit(1)
+
+    b_file = Path(benchmark_file) if benchmark_file and Path(benchmark_file).exists() else None
+
+    out_p = save_leaderboard_dashboard(
+        output_html_path=output_html,
+        benchmark_dir=b_dir,
+        benchmark_file=b_file,
+        open_browser=not no_open,
+    )
+    console.print(
+        f"[bold green]✓ Multi-model leaderboard dashboard generated at [cyan]{out_p.resolve()}[/cyan][/bold green]"
+    )
+    if not no_open:
+        console.print("[bold blue]✓ Opened in default web browser.[/bold blue]")
+
+
+@app.command()
+def dashboard(
+    benchmark_dir: str = typer.Option(
+        "./dataset/benchmark",
+        "--benchmark-dir",
+        "-d",
+        help="Path to directory containing benchmark scorecards and datasets.",
+    ),
+    benchmark_file: str | None = typer.Option(
+        None,
+        "--benchmark-file",
+        "-b",
+        help="Path to benchmark questions JSONL for question diffing (optional).",
+    ),
+    output_html: str = typer.Option(
+        "./dataset/benchmark/leaderboard.html",
+        "--output-html",
+        "-o",
+        help="Path for generated standalone leaderboard HTML file.",
+    ),
+    no_open: bool = typer.Option(
+        False, "--no-open", help="Do not open browser automatically after generation."
+    ),
+):
+    """Alias for 'leaderboard': Generate and launch the Multi-Model Leaderboard & Profiles Dashboard."""
+    leaderboard(benchmark_dir=benchmark_dir, benchmark_file=benchmark_file, output_html=output_html, no_open=no_open)
+
+
+@app.command()
 def view_dataset(
     dataset_dir: str = typer.Option(
         "./dataset",
@@ -916,10 +995,10 @@ def view_scorecard(
 @app.command()
 def evaluate(
     benchmark_file: str = typer.Option(
-        "./dataset/benchmark/drum_benchmark_mcq.jsonl",
+        "./dataset/benchmark/drum_benchmark_all.jsonl",
         "--benchmark-file",
         "-b",
-        help="Path to benchmark JSONL.",
+        help="Path to benchmark JSONL (e.g. drum_benchmark_all.jsonl for all tracks, drum_benchmark_mcq.jsonl for Track A, or drum_benchmark_open.jsonl for Track B).",
     ),
     model_endpoint: str = typer.Option(
         "http://localhost:1234/v1",
@@ -939,11 +1018,23 @@ def evaluate(
         "-o",
         help="Output path for evaluation report.",
     ),
+    resume: bool = typer.Option(
+        True, "--resume/--no-resume", help="Automatically resume from checkpoint if an in-progress evaluation exists."
+    ),
+    reset_checkpoint: bool = typer.Option(
+        False, "--reset-checkpoint", help="Discard any existing checkpoint for this output path and start from scratch."
+    ),
     viewer: bool = typer.Option(
         False, "--viewer", "-v", help="Automatically generate and open the interactive scorecard HTML browser."
     ),
+    max_tokens: int | None = typer.Option(
+        None, "--max-tokens", help="Maximum generation tokens per question (default: None, unconstrained / model native context)."
+    ),
+    timeout: float = typer.Option(
+        120.0, "--timeout", help="Timeout in seconds per query (default: 120s for reasoning models)."
+    ),
 ):
-    """Evaluate a local or remote model against the DRUM Metrology Benchmark with live progress and category scorecards."""
+    """Evaluate a local or remote model against the DRUM Metrology Benchmark with live progress, auto-checkpointing & category scorecards."""
     console.print(
         f"[bold green]Running DRUM Metrology Benchmark on model '{model_name}'...[/bold green]"
     )
@@ -955,55 +1046,157 @@ def evaluate(
 
     console.print(f"Loaded {len(records)} benchmark test records from {benchmark_file}")
 
+    out_path = Path(output)
+    checkpoint_path = evaluator.get_checkpoint_path(out_path)
+
+    if reset_checkpoint:
+        evaluator.remove_checkpoint(checkpoint_path)
+        console.print("[yellow]✓ Checkpoint cleared: starting evaluation from scratch.[/yellow]")
+
+    completed_map: dict[str, dict[str, Any]] = {}
+    accumulated_duration: float = 0.0
+
+    if resume and not reset_checkpoint:
+        completed_map, accumulated_duration = evaluator.load_checkpoint(
+            checkpoint_path, expected_model_name=model_name
+        )
+        if completed_map:
+            console.print(
+                f"[bold cyan]✓ Found active checkpoint: {len(completed_map)}/{len(records)} questions already evaluated.[/bold cyan]"
+            )
+            console.print(
+                f"[bold cyan]  Resuming evaluation from question {len(completed_map) + 1}/{len(records)}...[/bold cyan]"
+            )
+
     results = []
     is_baseline = model_name in ["ground_truth_baseline", "baseline", "gold"]
 
+    session_start_time = time.perf_counter()
+    interrupted = False
+
     with get_progress_bar() as progress:
         task = progress.add_task(f"Evaluating {model_name}", total=len(records))
-        for rec in records:
-            if is_baseline:
-                correct_key = rec.get("correct_option_key")
-                gt_ans = rec.get("ground_truth_answer", "")
-                predicted = correct_key if correct_key else gt_ans
-            else:
-                prompt = evaluator.format_prompt(rec)
-                predicted = evaluator.query_model_api(
-                    endpoint=model_endpoint,
-                    model_name=model_name,
-                    prompt=prompt,
-                    api_key=api_key or os.environ.get("OPENAI_API_KEY"),
-                )
+        if completed_map:
+            progress.advance(task, len(completed_map))
 
-            grade = evaluator.grade_response(rec, predicted)
-            results.append(
-                {
-                    "id": rec.get("id"),
+        try:
+            for rec in records:
+                rec_id = rec.get("id")
+                if rec_id and rec_id in completed_map:
+                    results.append(completed_map[rec_id])
+                    continue
+
+                if is_baseline:
+                    correct_key = rec.get("correct_option_key")
+                    gt_ans = rec.get("ground_truth_answer", "")
+                    predicted_text = correct_key if correct_key else gt_ans
+                    metric_dict = {
+                        "latency_seconds": 0.001,
+                        "prompt_tokens": max(1, len(rec.get("question", "")) // 4),
+                        "completion_tokens": 2,
+                        "total_tokens": max(1, len(rec.get("question", "")) // 4) + 2,
+                        "tokens_per_second": 2000.0,
+                    }
+                else:
+                    prompt = evaluator.format_prompt(rec)
+                    model_res = evaluator.query_model_api(
+                        endpoint=model_endpoint,
+                        model_name=model_name,
+                        prompt=prompt,
+                        api_key=api_key or os.environ.get("OPENAI_API_KEY"),
+                        timeout=timeout,
+                        max_tokens=max_tokens,
+                    )
+                    predicted_text = model_res.content
+                    metric_dict = {
+                        "latency_seconds": model_res.latency_seconds,
+                        "prompt_tokens": model_res.prompt_tokens,
+                        "completion_tokens": model_res.completion_tokens,
+                        "total_tokens": model_res.total_tokens,
+                        "tokens_per_second": model_res.tokens_per_second,
+                    }
+
+                grade = evaluator.grade_response(rec, predicted_text)
+                res_item = {
+                    "id": rec_id,
                     "task": rec.get("task", "general"),
                     "format": rec.get("format", "mcq"),
                     "difficulty": rec.get("difficulty", "intermediate"),
                     "grade": grade,
+                    "metrics": metric_dict,
                 }
-            )
-            progress.advance(task)
+                results.append(res_item)
 
-    scorecard = evaluator.compute_scorecard(model_name=model_name, results=results)
+                # Incremental auto-save to checkpoint after each evaluated question
+                current_duration = accumulated_duration + (time.perf_counter() - session_start_time)
+                evaluator.save_checkpoint(
+                    checkpoint_path=checkpoint_path,
+                    model_name=model_name,
+                    benchmark_file=benchmark_file,
+                    total_records=len(records),
+                    results_list=results,
+                    accumulated_duration_seconds=current_duration,
+                )
+                progress.advance(task)
+
+        except KeyboardInterrupt:
+            interrupted = True
+
+    if interrupted:
+        current_duration = accumulated_duration + (time.perf_counter() - session_start_time)
+        evaluator.save_checkpoint(
+            checkpoint_path=checkpoint_path,
+            model_name=model_name,
+            benchmark_file=benchmark_file,
+            total_records=len(records),
+            results_list=results,
+            accumulated_duration_seconds=current_duration,
+        )
+        console.print(
+            f"\n[bold yellow]⏸ Evaluation paused by user (Ctrl+C). "
+            f"{len(results)}/{len(records)} completed results safely saved to checkpoint:[/bold yellow]\n"
+            f"  └─ [cyan]{checkpoint_path}[/cyan]\n"
+            f"[bold green]▶ Re-run the exact same command to seamlessly resume where you left off.[/bold green]"
+        )
+        raise typer.Exit(code=130)
+
+    total_eval_duration = accumulated_duration + (time.perf_counter() - session_start_time)
+    scorecard = evaluator.compute_scorecard(
+        model_name=model_name,
+        results=results,
+        total_duration_seconds=total_eval_duration,
+        endpoint=model_endpoint if not is_baseline else None,
+    )
     evaluator.print_scorecard(scorecard, console=console)
 
-    out_path = Path(output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(scorecard.model_dump(), f, indent=2)
 
+    # Clean up intermediate checkpoint upon successful full completion
+    evaluator.remove_checkpoint(checkpoint_path)
+
     console.print(f"[bold green]✓ Benchmark Report saved to [cyan]{out_path}[/cyan][/bold green]")
 
+    # Automatically keep standalone HTML dashboards in sync with new evaluations
+    viewer_html = out_path.parent / "benchmark_viewer.html"
+    leaderboard_html = out_path.parent / "leaderboard.html"
+    full_bench_file = out_path.parent / "drum_benchmark_all.jsonl"
+    target_bench_file = full_bench_file if full_bench_file.exists() else benchmark_file
+
+    save_benchmark_viewer(
+        output_html_path=viewer_html,
+        benchmark_file=target_bench_file,
+        scorecard_file=out_path,
+        open_browser=viewer,
+    )
+    save_leaderboard_dashboard(
+        output_html_path=leaderboard_html,
+        benchmark_dir=out_path.parent,
+        open_browser=False,
+    )
+
     if viewer:
-        viewer_html = out_path.parent / "benchmark_viewer.html"
-        save_benchmark_viewer(
-            output_html_path=viewer_html,
-            benchmark_file=benchmark_file,
-            scorecard_file=out_path,
-            open_browser=True,
-        )
         console.print(f"[bold green]✓ Interactive Scorecard Browser launched at [cyan]{viewer_html}[/cyan][/bold green]")
 
 
@@ -1089,6 +1282,101 @@ def clear_cache(
         )
     else:
         console.print(f"[cyan]Cache is already clean: {cfg.cache_db} does not exist.[/cyan]")
+
+
+@app.command()
+def build_portal(
+    output_html: str = typer.Option(
+        "./dataset/index.html",
+        "--output-html",
+        "-o",
+        help="Path for generated standalone portal HTML file.",
+    ),
+    manifest_file: str = typer.Option(
+        "./dataset/manifest.json",
+        "--manifest",
+        "-m",
+        help="Path to dataset manifest JSON.",
+    ),
+    stats_file: str = typer.Option(
+        "./dataset/dataset_stats.json",
+        "--stats",
+        "-s",
+        help="Path to dataset statistics JSON.",
+    ),
+    no_open: bool = typer.Option(
+        False, "--no-open", help="Do not open browser automatically after generation."
+    ),
+):
+    """Generate and compile the DRUM-ML master scientific portal index.html in the dataset directory."""
+    console.print(
+        f"[bold green]Generating DRUM-ML scientific portal at '{output_html}'...[/bold green]"
+    )
+    out_p = save_portal_html(
+        output_html_path=output_html,
+        manifest_path=manifest_file,
+        stats_path=stats_file,
+        open_browser=not no_open,
+    )
+    console.print(
+        f"[bold green]✓ Master Portal index.html generated at [cyan]{out_p.resolve()}[/cyan][/bold green]"
+    )
+
+
+@app.command()
+def serve(
+    dataset_dir: str = typer.Option(
+        "./dataset",
+        "--dir",
+        "-d",
+        help="Directory to serve as web root.",
+    ),
+    port: int = typer.Option(
+        9124,
+        "--port",
+        "-p",
+        help="Port for local HTTP server.",
+    ),
+    no_open: bool = typer.Option(
+        False, "--no-open", help="Do not open browser automatically."
+    ),
+):
+    """Start a lightweight local HTTP server hosting the DRUM-ML dataset portal and interactive applications."""
+    import http.server
+    import socketserver
+    import webbrowser
+    from functools import partial
+
+    root_p = Path(dataset_dir).resolve()
+    if not root_p.exists():
+        console.print(f"[bold red]Dataset directory '{dataset_dir}' does not exist.[/bold red]")
+        raise typer.Exit(1)
+
+    # Ensure portal index.html exists
+    index_file = root_p / "index.html"
+    if not index_file.exists():
+        save_portal_html(
+            output_html_path=index_file,
+            manifest_path=root_p / "manifest.json",
+            stats_path=root_p / "dataset_stats.json",
+        )
+
+    handler = partial(http.server.SimpleHTTPRequestHandler, directory=str(root_p))
+
+    socketserver.TCPServer.allow_reuse_address = True
+    try:
+        with socketserver.TCPServer(("", port), handler) as httpd:
+            url = f"http://localhost:{port}/"
+            console.print(
+                f"[bold green]🚀 DRUM-ML Portal & Data Repository running at [cyan]{url}[/cyan][/bold green]"
+            )
+            console.print(f"[dim]Serving root directory: {root_p}[/dim]")
+            console.print("[dim]Press Ctrl+C to stop the server.[/dim]\n")
+            if not no_open:
+                webbrowser.open(url)
+            httpd.serve_forever()
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Server stopped.[/yellow]")
 
 
 if __name__ == "__main__":

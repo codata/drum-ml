@@ -105,8 +105,16 @@ def test_mcq_grading():
     # Wrong predictions
     res_wrong = evaluator.grade_response(record, '{"answer": "C", "explanation": "wrong"}')
     assert res_wrong["passed"] is False
+    assert res_wrong["eval_status"] == "incorrect"
+    assert res_wrong["error_type"] == "mcq_choice_mismatch"
     assert res_wrong["predicted_key"] == "C"
     assert res_wrong.get("predicted_explanation") == "wrong"
+
+    # Unparseable response
+    res_unparse = evaluator.grade_response(record, "I don't know the answer.")
+    assert res_unparse["passed"] is False
+    assert res_unparse["eval_status"] == "error"
+    assert res_unparse["error_type"] == "unparseable_response"
 
 
 def test_freeform_grading():
@@ -120,6 +128,7 @@ def test_freeform_grading():
     # Exact string match
     res1 = evaluator.grade_response(record, "1.054571817e-34 J s")
     assert res1["passed"] is True
+    assert res1["eval_status"] == "passed"
     assert res1["exact_match"] is True
 
     # JSON formatted response with explanation
@@ -128,6 +137,7 @@ def test_freeform_grading():
         '```json\n{"answer": "1.054571817e-34 J s", "explanation": "Exact by 2019 SI definition."}\n```',
     )
     assert res2["passed"] is True
+    assert res2["eval_status"] == "passed"
     assert res2.get("extracted_answer") == "1.054571817e-34 J s"
     assert "Exact by 2019" in res2.get("predicted_explanation", "")
 
@@ -137,7 +147,33 @@ def test_freeform_grading():
         '```json\n{"answer": "1.054571817e-34 kg * m^2 / s"}\n```',
     )
     assert res3["passed"] is True
+    assert res3["eval_status"] == "passed"
     assert res3["symbolic_match"] is True
+
+    # Implicit negative exponent (6.02214076e23 mol-1 vs mol^-1)
+    rec_avogadro = {
+        "id": "sample_ff_002",
+        "format": BenchmarkFormat.FREE_FORM.value,
+        "ground_truth_answer": "6.02214076e23 mol^-1",
+    }
+    res_avo = evaluator.grade_response(
+        rec_avogadro,
+        '```json\n{"answer": "6.02214076e23 mol-1", "explanation": "Exact defining constant."}\n```',
+    )
+    assert res_avo["passed"] is True
+    assert res_avo["eval_status"] == "passed"
+
+    # Dimensional mismatch (e.g. Energy instead of Action)
+    res_dim_mismatch = evaluator.grade_response(record, "1.054571817e-34 J")
+    assert res_dim_mismatch["passed"] is False
+    assert res_dim_mismatch["eval_status"] == "incorrect"
+    assert res_dim_mismatch["error_type"] == "dimensional_mismatch"
+
+    # Magnitude mismatch
+    res_mag_mismatch = evaluator.grade_response(record, "2.054571817e-34 J s")
+    assert res_mag_mismatch["passed"] is False
+    assert res_mag_mismatch["eval_status"] == "incorrect"
+    assert res_mag_mismatch["error_type"] == "magnitude_mismatch"
 
     # Boxed LaTeX expression
     res4 = evaluator.grade_response(

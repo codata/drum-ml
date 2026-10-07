@@ -353,7 +353,50 @@ class MEvalBenchmark:
                 reasoning_content=reasoning,
             )
 
-        # 1. Try LiteLLM first for robust multi-provider handling (Ollama, OpenAI, Claude, vLLM)
+        import os
+
+        # Determine the appropriate API key based on endpoint and model if api_key is not explicitly given
+        effective_api_key = api_key
+        if not effective_api_key:
+            endpoint_lower = (endpoint or "").lower()
+            model_lower = (model_name or "").lower()
+            if "openrouter" in endpoint_lower or "openrouter" in model_lower:
+                effective_api_key = (
+                    os.environ.get("OPENROUTER_API_KEY")
+                    or os.environ.get("OPENROUTER_KEY")
+                    or os.environ.get("OPENAI_API_KEY")
+                )
+            elif "anthropic" in endpoint_lower or "claude" in model_lower:
+                effective_api_key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get(
+                    "OPENAI_API_KEY"
+                )
+            elif "groq" in endpoint_lower:
+                effective_api_key = os.environ.get("GROQ_API_KEY") or os.environ.get(
+                    "OPENAI_API_KEY"
+                )
+            elif "together" in endpoint_lower:
+                effective_api_key = os.environ.get("TOGETHER_API_KEY") or os.environ.get(
+                    "OPENAI_API_KEY"
+                )
+            elif "deepseek" in endpoint_lower:
+                effective_api_key = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get(
+                    "OPENAI_API_KEY"
+                )
+            elif "openai" in endpoint_lower:
+                effective_api_key = os.environ.get("OPENAI_API_KEY")
+            else:
+                effective_api_key = (
+                    os.environ.get("OPENROUTER_API_KEY")
+                    if "openrouter" in endpoint_lower
+                    else (
+                        os.environ.get("OPENAI_API_KEY")
+                        or os.environ.get("OPENROUTER_API_KEY")
+                        or os.environ.get("ANTHROPIC_API_KEY")
+                        or os.environ.get("GEMINI_API_KEY")
+                    )
+                )
+
+        # 1. Try LiteLLM first for robust multi-provider handling (Ollama, OpenAI, Claude, vLLM, OpenRouter)
         try:
             import litellm
 
@@ -364,11 +407,18 @@ class MEvalBenchmark:
             if "11434" in endpoint and not model_target.startswith("ollama"):
                 model_target = f"ollama/{model_name}"
                 api_base = "http://localhost:11434"
+            elif "openrouter.ai" in endpoint and not model_target.startswith("openrouter/"):
+                model_target = f"openrouter/{model_name}"
+                api_base = "https://openrouter.ai/api/v1"
 
             call_kwargs: dict[str, Any] = {
                 "model": model_target,
                 "api_base": api_base,
-                "api_key": api_key or "sk-local",
+                "api_key": effective_api_key or "sk-local",
+                "extra_headers": {
+                    "HTTP-Referer": "https://drum.codata.org",
+                    "X-Title": "DRUM-ML Metrology Benchmark",
+                },
                 "messages": [
                     {
                         "role": "system",
@@ -409,7 +459,7 @@ class MEvalBenchmark:
         except Exception:
             pass
 
-        # 2. Fallback to direct HTTP request
+        # 2. Fallback to direct HTTP request with retry on 429/503
         import urllib.error
         import urllib.request
 
@@ -417,9 +467,13 @@ class MEvalBenchmark:
         if not url.endswith("/chat/completions") and not url.endswith("/completions"):
             url = f"{url}/chat/completions"
 
-        headers = {"Content-Type": "application/json"}
-        if api_key:
-            headers["Authorization"] = f"Bearer {api_key}"
+        headers = {
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://drum.codata.org",
+            "X-Title": "DRUM-ML Metrology Benchmark",
+        }
+        if effective_api_key:
+            headers["Authorization"] = f"Bearer {effective_api_key}"
 
         payload: dict[str, Any] = {
             "model": model_name,
@@ -435,39 +489,98 @@ class MEvalBenchmark:
         if max_tokens and max_tokens > 0:
             payload["max_tokens"] = max_tokens
 
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers=headers,
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-                choices = data.get("choices", [])
-                if choices:
-                    msg = choices[0].get("message", {})
-                    content = msg.get("content", "") or ""
-                    reasoning = msg.get("reasoning_content") or msg.get("thinking_content")
-                    final_content = str(content).strip()
-                    if not final_content and reasoning:
-                        final_content = str(reasoning).strip()
-                    elif reasoning and reasoning not in final_content:
-                        final_content = f"<think>\n{reasoning}\n</think>\n{final_content}".strip()
+        max_attempts = 3
+        for attempt in range(max_attempts):
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers=headers,
+                method="POST",
+            )
+            try:
+                with urllib.request.urlopen(req, timeout=timeout) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    choices = data.get("choices", [])
+                    if choices:
+                        msg = choices[0].get("message", {})
+                        content = msg.get("content", "") or ""
+                        reasoning = msg.get("reasoning_content") or msg.get("thinking_content")
+                        final_content = str(content).strip()
+                        if not final_content and reasoning:
+                            final_content = str(reasoning).strip()
+                        elif reasoning and reasoning not in final_content:
+                            final_content = (
+                                f"<think>\n{reasoning}\n</think>\n{final_content}".strip()
+                            )
 
-                    usage = data.get("usage", {})
-                    p_toks = usage.get("prompt_tokens", 0)
-                    c_toks = usage.get("completion_tokens", 0)
+                        usage = data.get("usage", {})
+                        p_toks = usage.get("prompt_tokens", 0)
+                        c_toks = usage.get("completion_tokens", 0)
 
-                    return make_result(
-                        final_content,
-                        p_toks,
-                        c_toks,
-                        reasoning=str(reasoning) if reasoning else None,
-                    )
-                return make_result("")
-        except Exception as e:
-            return make_result(f"ERROR_CALLING_MODEL: {e}")
+                        return make_result(
+                            final_content,
+                            p_toks,
+                            c_toks,
+                            reasoning=str(reasoning) if reasoning else None,
+                        )
+                    if "error" in data:
+                        err_val = data["error"]
+                        err_text = (
+                            err_val.get("message", str(err_val))
+                            if isinstance(err_val, dict)
+                            else str(err_val)
+                        )
+                        return make_result(f"ERROR_CALLING_MODEL: {err_text}")
+                    return make_result("")
+            except urllib.error.HTTPError as e:
+                err_detail = str(e.reason)
+                try:
+                    err_body = e.read().decode("utf-8")
+                    err_json = json.loads(err_body)
+                    if "error" in err_json:
+                        e_obj = err_json["error"]
+                        err_detail = (
+                            e_obj.get("message", str(e_obj))
+                            if isinstance(e_obj, dict)
+                            else str(e_obj)
+                        )
+                except Exception:
+                    pass
+
+                # If rate limited (429) or overloaded (503), retry with brief delay
+                if e.code in (429, 503) and attempt < max_attempts - 1:
+                    time.sleep(2.0 * (attempt + 1))
+                    continue
+
+                return make_result(f"ERROR_CALLING_MODEL: HTTP Error {e.code}: {err_detail}")
+            except Exception as e:
+                if attempt < max_attempts - 1:
+                    time.sleep(1.0)
+                    continue
+                return make_result(f"ERROR_CALLING_MODEL: {e}")
+
+        return make_result("ERROR_CALLING_MODEL: Maximum retry attempts exceeded")
+
+    @staticmethod
+    def check_fatal_inference_error(error_str: str) -> str | None:
+        """Checks if an inference error is a fatal configuration, authentication, or connection error that should halt the evaluation."""
+        if not error_str or not str(error_str).startswith("ERROR_CALLING_MODEL:"):
+            return None
+        err = str(error_str).lower()
+        if (
+            "401" in err
+            or "unauthorized" in err
+            or "invalid_api_key" in err
+            or "authentication" in err
+        ):
+            return "Authentication Failed (HTTP 401): Invalid or missing API key. Please check your API key configuration."
+        if "403" in err or "forbidden" in err or "permission_denied" in err:
+            return "Access Forbidden (HTTP 403): You do not have permission to access this model or endpoint."
+        if "404" in err or "not found" in err:
+            return "Model / Endpoint Not Found (HTTP 404): The requested model or endpoint URL does not exist."
+        if "connection refused" in err or "failed to connect" in err:
+            return "Connection Refused: Unable to connect to inference server. Is the local daemon running?"
+        return None
 
     def load_benchmark_records(self) -> list[dict[str, Any]]:
         """Load benchmark samples from JSONL."""
@@ -754,17 +867,45 @@ class MEvalBenchmark:
             gt_answer = next((m["content"] for m in messages if m.get("role") == "assistant"), "")
             fmt = BenchmarkFormat.FREE_FORM.value
 
+        # Case 0: Explicit Model Calling / Network Error
+        if predicted_text.startswith("ERROR_CALLING_MODEL:"):
+            return {
+                "passed": False,
+                "eval_status": "error",
+                "error_type": "provider_error",
+                "format": fmt,
+                "predicted_key": None,
+                "expected_key": correct_key,
+                "predicted_raw": predicted_text,
+                "error": predicted_text,
+            }
+
         # Track A: MCQ Grading
         if fmt == BenchmarkFormat.MCQ.value or correct_key:
             pred_key, pred_exp = self.parse_mcq_response(predicted_text)
             passed = (pred_key == correct_key) if (pred_key and correct_key) else False
+            if passed:
+                eval_status = "passed"
+                err_msg = None
+                error_type = None
+            elif not pred_key:
+                eval_status = "error"
+                err_msg = "Failed to extract MCQ choice letter from model output"
+                error_type = "unparseable_response"
+            else:
+                eval_status = "incorrect"
+                err_msg = f"Expected option {correct_key}, got {pred_key}"
+                error_type = "mcq_choice_mismatch"
+
             grade_dict: dict[str, Any] = {
                 "passed": passed,
+                "eval_status": eval_status,
+                "error_type": error_type,
                 "format": BenchmarkFormat.MCQ.value,
                 "predicted_key": pred_key,
                 "expected_key": correct_key,
                 "predicted_raw": predicted_text,
-                "error": None if passed else f"Expected option {correct_key}, got {pred_key}",
+                "error": err_msg,
             }
             if pred_exp:
                 grade_dict["predicted_explanation"] = pred_exp
@@ -784,16 +925,43 @@ class MEvalBenchmark:
             is_sym_eq, sym_err = check_unit_conversion_equivalence(gt_clean, pred_clean)
 
         passed = exact_match or is_sym_eq
+        if passed:
+            eval_status = "passed"
+            err_msg = None
+            error_type = None
+        elif sym_err and (
+            "Pint evaluation error" in sym_err or "SymPy evaluation error" in sym_err
+        ):
+            eval_status = "error"
+            err_msg = sym_err
+            error_type = "processing_error"
+        elif sym_err and "Dimensional incompatibility" in sym_err:
+            eval_status = "incorrect"
+            err_msg = sym_err
+            error_type = "dimensional_mismatch"
+        elif sym_err and "Magnitude mismatch" in sym_err:
+            eval_status = "incorrect"
+            err_msg = sym_err
+            error_type = "magnitude_mismatch"
+        elif not pred_ans and not predicted_text.strip():
+            eval_status = "error"
+            err_msg = "Model returned empty response"
+            error_type = "empty_response"
+        else:
+            eval_status = "incorrect"
+            err_msg = sym_err or f"Expected '{gt_answer}', got '{pred_ans or predicted_text}'"
+            error_type = "value_mismatch"
+
         grade_dict = {
             "passed": passed,
+            "eval_status": eval_status,
+            "error_type": error_type,
             "format": BenchmarkFormat.FREE_FORM.value,
             "predicted_raw": predicted_text,
             "extracted_answer": pred_ans or predicted_text,
             "exact_match": exact_match,
             "symbolic_match": is_sym_eq,
-            "error": None
-            if passed
-            else (sym_err or f"Expected '{gt_answer}', got '{pred_ans or predicted_text}'"),
+            "error": err_msg,
         }
         if pred_exp:
             grade_dict["predicted_explanation"] = pred_exp

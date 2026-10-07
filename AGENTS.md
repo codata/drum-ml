@@ -193,11 +193,17 @@ drum-ml/
 │       ├── cli.py                     # Central Typer CLI entrypoint
 │       ├── config.py                  # Pydantic Settings and YAML loader
 │       ├── dataset_viewer.py          # Standalone Interactive HTML Dataset Browser generator
+│       ├── portal/                    # Master Web Portal & Deployment Packaging
+│       │   ├── __init__.py
+│       │   ├── generator.py           # Portal index.html compiler
+│       │   └── packager.py            # Website standalone ZIP packager & verifier
 │       ├── benchmark/                 # Benchmark Models, Gold Test Generator & Viewer
 │       │   ├── __init__.py
 │       │   ├── generator.py           # Benchmark question generator
 │       │   ├── models.py              # Benchmark Pydantic schemas
+│       │   ├── dashboard.py           # Multi-model leaderboard dashboard generator
 │       │   └── viewer.py              # Interactive HTML Benchmark Viewer generator
+
 │       ├── data_sources/              # Source fetchers and sync clients
 │       │   ├── __init__.py
 │       │   ├── bipm_client.py         # BIPM SI API & Git fetcher

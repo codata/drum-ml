@@ -8,6 +8,7 @@ from typing import Any
 
 import typer
 from rich.console import Console
+from rich.panel import Panel
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,
@@ -18,6 +19,7 @@ from rich.progress import (
     TimeElapsedColumn,
     TimeRemainingColumn,
 )
+from rich.table import Table
 
 from drum_ml.benchmark.dashboard import save_leaderboard_dashboard
 from drum_ml.benchmark.generator import DRUMBenchmarkGenerator
@@ -40,6 +42,7 @@ from drum_ml.pipeline.scaffolder import MetrologyScaffolder
 from drum_ml.pipeline.stats_generator import DatasetStatsGenerator
 from drum_ml.pipeline.validator import MetrologyValidator
 from drum_ml.portal.generator import save_portal_html
+from drum_ml.portal.packager import package_website_zip
 
 app = typer.Typer(
     name="drum-ml",
@@ -1131,11 +1134,18 @@ def evaluate(
                         endpoint=model_endpoint,
                         model_name=model_name,
                         prompt=prompt,
-                        api_key=api_key or os.environ.get("OPENAI_API_KEY"),
+                        api_key=api_key,
                         timeout=timeout,
                         max_tokens=max_tokens,
                     )
                     predicted_text = model_res.content
+                    fatal_err = evaluator.check_fatal_inference_error(predicted_text)
+                    if fatal_err:
+                        progress.stop()
+                        console.print(f"\n[bold red]❌ Evaluation Halted: {fatal_err}[/bold red]")
+                        console.print(f"[dim]Details: {predicted_text}[/dim]\n")
+                        raise typer.Exit(code=1)
+
                     metric_dict = {
                         "latency_seconds": model_res.latency_seconds,
                         "prompt_tokens": model_res.prompt_tokens,
@@ -1230,6 +1240,129 @@ def evaluate(
         console.print(
             f"[bold green]✓ Interactive Scorecard Browser launched at [cyan]{viewer_html}[/cyan][/bold green]"
         )
+
+
+@app.command()
+def regrade(
+    scorecard: str | None = typer.Option(
+        None,
+        "--scorecard",
+        "-s",
+        help="Path to a single scorecard JSON file to re-grade (or omit to re-grade all in benchmark directory).",
+    ),
+    benchmark_dir: str = typer.Option(
+        "./dataset/benchmark",
+        "--benchmark-dir",
+        "-d",
+        help="Directory containing scorecard JSON files to re-grade.",
+    ),
+    benchmark_file: str = typer.Option(
+        "./dataset/benchmark/drum_benchmark_all.jsonl",
+        "--benchmark-file",
+        "-b",
+        help="Path to authoritative benchmark JSONL file.",
+    ),
+    rebuild_dashboards: bool = typer.Option(
+        True,
+        "--rebuild-dashboards/--no-dashboards",
+        help="Automatically regenerate the interactive HTML leaderboard and benchmark viewers.",
+    ),
+):
+    """Re-grade existing evaluation scorecard JSON files using the latest parsing & verification engine without calling LLMs."""
+    evaluator = MEvalBenchmark(benchmark_file=benchmark_file)
+    records = evaluator.load_benchmark_records()
+    if not records:
+        console.print(f"[bold red]No benchmark records found in '{benchmark_file}'.[/bold red]")
+        raise typer.Exit(1)
+
+    benchmark_records = {r["id"]: r for r in records if "id" in r}
+    b_dir = Path(benchmark_dir)
+
+    if scorecard:
+        paths = [Path(scorecard)]
+    else:
+        paths = sorted(b_dir.glob("*scorecard.json"))
+
+    if not paths:
+        console.print(f"[yellow]No scorecard JSON files found in '{benchmark_dir}'.[/yellow]")
+        return
+
+    console.print(
+        f"[bold green]Re-grading {len(paths)} scorecard(s) using updated Pint & SymPy engine...[/bold green]"
+    )
+
+    regraded_count = 0
+    for p in paths:
+        if not p.exists():
+            continue
+        try:
+            with open(p, encoding="utf-8") as f:
+                data = json.load(f)
+
+            results = data.get("detailed_results", [])
+            if not results:
+                continue
+
+            model_name = data.get("model_name", p.stem)
+            env = data.get("environment")
+            metrics = data.get("metrics")
+
+            updated_results = []
+            for r in results:
+                rec_id = r.get("id")
+                rec = benchmark_records.get(rec_id)
+                if not rec:
+                    updated_results.append(r)
+                    continue
+                pred_raw = r.get("grade", {}).get("predicted_raw", "")
+                new_grade = evaluator.grade_response(rec, pred_raw)
+                updated_r = dict(r)
+                updated_r["grade"] = new_grade
+                updated_results.append(updated_r)
+
+            new_sc = evaluator.compute_scorecard(
+                model_name=model_name,
+                results=updated_results,
+                benchmark_version=data.get("benchmark_version"),
+                total_duration_seconds=data.get("total_duration_seconds", 0.0),
+                environment=env,
+                endpoint=data.get("model_endpoint"),
+                execution_type=env.get("execution_type") if env else None,
+            )
+
+            sc_dict = new_sc.model_dump()
+            sc_dict["detailed_results"] = updated_results
+            if metrics:
+                sc_dict["metrics"] = metrics
+
+            with open(p, "w", encoding="utf-8") as f:
+                json.dump(sc_dict, f, indent=2)
+
+            passed = sc_dict["passed_samples"]
+            total = sc_dict["total_samples"]
+            pct = sc_dict["overall_accuracy_pct"]
+            console.print(
+                f"  ✓ Re-graded [bold cyan]{p.name}[/bold cyan] ({model_name}): "
+                f"[bold green]{passed}/{total} ({pct:.1f}%)[/bold green]"
+            )
+            regraded_count += 1
+        except Exception as e:
+            console.print(f"  [red]Error re-grading {p.name}: {e}[/red]")
+
+    if rebuild_dashboards:
+        leaderboard_html = b_dir / "leaderboard.html"
+        save_leaderboard_dashboard(
+            output_html_path=leaderboard_html,
+            benchmark_dir=b_dir,
+            open_browser=False,
+        )
+        console.print(
+            f"[bold green]✓ Multi-model leaderboard dashboard recompiled at [cyan]{leaderboard_html}[/cyan][/bold green]"
+        )
+
+    console.print(
+        f"[bold green]✓ Re-grading complete for {regraded_count} scorecard(s).[/bold green]"
+    )
 
 
 @app.command()
@@ -1407,6 +1540,187 @@ def serve(
             httpd.serve_forever()
     except KeyboardInterrupt:
         console.print("\n[yellow]Server stopped.[/yellow]")
+
+
+def _format_bytes_human(bytes_val: int) -> str:
+    """Format bytes as human-readable string."""
+    if bytes_val < 1024:
+        return f"{bytes_val} B"
+    val = float(bytes_val)
+    for unit in ["KB", "MB", "GB"]:
+        val /= 1024.0
+        if val < 1024.0:
+            return f"{val:.1f} {unit}"
+    return f"{val:.1f} TB"
+
+
+@app.command()
+def package_website(
+    dataset_dir: str = typer.Option(
+        "./dataset",
+        "--dataset-dir",
+        "-d",
+        help="Path to dataset directory containing portal, viewers, and benchmark files.",
+    ),
+    output_zip: str = typer.Option(
+        "./dataset/drum_ml_website.zip",
+        "--output-zip",
+        "-o",
+        help="Destination path for the generated ZIP archive.",
+    ),
+    include_all_data: bool = typer.Option(
+        False,
+        "--include-all-data",
+        "-a",
+        help="Include full master training/val/test splits and partition folders (large).",
+    ),
+    rebuild_portal: bool = typer.Option(
+        True,
+        "--rebuild/--no-rebuild",
+        help="Rebuild master portal index.html before packaging to ensure fresh embedded telemetry.",
+    ),
+    verify: bool = typer.Option(
+        True,
+        "--verify/--no-verify",
+        help="Run integrity verification on the generated ZIP archive.",
+    ),
+    quiet: bool = typer.Option(
+        False,
+        "--quiet",
+        "-q",
+        help="Suppress the itemized file breakdown table.",
+    ),
+):
+    """Package all dataset website relevant files (portal, viewers, reports, scorecards, benchmarks) into a standalone ZIP archive."""
+    d_path = Path(dataset_dir)
+    if not d_path.exists():
+        console.print(f"[bold red]Dataset directory '{dataset_dir}' does not exist.[/bold red]")
+        raise typer.Exit(1)
+
+    console.print(
+        f"[bold green]📦 Packaging DRUM-ML dataset website files from '{dataset_dir}' into '{output_zip}'...[/bold green]"
+    )
+
+    try:
+        res = package_website_zip(
+            dataset_dir=d_path,
+            output_zip=output_zip,
+            include_all_data=include_all_data,
+            rebuild_portal=rebuild_portal,
+            verify=verify,
+        )
+    except Exception as e:
+        console.print(f"[bold red]Failed to package website files: {e}[/bold red]")
+        raise typer.Exit(1) from e
+
+    # Render Itemized File Table
+    if not quiet and res.files:
+        table = Table(
+            title="DRUM-ML Dataset Website Packaged Assets",
+            header_style="bold cyan",
+            border_style="bright_black",
+        )
+        table.add_column("Relative Path", style="bold white")
+        table.add_column("Category", style="cyan")
+        table.add_column("Uncompressed", justify="right", style="green")
+        table.add_column("Compressed", justify="right", style="yellow")
+        table.add_column("Savings", justify="right", style="magenta")
+
+        for f in res.files:
+            file_savings = (
+                ((1.0 - (f.compressed_bytes / f.size_bytes)) * 100.0) if f.size_bytes > 0 else 0.0
+            )
+            table.add_row(
+                f.relative_path,
+                f.category,
+                _format_bytes_human(f.size_bytes),
+                _format_bytes_human(f.compressed_bytes),
+                f"{file_savings:.1f}%",
+            )
+
+        console.print(table)
+
+    # Render Summary Panel
+    verification_status = (
+        "[bold green]✓ PASSED (CRC & Entrypoints Verified)[/bold green]"
+        if res.verification_passed
+        else "[bold red]✗ FAILED Integrity Check[/bold red]"
+    )
+
+    summary_text = (
+        f"[bold]Archive Path:[/bold]        [cyan]{res.zip_path.resolve()}[/cyan]\n"
+        f"[bold]Total Files:[/bold]         [white]{res.file_count}[/white]\n"
+        f"[bold]Uncompressed Size:[/bold]   [white]{_format_bytes_human(res.uncompressed_bytes)}[/white] ({res.uncompressed_bytes:,} bytes)\n"
+        f"[bold]ZIP File Size:[/bold]       [bold yellow]{_format_bytes_human(res.compressed_bytes)}[/bold yellow] ({res.compressed_bytes:,} bytes)\n"
+        f"[bold]Storage Reduction:[/bold]   [bold magenta]{res.savings_percent:.1f}% savings[/bold magenta] ({res.compression_ratio:.2f}x compression)\n"
+        f"[bold]SHA-256 Checksum:[/bold]    [dim cyan]{res.sha256_hash}[/dim cyan]\n"
+        f"[bold]Integrity Check:[/bold]     {verification_status}"
+    )
+
+    if res.missing_recommended_files:
+        summary_text += f"\n[bold yellow]Note:[/bold yellow] [dim]Missing optional key files: {', '.join(res.missing_recommended_files)}[/dim]"
+
+    console.print(
+        Panel(
+            summary_text,
+            title="[bold green]📦 DRUM-ML Website Package Summary[/bold green]",
+            border_style="green",
+            padding=(1, 2),
+        )
+    )
+
+    console.print(
+        "[bold blue]💡 Deployment Tip:[/bold blue] [dim]Extract this zip directly into GitHub Pages (gh-pages branch), Netlify, AWS S3, or serve locally with:[/dim] "
+        f"[bold cyan]drum-ml serve --dir {res.zip_path.parent}[/bold cyan]\n"
+    )
+
+
+@app.command(name="zip-website")
+def zip_website_alias(
+    dataset_dir: str = typer.Option(
+        "./dataset",
+        "--dataset-dir",
+        "-d",
+        help="Path to dataset directory.",
+    ),
+    output_zip: str = typer.Option(
+        "./dataset/drum_ml_website.zip",
+        "--output-zip",
+        "-o",
+        help="Destination path for output ZIP file.",
+    ),
+    include_all_data: bool = typer.Option(
+        False,
+        "--include-all-data",
+        "-a",
+        help="Include full master training/val/test splits and partition folders.",
+    ),
+    rebuild_portal: bool = typer.Option(
+        True,
+        "--rebuild/--no-rebuild",
+        help="Rebuild master portal index.html before zipping.",
+    ),
+    verify: bool = typer.Option(
+        True,
+        "--verify/--no-verify",
+        help="Verify zip integrity.",
+    ),
+    quiet: bool = typer.Option(
+        False,
+        "--quiet",
+        "-q",
+        help="Suppress file breakdown table.",
+    ),
+):
+    """Alias for package-website: package all dataset website files into a ZIP archive."""
+    package_website(
+        dataset_dir=dataset_dir,
+        output_zip=output_zip,
+        include_all_data=include_all_data,
+        rebuild_portal=rebuild_portal,
+        verify=verify,
+        quiet=quiet,
+    )
 
 
 if __name__ == "__main__":

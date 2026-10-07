@@ -51,10 +51,15 @@ def check_unit_conversion_equivalence(
         q_left_base = q_left.to_base_units()
         q_right_base = q_right.to_base_units()
 
-        diff = abs(q_left_base.magnitude - q_right_base.magnitude)
-        norm = max(abs(q_left_base.magnitude), abs(q_right_base.magnitude), 1e-9)
+        mag_l = float(q_left_base.magnitude)
+        mag_r = float(q_right_base.magnitude)
+        diff = abs(mag_l - mag_r)
+        norm = max(abs(mag_l), abs(mag_r))
 
-        if diff / norm > rel_tol:
+        if norm == 0.0:
+            if diff > 1e-12:
+                return False, f"Magnitude mismatch: {q_left_base} != {q_right_base}"
+        elif diff / norm > rel_tol:
             return False, f"Magnitude mismatch: {q_left_base} != {q_right_base}"
 
         return True, None

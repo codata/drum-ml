@@ -276,17 +276,28 @@ drum-ml view-dataset --dataset-dir ./dataset
 drum-ml evaluate --benchmark-file ./dataset/benchmark/drum_benchmark_mcq.jsonl
 ```
 
-### 4. Interactive HTML Dataset & Benchmark Explorers
+### 4. Interactive HTML Web Portal, Dashboards & ZIP Packaging
 
-DRUM-ML includes standalone, rich interactive HTML browser dashboards for instant visual inspection and auditing:
+DRUM-ML includes standalone, rich interactive HTML browser dashboards and automated deployment packaging utilities:
 
 ```bash
-# Launch the Interactive Training & Test Dataset Browser
-drum-ml view-dataset --dataset-dir ./dataset
+# Launch the master scientific repository portal landing page
+drum-ml build-portal --output-html ./dataset/index.html
 
-# Launch the DRUM Benchmark (M-Eval) Interactive Dashboard
+# Start a lightweight local HTTP server for the entire portal & interactive apps
+drum-ml serve --port 9124
+
+# Launch individual interactive web dashboards
+drum-ml view-dataset --dataset-dir ./dataset
 drum-ml view-benchmark --benchmark-file ./dataset/benchmark/drum_benchmark_all.jsonl
+drum-ml leaderboard --benchmark-dir ./dataset/benchmark
+
+# Package all dataset website files into a deployable standalone ZIP archive
+drum-ml package-website --dataset-dir ./dataset --output-zip ./dataset/drum_ml_website.zip
+# Or using the alias:
+drum-ml zip-website
 ```
+
 
 ### 5. LLM Provider & API Key Configuration
 

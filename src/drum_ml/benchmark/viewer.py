@@ -709,6 +709,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       border: 1px solid rgba(239, 68, 68, 0.4);
     }
 
+    .eval-banner-error {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.06));
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
     .eval-banner-header {
       display: flex;
       align-items: center;
@@ -733,6 +738,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     .eval-banner-fail .eval-banner-badge {
       color: #f87171;
+    }
+
+    .eval-banner-error .eval-banner-badge {
+      color: #fbbf24;
     }
 
     .eval-banner-model {
@@ -2998,6 +3007,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             }
           }
 
+          const isError = grade.eval_status === "error" || (grade.error && (grade.error.includes("evaluation error") || grade.error.includes("Failed to extract")));
+          const expKey = grade.expected_key || (item.correct_option_key ? `Option ${item.correct_option_key}` : (item.ground_truth_answer || "-"));
+          const predKey = grade.extracted_answer || (grade.predicted_key ? `Option ${grade.predicted_key}` : (grade.predicted_raw ? grade.predicted_raw.substring(0, 100) : "None / Malformed"));
+
           if (grade.passed) {
             evalBannerEl.className = "eval-banner eval-banner-pass";
             evalBannerEl.innerHTML = `
@@ -3007,8 +3020,28 @@ HTML_TEMPLATE = """<!DOCTYPE html>
               </div>
               <div class="eval-banner-body">
                 <div>
-                  <strong>Model Prediction:</strong> Option <span class="eval-exp-key">${escapeHtml(grade.predicted_key || "Correct")}</span> matches canonical ground truth!
+                  <strong>Model Prediction:</strong> <span class="eval-exp-key">${escapeHtml(predKey)}</span> matches canonical ground truth!
                 </div>
+                ${expHtml}
+                ${metricsBadgeHtml}
+                ${jsonSectionHtml}
+                ${rawSectionHtml}
+              </div>
+            `;
+          } else if (isError) {
+            evalBannerEl.className = "eval-banner eval-banner-error";
+            evalBannerEl.innerHTML = `
+              <div class="eval-banner-header">
+                <span class="eval-banner-badge">⚠️ PROCESSING / PARSING ERROR</span>
+                <span class="eval-banner-model">Model: ${escapeHtml(modelName)}</span>
+              </div>
+              <div class="eval-banner-body">
+                <div>
+                  <strong>Model Output:</strong> <span class="eval-pred-key" style="color:#fbbf24; border-color:rgba(245,158,11,0.3);">${escapeHtml(predKey)}</span>
+                  &nbsp;|&nbsp;
+                  <strong>Expected Ground Truth:</strong> <span class="eval-exp-key">${escapeHtml(expKey)}</span>
+                </div>
+                ${grade.error ? `<div class="eval-error-msg" style="background:rgba(245,158,11,0.1); border-left-color:#fbbf24; color:#fbbf24;">⚠️ <strong>Evaluation Processing Issue:</strong> ${escapeHtml(grade.error)}</div>` : ''}
                 ${expHtml}
                 ${metricsBadgeHtml}
                 ${jsonSectionHtml}
@@ -3017,8 +3050,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             `;
           } else {
             evalBannerEl.className = "eval-banner eval-banner-fail";
-            const expKey = grade.expected_key || item.correct_option_key || item.ground_truth_answer || "-";
-            const predKey = grade.predicted_key || "None / Malformed";
             evalBannerEl.innerHTML = `
               <div class="eval-banner-header">
                 <span class="eval-banner-badge">❌ MODEL MISSED (INCORRECT)</span>

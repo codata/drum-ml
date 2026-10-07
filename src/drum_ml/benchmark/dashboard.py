@@ -1043,6 +1043,7 @@ def generate_leaderboard_html(
       let searchQuery = '';
       let sortCol = 'overall';
       let sortDir = 'desc';
+      let selectedRadarModels = new Set();
 
       const COLORS = ['#38bdf8', '#34d399', '#f43f5e', '#a855f7', '#fbbf24', '#ec4899', '#06b6d4'];
 
@@ -1122,10 +1123,22 @@ def generate_leaderboard_html(
             tab.classList.add("active");
             const target = tab.dataset.tab;
             document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
-            if (target === "leaderboard") document.getElementById("viewLeaderboard").classList.add("active");
-            if (target === "visuals") document.getElementById("viewVisuals").classList.add("active");
-            if (target === "arena") document.getElementById("viewArena").classList.add("active");
-            if (target === "hardware") document.getElementById("viewHardware").classList.add("active");
+            if (target === "leaderboard") {{
+              document.getElementById("viewLeaderboard").classList.add("active");
+              renderLeaderboardTable();
+            }}
+            if (target === "visuals") {{
+              document.getElementById("viewVisuals").classList.add("active");
+              renderRadarView();
+            }}
+            if (target === "arena") {{
+              document.getElementById("viewArena").classList.add("active");
+              renderArenaView();
+            }}
+            if (target === "hardware") {{
+              document.getElementById("viewHardware").classList.add("active");
+              renderHardwareTable();
+            }}
           }});
         }});
       }}
@@ -1727,7 +1740,6 @@ def generate_leaderboard_html(
       }}
 
       // 8. Radar View
-      let selectedRadarModels = new Set();
       function renderRadarView() {{
         const toggles = document.getElementById("radarModelToggles");
         toggles.innerHTML = "";

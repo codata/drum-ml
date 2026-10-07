@@ -33,3 +33,20 @@ def test_latex_balance_checker():
 def test_sanitize_latex_units():
     sanitized = sanitize_latex_units(r"\text{kg}\cdot\text{m}\cdot\text{s}^{-2}")
     assert sanitized == "kg * m * s**-2"
+
+    # Implicit negative exponents on unit symbols
+    assert sanitize_latex_units("6.02214076e23 mol-1") == "6.02214076e23 mol**-1"
+    assert sanitize_latex_units("9.80665 m s-2") == "9.80665 m s**-2"
+    assert sanitize_latex_units("101325 kg m-1 s-2") == "101325 kg m**-1 s**-2"
+
+
+def test_pint_implicit_exponents():
+    # mol^-1 vs mol-1
+    is_eq, err = check_unit_conversion_equivalence("6.02214076e23 mol^-1", "6.02214076e23 mol-1")
+    assert is_eq
+    assert err is None
+
+    # m/s^2 vs m s-2
+    is_eq2, err2 = check_unit_conversion_equivalence("9.80665 m/s^2", "9.80665 m s-2")
+    assert is_eq2
+    assert err2 is None
